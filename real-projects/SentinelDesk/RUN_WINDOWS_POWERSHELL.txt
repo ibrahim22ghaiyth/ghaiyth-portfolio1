@@ -1,0 +1,14 @@
+Windows PowerShell run instructions:
+
+1) Open PowerShell inside this project folder.
+2) Run:
+   python server.py
+
+3) Open:
+   http://127.0.0.1:8000
+
+Login:
+   admin
+   sentinel2024
+
+No pip install required in this fixed version.

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SentinelDesk 2024 · Client Intelligence Portal</title>
+  <link rel="stylesheet" href="/assets/sentineldesk.css" />
+</head>
+<body>
+  <section class="entry" id="loginView">
+    <div class="entry-card">
+      <div class="mark xl">
+        <svg viewBox="0 0 160 160" aria-hidden="true">
+          <path class="orbit" d="M80 18c34.2 0 62 27.8 62 62s-27.8 62-62 62-62-27.8-62-62 27.8-62 62-62Z"/>
+          <path class="arc a1" d="M31 80c14-26 35-39 62-39 13 0 25 4 36 11"/>
+          <path class="arc a2" d="M129 80c-14 26-35 39-62 39-13 0-25-4-36-11"/>
+          <path class="beam" d="M80 35v90M35 80h90"/>
+          <circle class="core" cx="80" cy="80" r="18"/>
+          <circle class="dot d1" cx="80" cy="35" r="6"/>
+          <circle class="dot d2" cx="125" cy="80" r="6"/>
+          <circle class="dot d3" cx="80" cy="125" r="6"/>
+          <circle class="dot d4" cx="35" cy="80" r="6"/>
+        </svg>
+      </div>
+
+      <p class="eyebrow">Client intelligence portal · 2024</p>
+      <h1>SentinelDesk</h1>
+      <p class="lead">
+        A security case-room interface for Cloudflare service posture, incidents,
+        API exposure, access policy reviews, threat advisories, and client-ready evidence.
+      </p>
+
+      <div class="capabilities">
+        <span>Incident Dossiers</span>
+        <span>Exposure Board</span>
+        <span>Zero Trust Review</span>
+        <span>Client Evidence</span>
+      </div>
+
+      <div class="entry-footer">
+        <b>Designed & developed by Ibrahim Ghaiyth — 2024</b>
+        <small>© 2024 Ibrahim Ghaiyth. All rights reserved.</small>
+      </div>
+    </div>
+
+    <form class="access-panel" id="loginForm">
+      <p class="eyebrow">Secure workspace</p>
+      <h2>Analyst access</h2>
+      <p>Independent portfolio portal using public Cloudflare service context.</p>
+      <label>Username<input name="username" value="admin" required /></label>
+      <label>Password<input name="password" type="password" value="sentinel2024" required /></label>
+      <button>Enter case room</button>
+      <small>Demo credentials: admin / sentinel2024</small>
+    </form>
+  </section>
+
+  <section class="workspace hidden" id="portalView">
+    <header class="masthead">
+      <a class="brand" href="#">
+        <span class="mark">
+          <svg viewBox="0 0 160 160" aria-hidden="true">
+            <path class="orbit" d="M80 18c34.2 0 62 27.8 62 62s-27.8 62-62 62-62-27.8-62-62 27.8-62 62-62Z"/>
+            <path class="arc a1" d="M31 80c14-26 35-39 62-39 13 0 25 4 36 11"/>
+            <path class="arc a2" d="M129 80c-14 26-35 39-62 39-13 0-25-4-36-11"/>
+            <path class="beam" d="M80 35v90M35 80h90"/>
+            <circle class="core" cx="80" cy="80" r="18"/>
+            <circle class="dot d1" cx="80" cy="35" r="6"/>
+            <circle class="dot d2" cx="125" cy="80" r="6"/>
+            <circle class="dot d3" cx="80" cy="125" r="6"/>
+            <circle class="dot d4" cx="35" cy="80" r="6"/>
+          </svg>
+        </span>
+        <div>
+          <strong>SentinelDesk</strong>
+          <small id="companyLine">Cloudflare, Inc. · 2024</small>
+        </div>
+      </a>
+
+      <div class="toolbelt">
+        <input id="searchBox" placeholder="Search current workspace..." />
+        <button id="refreshBtn">Refresh</button>
+        <button id="newBtn">New dossier</button>
+        <button id="exportBtn">Export JSON</button>
+        <button id="logoutBtn">Exit</button>
+      </div>
+    </header>
+
+    <nav class="ribbon" id="nav"></nav>
+
+    <main class="case-room">
+      <section class="room-title">
+        <div>
+          <p class="eyebrow">Security client room</p>
+          <h1 id="viewTitle">Security Command Center</h1>
+        </div>
+        <aside>
+          <b>Portfolio build</b>
+          <span>Ibrahim Ghaiyth · 2024</span>
+        </aside>
+      </section>
+
+      <section class="view active" id="dashboardView">
+        <div class="summary-strip" id="kpis"></div>
+
+        <section class="security-map">
+          <article class="map-card">
+            <div class="map-head">
+              <div><p class="eyebrow">Threat distribution</p><h3>Severity Map</h3></div>
+              <span>live posture</span>
+            </div>
+            <div id="severityBars" class="severity-lanes"></div>
+          </article>
+
+          <article class="map-card asset-focus">
+            <div class="map-head">
+              <div><p class="eyebrow">Exposure lens</p><h3>Highest Asset Risk</h3></div>
+              <span>risk scoring</span>
+            </div>
+            <div id="assetRisk" class="dossier-list"></div>
+          </article>
+        </section>
+
+        <section class="briefing-grid">
+          <article class="brief-card">
+            <h3>Incident Dossiers</h3>
+            <div id="incidentStack" class="dossier-list"></div>
+          </article>
+          <article class="brief-card wide">
+            <h3>Recent Event Feed</h3>
+            <div id="recentEvents" class="event-feed"></div>
+          </article>
+          <article class="brief-card">
+            <h3>Coverage</h3>
+            <div id="serviceCoverage" class="dossier-list"></div>
+          </article>
+          <article class="brief-card wide">
+            <h3>Activity Journal</h3>
+            <div id="activityLog" class="journal"></div>
+          </article>
+        </section>
+      </section>
+
+      <section class="view" id="moduleView">
+        <div class="module-head">
+          <div>
+            <p class="eyebrow">Workspace module</p>
+            <h2 id="moduleTitle">Module</h2>
+            <p id="moduleDesc">Manage client security data.</p>
+          </div>
+          <button id="addBtn">Create record</button>
+        </div>
+        <div class="ledger" id="tableCard"></div>
+      </section>
+
+      <footer class="rights-line">
+        Designed & developed by Ibrahim Ghaiyth — 2024 · © 2024 Ibrahim Ghaiyth. All rights reserved.
+      </footer>
+    </main>
+  </section>
+
+  <dialog id="editor">
+    <form method="dialog" id="editorForm">
+      <h3 id="editorTitle">Record</h3>
+      <div id="editorFields" class="form-grid"></div>
+      <div class="dialog-actions">
+        <button value="cancel">Cancel</button>
+        <button value="default">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast"></div>
+  <script src="/assets/sentineldesk.js"></script>
+</body>
+</html>

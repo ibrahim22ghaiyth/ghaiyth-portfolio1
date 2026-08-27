@@ -1,0 +1,62 @@
+export const defaultProducts = [
+  {
+    slug: "web-project-planning-ebook",
+    title: "Professional Web Project Planning E-book",
+    description:
+      "A detailed PDF guide for planning a website before development: goals, pages, content, user flow, admin dashboard needs, launch checklist, and delivery notes for client-ready web projects.",
+    titleAr: "كتاب تخطيط مشروع ويب احترافي",
+    descriptionAr:
+      "دليل PDF مفصل يساعد الطالب أو صاحب العمل على ترتيب فكرة الموقع قبل البرمجة: الأهداف، الصفحات، المحتوى، مسار المستخدم، احتياجات لوحة التحكم، وقائمة جاهزية الإطلاق.",
+    tags: ["E-book", "PDF", "Project planning"],
+    priceLabel: "25,000 IQD",
+    imageUrl: null,
+    requestUrl: "https://wa.me/9647805808975",
+    template: "ebook",
+    purchaseLabel: "Buy via WhatsApp",
+    purchaseNote: "Order through WhatsApp now. Send the product name and delivery details will be confirmed directly.",
+    deliveryType: "PDF",
+    featured: true,
+    order: 1,
+    active: true,
+  },
+  {
+    slug: "client-requirements-template-pack",
+    title: "Client Requirements Template Pack",
+    description:
+      "Ready-to-use files for collecting client information, branding assets, page requirements, links, technical notes, content direction, and hosting details before starting a web project.",
+    titleAr: "حزمة قوالب إدارة متطلبات العملاء",
+    descriptionAr:
+      "ملفات جاهزة لجمع معلومات العميل والهوية والصفحات والروابط والملاحظات الفنية واتجاه المحتوى وبيانات الاستضافة قبل بدء أي مشروع ويب.",
+    tags: ["Templates", "Clients", "Notion / PDF"],
+    priceLabel: "35,000 IQD",
+    imageUrl: null,
+    requestUrl: "https://wa.me/9647805808975",
+    template: "bundle",
+    purchaseLabel: "Buy via WhatsApp",
+    purchaseNote: "Order through WhatsApp now. The package details and delivery method will be confirmed directly.",
+    deliveryType: "Template",
+    featured: false,
+    order: 2,
+    active: true,
+  },
+  {
+    slug: "mini-order-management-web-app",
+    title: "Mini Order Management Web App",
+    description:
+      "A lightweight customizable web app for managing client requests, messages, and basic statuses. Suitable for small businesses that need a practical starter system.",
+    titleAr: "تطبيق ويب مصغر لإدارة الطلبات",
+    descriptionAr:
+      "تطبيق ويب خفيف قابل للتخصيص لإدارة طلبات العملاء والرسائل والحالات الأساسية، مناسب كبداية للشركات الصغيرة التي تحتاج نظاماً عملياً بدون تعقيد.",
+    tags: ["Web app", "Dashboard", "Customizable"],
+    priceLabel: "150,000 IQD",
+    imageUrl: null,
+    requestUrl: "https://wa.me/9647805808975",
+    template: "webapp",
+    purchaseLabel: "Buy via WhatsApp",
+    purchaseNote: "Order through WhatsApp now. Send the product name to discuss customization and delivery details.",
+    deliveryType: "Web app",
+    featured: false,
+    order: 3,
+    active: true,
+  },
+] as const;

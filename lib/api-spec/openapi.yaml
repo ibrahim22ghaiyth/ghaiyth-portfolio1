@@ -1,0 +1,737 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.2.0
+  description: Ibrahim Ghaiyth Portfolio API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: auth
+    description: Admin authentication
+  - name: services
+    description: Portfolio services
+  - name: skills
+    description: Portfolio skills
+  - name: projects
+    description: Portfolio projects
+  - name: content
+    description: Page content management
+  - name: messages
+    description: Contact messages
+  - name: products
+    description: Digital products catalog
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /auth/login:
+    post:
+      operationId: adminLogin
+      tags: [auth]
+      summary: Admin login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminLoginInput"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminAuth"
+        "401":
+          description: Invalid credentials
+
+  /auth/me:
+    get:
+      operationId: getAdminMe
+      tags: [auth]
+      summary: Get current admin info
+      responses:
+        "200":
+          description: Admin info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminInfo"
+        "401":
+          description: Unauthorized
+
+  /services:
+    get:
+      operationId: listServices
+      tags: [services]
+      summary: List all services
+      responses:
+        "200":
+          description: List of services
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Service"
+    post:
+      operationId: createService
+      tags: [services]
+      summary: Create a service (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ServiceInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Service"
+
+  /services/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    put:
+      operationId: updateService
+      tags: [services]
+      summary: Update a service (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ServiceInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Service"
+    delete:
+      operationId: deleteService
+      tags: [services]
+      summary: Delete a service (admin)
+      responses:
+        "204":
+          description: Deleted
+
+  /skills:
+    get:
+      operationId: listSkills
+      tags: [skills]
+      summary: List all skills
+      responses:
+        "200":
+          description: List of skills
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Skill"
+    post:
+      operationId: createSkill
+      tags: [skills]
+      summary: Create a skill (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SkillInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Skill"
+
+  /skills/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    put:
+      operationId: updateSkill
+      tags: [skills]
+      summary: Update a skill (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SkillInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Skill"
+    delete:
+      operationId: deleteSkill
+      tags: [skills]
+      summary: Delete a skill (admin)
+      responses:
+        "204":
+          description: Deleted
+
+  /projects:
+    get:
+      operationId: listProjects
+      tags: [projects]
+      summary: List all projects
+      responses:
+        "200":
+          description: List of projects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Project"
+    post:
+      operationId: createProject
+      tags: [projects]
+      summary: Create a project (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProjectInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+
+  /projects/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    put:
+      operationId: updateProject
+      tags: [projects]
+      summary: Update a project (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProjectInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+    delete:
+      operationId: deleteProject
+      tags: [projects]
+      summary: Delete a project (admin)
+      responses:
+        "204":
+          description: Deleted
+
+  /content:
+    get:
+      operationId: listContent
+      tags: [content]
+      summary: List all page content items
+      responses:
+        "200":
+          description: Content items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ContentItem"
+
+  /content/{key}:
+    parameters:
+      - name: key
+        in: path
+        required: true
+        schema:
+          type: string
+    put:
+      operationId: updateContent
+      tags: [content]
+      summary: Update page content (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContentUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContentItem"
+
+  /messages:
+    post:
+      operationId: sendMessage
+      tags: [messages]
+      summary: Send a contact message (public)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MessageInput"
+      responses:
+        "201":
+          description: Message sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+
+  /products:
+    get:
+      operationId: listProducts
+      tags: [products]
+      summary: List all digital products
+      responses:
+        "200":
+          description: List of products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+    post:
+      operationId: createProduct
+      tags: [products]
+      summary: Create a digital product (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+
+  /products/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    put:
+      operationId: updateProduct
+      tags: [products]
+      summary: Update a digital product (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+    delete:
+      operationId: deleteProduct
+      tags: [products]
+      summary: Delete a digital product (admin)
+      responses:
+        "204":
+          description: Deleted
+
+  /admin/messages:
+    get:
+      operationId: listMessages
+      tags: [messages]
+      summary: List all contact messages (admin)
+      responses:
+        "200":
+          description: Messages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Message"
+
+  /admin/messages/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      operationId: getMessage
+      tags: [messages]
+      summary: Get a message (admin)
+      responses:
+        "200":
+          description: Message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+    patch:
+      operationId: updateMessage
+      tags: [messages]
+      summary: Update message status (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MessageUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+    delete:
+      operationId: deleteMessage
+      tags: [messages]
+      summary: Delete a message (admin)
+      responses:
+        "204":
+          description: Deleted
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    AdminLoginInput:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+
+    AdminAuth:
+      type: object
+      required: [token, username]
+      properties:
+        token:
+          type: string
+        username:
+          type: string
+
+    AdminInfo:
+      type: object
+      required: [username]
+      properties:
+        username:
+          type: string
+
+    Service:
+      type: object
+      required: [id, title, description, icon, order, active]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        titleAr:
+          type: ["string", "null"]
+        descriptionAr:
+          type: ["string", "null"]
+        icon:
+          type: string
+        order:
+          type: integer
+        active:
+          type: boolean
+
+    ServiceInput:
+      type: object
+      required: [title, description, icon]
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        titleAr:
+          type: ["string", "null"]
+        descriptionAr:
+          type: ["string", "null"]
+        icon:
+          type: string
+        order:
+          type: integer
+        active:
+          type: boolean
+
+    Skill:
+      type: object
+      required: [id, name, percentage, category, order, active]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        nameAr:
+          type: ["string", "null"]
+        percentage:
+          type: integer
+        category:
+          type: string
+        order:
+          type: integer
+        active:
+          type: boolean
+
+    SkillInput:
+      type: object
+      required: [name, percentage, category]
+      properties:
+        name:
+          type: string
+        nameAr:
+          type: ["string", "null"]
+        percentage:
+          type: integer
+        category:
+          type: string
+        order:
+          type: integer
+        active:
+          type: boolean
+
+    Project:
+      type: object
+      required: [id, title, description, techStack, featured, order, active]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        titleAr:
+          type: ["string", "null"]
+        descriptionAr:
+          type: ["string", "null"]
+        techStack:
+          type: array
+          items:
+            type: string
+        liveUrl:
+          type: ["string", "null"]
+        githubUrl:
+          type: ["string", "null"]
+        imageUrl:
+          type: ["string", "null"]
+        featured:
+          type: boolean
+        order:
+          type: integer
+        active:
+          type: boolean
+
+    ProjectInput:
+      type: object
+      required: [title, description, techStack]
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        titleAr:
+          type: ["string", "null"]
+        descriptionAr:
+          type: ["string", "null"]
+        techStack:
+          type: array
+          items:
+            type: string
+        liveUrl:
+          type: ["string", "null"]
+        githubUrl:
+          type: ["string", "null"]
+        imageUrl:
+          type: ["string", "null"]
+        featured:
+          type: boolean
+        order:
+          type: integer
+        active:
+          type: boolean
+
+    Product:
+      type: object
+      required: [id, title, description, tags, featured, order, active]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        titleAr:
+          type: ["string", "null"]
+        descriptionAr:
+          type: ["string", "null"]
+        tags:
+          type: array
+          items:
+            type: string
+        priceLabel:
+          type: ["string", "null"]
+        imageUrl:
+          type: ["string", "null"]
+        requestUrl:
+          type: ["string", "null"]
+        featured:
+          type: boolean
+        order:
+          type: integer
+        active:
+          type: boolean
+
+    ProductInput:
+      type: object
+      required: [title, description]
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        titleAr:
+          type: ["string", "null"]
+        descriptionAr:
+          type: ["string", "null"]
+        tags:
+          type: array
+          items:
+            type: string
+        priceLabel:
+          type: ["string", "null"]
+        imageUrl:
+          type: ["string", "null"]
+        requestUrl:
+          type: ["string", "null"]
+        featured:
+          type: boolean
+        order:
+          type: integer
+        active:
+          type: boolean
+
+    ContentItem:
+      type: object
+      required: [key, value, type]
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+        type:
+          type: string
+
+    ContentUpdate:
+      type: object
+      required: [value]
+      properties:
+        value:
+          type: string
+
+    Message:
+      type: object
+      required: [id, name, email, subject, message, status, createdAt]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        subject:
+          type: string
+        message:
+          type: string
+        status:
+          type: string
+          enum: [unread, read, replied, archived]
+        createdAt:
+          type: string
+          format: date-time
+
+    MessageInput:
+      type: object
+      required: [name, email, subject, message]
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        subject:
+          type: string
+        message:
+          type: string
+
+    MessageUpdate:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [unread, read, replied, archived]

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RafidainSuite Enterprise ERP 2025</title>
+  <link rel="stylesheet" href="assets/enterprise.css" />
+</head>
+<body>
+  <section class="login-screen" id="loginScreen">
+    <div class="login-visual">
+      <img src="assets/enterprise-logo.svg" alt="Enterprise ERP logo" />
+      <span>Enterprise Resource Planning · 2025</span>
+      <h1>RafidainSuite ERP</h1>
+      <p>Unified operating system for finance, supply chain, HR, CRM, projects, approvals, assets, documents, and executive analytics.</p>
+      <div class="login-modules">
+        <b>20+ ERP Modules</b><b>SQLite Core</b><b>Backend API</b><b>Executive UX</b>
+      </div>
+      <small>Designed & developed by Ibrahim Ghaiyth — 2025 · © 2025 Ibrahim Ghaiyth. All rights reserved.</small>
+    </div>
+    <form class="login-card" id="loginForm">
+      <span>Secure ERP Workspace</span>
+      <h2>Sign in</h2>
+      <p>Rafidain Industrial Group LLC</p>
+      <input name="username" value="admin" placeholder="Username" required />
+      <input name="password" type="password" value="admin2025" placeholder="Password" required />
+      <button>Open Enterprise Suite</button>
+      <small>Demo: admin / admin2025</small>
+    </form>
+  </section>
+
+  <section class="shell hidden" id="shell">
+    <header class="appbar">
+      <a class="brand" href="#"><img src="assets/enterprise-logo.svg" alt="Logo" /><div><strong>RafidainSuite</strong><small id="companyName">Enterprise ERP 2025</small></div></a>
+      <div class="command">
+        <input id="globalSearch" placeholder="Search current module..." />
+        <button id="refreshBtn">Refresh</button>
+        <button id="newBtn">New</button>
+      </div>
+      <div class="userbox"><span id="userName">Admin</span><button id="logoutBtn">Logout</button></div>
+    </header>
+
+    <aside class="module-rail" id="moduleRail"></aside>
+
+    <main class="workspace">
+      <div class="workspace-head">
+        <div><span id="moduleKicker">Command Center</span><h1 id="viewTitle">Executive Dashboard</h1></div>
+        <div class="workspace-meta"><b>FY-2025</b><small>Built by Ibrahim Ghaiyth</small></div>
+      </div>
+
+      <section class="view active" id="dashboardView">
+        <div class="kpi-grid" id="kpiGrid"></div>
+        <div class="grid">
+          <article class="panel two"><h3>Revenue Trend</h3><div class="bars" id="salesBars"></div></article>
+          <article class="panel"><h3>Pending Approvals</h3><div class="stack" id="approvalStack"></div></article>
+          <article class="panel"><h3>Low Stock Watch</h3><div class="stack" id="stockStack"></div></article>
+          <article class="panel"><h3>Project Portfolio</h3><div class="stack" id="projectStack"></div></article>
+          <article class="panel two"><h3>Operations Tasks</h3><div class="task-board" id="taskBoard"></div></article>
+          <article class="panel two"><h3>Audit Trail</h3><div class="timeline" id="auditTrail"></div></article>
+        </div>
+      </section>
+
+      <section class="view" id="moduleView">
+        <div class="module-toolbar">
+          <div><h2 id="moduleTitle">Module</h2><p id="moduleDescription">Manage records and operational data.</p></div>
+          <button id="addModuleBtn">Add Record</button>
+        </div>
+        <div class="data-table" id="moduleTable"></div>
+      </section>
+
+      <section class="view" id="reportsView">
+        <div class="report-grid">
+          <article class="panel"><h3>Top Customers</h3><div class="stack" id="topCustomers"></div></article>
+          <article class="panel"><h3>Warehouse Value</h3><div class="stack" id="warehouseReport"></div></article>
+          <article class="panel"><h3>Project Health</h3><div class="stack" id="projectReport"></div></article>
+          <article class="panel"><h3>Invoice Aging</h3><div class="stack" id="agingReport"></div></article>
+        </div>
+      </section>
+
+      <footer class="footer">Designed & developed by Ibrahim Ghaiyth — 2025 · © 2025 Ibrahim Ghaiyth. All rights reserved.</footer>
+    </main>
+  </section>
+
+  <dialog id="editor">
+    <form id="editorForm" method="dialog">
+      <h3 id="editorTitle">Record</h3>
+      <div class="form-grid" id="editorFields"></div>
+      <div class="dialog-actions"><button value="cancel">Cancel</button><button value="default">Save</button></div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast"></div>
+  <script src="assets/enterprise.js"></script>
+</body>
+</html>

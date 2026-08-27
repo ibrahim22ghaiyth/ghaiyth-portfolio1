@@ -1,0 +1,30 @@
+{
+  "name": "dijla-taste-restaurant",
+  "version": "2.0.0",
+  "description": "Dijla & Tanoor — bilingual (Arabic/English) restaurant menu and ordering system with a real SQLite database and an admin dashboard. Built for the Iraqi market.",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "node server/server.js",
+    "reset-db": "node server/reset-db.js",
+    "test:api": "node server/self-test.js"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.3.0"
+  },
+  "keywords": [
+    "restaurant",
+    "menu",
+    "ordering",
+    "sqlite",
+    "bilingual",
+    "arabic",
+    "iraq",
+    "admin-dashboard"
+  ],
+  "author": "Ibrahim Ghaiyth",
+  "license": "MIT"
+}

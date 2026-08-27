@@ -1,0 +1,17 @@
+{
+  "name": "qassitha",
+  "version": "1.0.0",
+  "description": "قسّطها · Qassitha — a debt & installment tracker in Iraqi Dinar. Schedule installments, record local payments (ZainCash / Asia Hawala), and track who owes what.",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "node server/server.js",
+    "reset-db": "node server/reset-db.js",
+    "test:api": "node server/self-test.js"
+  },
+  "engines": { "node": ">=16" },
+  "dependencies": { "better-sqlite3": "^11.3.0" },
+  "author": "Ibrahim Ghaiyth",
+  "license": "MIT",
+  "keywords": ["debt","installments","finance","iraq","dinar","sqlite","tracker"]
+}

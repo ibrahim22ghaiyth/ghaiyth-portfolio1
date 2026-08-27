@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dijla & Tanoor</title>
+  <link rel="stylesheet" href="assets/restaurant.css" />
+</head>
+<body>
+  <div class="texture"></div>
+  <header class="header">
+    <div class="container nav">
+      <a href="/" class="brand">
+        <img src="assets/logo.svg" alt="Restaurant Logo" />
+        <div>
+          <strong data-field="restaurant_name">مطعم دجلة وتنور</strong>
+          <small data-field="slogan">مذاق عراقي أصيل بلمسة عصرية</small>
+        </div>
+      </a>
+      <nav>
+        <a href="#menu" data-i18n="nav.menu">المنيو</a>
+        <a href="#order" data-i18n="nav.order">الطلب</a>
+        <a href="#contact" data-i18n="nav.contact">تواصل</a>
+        <a href="/admin.html" data-i18n="nav.admin">الإدارة</a>
+      </nav>
+      <div class="nav-actions">
+        <button id="langBtn">EN</button>
+        <button id="cartBtn" class="cart-pill"><span id="cartCount">0</span><b data-i18n="cart.title">السلة</b></button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero container">
+      <div class="hero-copy">
+        <span class="eyebrow" data-i18n="hero.badge">منيو مطعم فعلي · SQLite · عربي/إنكليزي</span>
+        <h1 data-i18n="hero.title">تجربة طلب مطعم كاملة بتصميم يليق بالمطاعم.</h1>
+        <p data-field="description">منيو مطعم عراقي حديث يقدم المشاوي، الدولمة، البرياني، المقبلات، المشروبات والحلويات مع تجربة طلب إلكترونية كاملة.</p>
+        <div class="hero-actions">
+          <a href="#menu" class="btn primary" data-i18n="hero.browse">استعرض الأطباق</a>
+          <button class="btn secondary" id="shareBtn" data-i18n="hero.share">نسخ رابط المنيو</button>
+        </div>
+        <div class="restaurant-facts">
+          <div><b data-field="open_hours">يومياً من 11:00 صباحاً إلى 12:30 ليلاً</b><span data-i18n="facts.hours">أوقات العمل</span></div>
+          <div><b data-field="phone">+964 770 421 2026</b><span data-i18n="facts.phone">الحجز والطلبات</span></div>
+          <div><b id="deliveryFact">3,000 IQD</b><span data-i18n="facts.delivery">توصيل</span></div>
+        </div>
+      </div>
+      <div class="plate-card">
+        <div class="plate">
+          <i></i><i></i><i></i>
+          <span>DT</span>
+        </div>
+        <div class="chef-note">
+          <b data-i18n="hero.noteTitle">اختيارات اليوم</b>
+          <p data-i18n="hero.note">كباب عراقي، دولمة، ليمون نعناع، وكنافة قشطة.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="container menu-section" id="menu">
+      <div class="section-title">
+        <div>
+          <span data-i18n="menu.kicker">الأقسام والأطباق</span>
+          <h2 data-i18n="menu.title">منيو دجلة وتنور</h2>
+        </div>
+        <div class="search">
+          <input id="searchInput" type="search" data-placeholder-ar="ابحث عن طبق..." data-placeholder-en="Search dishes..." placeholder="ابحث عن طبق..." />
+        </div>
+      </div>
+
+      <div class="categories" id="categories"></div>
+      <div class="products" id="products"></div>
+    </section>
+
+    <section class="container order-band" id="order">
+      <div>
+        <span data-i18n="order.kicker">طلب مباشر</span>
+        <h2 data-i18n="order.title">أضف الأطباق للسلة وأرسل الطلب للمطعم.</h2>
+        <p data-i18n="order.desc">الطلب ينحفظ داخل قاعدة SQLite ويظهر مباشرة في لوحة الإدارة بدون تسجيل دخول.</p>
+      </div>
+      <button class="btn primary" id="openCart2" data-i18n="order.openCart">افتح السلة</button>
+    </section>
+  </main>
+
+  <aside class="drawer" id="drawer">
+    <form class="cart" id="orderForm">
+      <div class="cart-head">
+        <h3 data-i18n="cart.heading">طلبك</h3>
+        <button type="button" id="closeCart">×</button>
+      </div>
+      <div id="cartItems" class="cart-items"></div>
+      <div class="order-type">
+        <label><input type="radio" name="order_type" value="delivery" checked /> <span data-i18n="cart.delivery">توصيل</span></label>
+        <label><input type="radio" name="order_type" value="pickup" /> <span data-i18n="cart.pickup">استلام</span></label>
+      </div>
+      <input name="customer_name" required data-placeholder-ar="اسم الزبون" data-placeholder-en="Customer name" placeholder="اسم الزبون" />
+      <input name="phone" required data-placeholder-ar="رقم الهاتف" data-placeholder-en="Phone number" placeholder="رقم الهاتف" />
+      <textarea name="address" data-placeholder-ar="العنوان للتوصيل" data-placeholder-en="Delivery address" placeholder="العنوان للتوصيل"></textarea>
+      <div class="pay-group">
+        <span class="pay-label" data-i18n="cart.payTitle">طريقة الدفع</span>
+        <label><input type="radio" name="payment_method" value="cash" checked /> <span data-i18n="cart.payCash">نقد عند الاستلام</span></label>
+        <label><input type="radio" name="payment_method" value="zaincash" /> <span data-i18n="cart.payZain">زين كاش</span></label>
+        <label><input type="radio" name="payment_method" value="asiahawala" /> <span data-i18n="cart.payAsia">آسيا حوالة</span></label>
+      </div>
+      <textarea name="notes" data-placeholder-ar="ملاحظات الطلب" data-placeholder-en="Order notes" placeholder="ملاحظات الطلب"></textarea>
+      <div class="totals">
+        <div><span data-i18n="cart.subtotal">المجموع</span><b id="subtotalText">0</b></div>
+        <div><span data-i18n="cart.deliveryFee">التوصيل</span><b id="deliveryText">0</b></div>
+        <div><span data-i18n="cart.tax">الضريبة</span><b id="taxText">0</b></div>
+        <div class="grand"><span data-i18n="cart.total">الإجمالي</span><b id="totalText">0</b></div>
+      </div>
+      <button class="btn primary" type="submit" data-i18n="cart.submit">إرسال الطلب</button>
+    </form>
+  </aside>
+
+  <footer class="footer" id="contact">
+    <div class="container footer-grid">
+      <div>
+        <img src="assets/logo.svg" alt="Logo" />
+        <b data-field="restaurant_name">مطعم دجلة وتنور</b>
+        <p data-field="slogan">مذاق عراقي أصيل بلمسة عصرية</p>
+      </div>
+      <div>
+        <p data-field="address">بغداد، الكرادة، قرب شارع 62</p>
+        <p data-field="email">orders@dijlatanoor.example</p>
+      </div>
+      <div>
+        <a id="whatsappLink" href="#" target="_blank">WhatsApp</a>
+        <a id="instagramLink" href="#" target="_blank">Instagram</a>
+        <a id="facebookLink" href="#" target="_blank">Facebook</a>
+      </div>
+    </div>
+    <small>Designed & developed by Ibrahim Ghaiyth — 2026 · © 2026 Ibrahim Ghaiyth. All rights reserved.</small>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+  <script src="assets/app.js"></script>
+</body>
+</html>

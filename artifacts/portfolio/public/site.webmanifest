@@ -1,0 +1,21 @@
+{
+  "name": "Ibrahim Ghaiyth",
+  "short_name": "Ibrahim IG",
+  "description": "Bilingual web systems, dashboards, CMS platforms, secure APIs, and digital products.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0B1829",
+  "theme_color": "#0B1829",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "name": "architect",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "مِعمار (Architect) — a studio that helps you plan websites, apps and digital systems before building them.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "prestart": "vite build",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "lucide-react": "^0.383.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "vite": "^5.3.1"
+  }
+}

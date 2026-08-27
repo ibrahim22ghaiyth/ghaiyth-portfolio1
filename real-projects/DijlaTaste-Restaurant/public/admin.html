@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Restaurant Admin</title>
+  <link rel="stylesheet" href="assets/restaurant.css" />
+</head>
+<body class="admin-page">
+  <aside class="admin-shell">
+    <aside class="admin-side">
+      <a href="/" class="brand">
+        <img src="assets/logo.svg" alt="Logo" />
+        <div>
+          <strong>Restaurant Admin</strong>
+          <small>Open management · No login</small>
+        </div>
+      </a>
+      <button id="adminLang">EN</button>
+      <nav id="adminNav">
+        <button class="active" data-view="dashboard">Dashboard</button>
+        <button data-view="products">Products</button>
+        <button data-view="categories">Categories</button>
+        <button data-view="orders">Orders</button>
+        <button data-view="settings">Settings</button>
+      </nav>
+      <a class="visit-link" href="/" target="_blank">Open Restaurant Menu</a>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-top">
+        <div>
+          <span>SQLite Restaurant System</span>
+          <h1 id="adminTitle">Dashboard</h1>
+        </div>
+        <button class="btn primary" id="exportBtn">Export SQLite Data</button>
+      </header>
+
+      <section class="view active" id="view-dashboard">
+        <div class="stats" id="stats"></div>
+      </section>
+
+      <section class="view" id="view-products">
+        <div class="toolbar"><h2>Products</h2><button class="btn primary" id="addProduct">Add Product</button></div>
+        <div class="admin-list" id="productsList"></div>
+      </section>
+
+      <section class="view" id="view-categories">
+        <div class="toolbar"><h2>Categories</h2><button class="btn primary" id="addCategory">Add Category</button></div>
+        <div class="admin-list" id="categoriesList"></div>
+      </section>
+
+      <section class="view" id="view-orders">
+        <div class="toolbar"><h2>Orders</h2><button class="btn secondary" id="reloadOrders">Reload</button></div>
+        <div class="orders" id="ordersList"></div>
+      </section>
+
+      <section class="view" id="view-settings">
+        <form class="settings-card" id="settingsForm">
+          <h2>Restaurant Settings</h2>
+          <div class="form-grid">
+            <input name="restaurant_name_ar" placeholder="اسم المطعم عربي" />
+            <input name="restaurant_name_en" placeholder="Restaurant name English" />
+            <input name="slogan_ar" placeholder="الشعار عربي" />
+            <input name="slogan_en" placeholder="Slogan English" />
+            <input name="logo_text" placeholder="Logo text" />
+            <input name="phone" placeholder="Phone" />
+            <input name="whatsapp" placeholder="WhatsApp" />
+            <input name="email" placeholder="Email" />
+            <input name="address_ar" placeholder="العنوان عربي" />
+            <input name="address_en" placeholder="Address English" />
+            <input name="open_hours_ar" placeholder="ساعات العمل عربي" />
+            <input name="open_hours_en" placeholder="Open hours English" />
+            <input name="currency" placeholder="Currency" />
+            <input name="delivery_fee" type="number" placeholder="Delivery fee" />
+            <input name="tax_percent" type="number" placeholder="Tax percent" />
+            <input name="instagram" placeholder="Instagram" />
+            <input name="facebook" placeholder="Facebook" />
+            <textarea name="description_ar" placeholder="وصف عربي"></textarea>
+            <textarea name="description_en" placeholder="English description"></textarea>
+            <label class="switch"><input name="accepting_orders" type="checkbox" /> Accepting orders</label>
+          </div>
+          <button class="btn primary" type="submit">Save Settings</button>
+        </form>
+      </section>
+    </main>
+  </aside>
+
+  <dialog id="editor">
+    <form method="dialog" id="editorForm">
+      <h3 id="editorTitle">Editor</h3>
+      <div id="editorFields" class="form-grid"></div>
+      <div class="dialog-actions">
+        <button class="btn secondary" value="cancel">Cancel</button>
+        <button class="btn primary" id="saveEditor" value="default">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast"></div>
+  <script src="assets/admin.js"></script>
+</body>
+</html>

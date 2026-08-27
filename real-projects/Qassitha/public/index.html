@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>قسّطها — متابعة الديون والأقساط</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Reem+Kufi:wght@500;700&family=Sora:wght@500;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/app.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="mark">₪</span>
+      <div>
+        <strong data-i18n="app.name">قسّطها</strong>
+        <small id="bizName" data-i18n="app.tagline">دفتر الديون والأقساط</small>
+      </div>
+    </div>
+    <nav class="tabs">
+      <button data-view="dashboard" class="active" data-i18n="nav.dashboard">الملخّص</button>
+      <button data-view="debts" data-i18n="nav.debts">الديون</button>
+      <button data-view="contacts" data-i18n="nav.contacts">الجهات</button>
+      <button data-view="settings" data-i18n="nav.settings">الإعدادات</button>
+    </nav>
+    <button id="langToggle" class="lang-toggle">EN</button>
+  </header>
+
+  <main class="wrap">
+    <!-- الملخّص -->
+    <section id="view-dashboard" class="view active">
+      <div class="ledger-head">
+        <h1 data-i18n="dash.title">دفتر الحساب</h1>
+        <p data-i18n="dash.subtitle">نظرة سريعة على كل اللي عليك وإلك.</p>
+      </div>
+      <div class="balance-cards" id="balanceCards"></div>
+      <div class="two-col">
+        <div class="card overdue-card">
+          <h3><span data-i18n="dash.overdue">متأخّرة</span> <span class="dot-red"></span></h3>
+          <div id="overdueList" class="rows"></div>
+        </div>
+        <div class="card">
+          <h3 data-i18n="dash.dueMonth">مستحقّة هذا الشهر</h3>
+          <div id="dueList" class="rows"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- الديون -->
+    <section id="view-debts" class="view">
+      <div class="view-head">
+        <div>
+          <h1 data-i18n="nav.debts">الديون</h1>
+          <div class="filters">
+            <button data-filter="" class="chip active" data-i18n="filter.all">الكل</button>
+            <button data-filter="owed_to_me" class="chip" data-i18n="filter.owedToMe">إلي (ديون لي)</button>
+            <button data-filter="i_owe" class="chip" data-i18n="filter.iOwe">عليّ (ديون عليّ)</button>
+          </div>
+        </div>
+        <button class="btn primary" id="newDebtBtn" data-i18n="debt.new">+ دين جديد</button>
+      </div>
+      <div id="debtsList" class="debts-grid"></div>
+    </section>
+
+    <!-- الجهات -->
+    <section id="view-contacts" class="view">
+      <div class="view-head">
+        <h1 data-i18n="nav.contacts">الجهات</h1>
+        <button class="btn primary" id="newContactBtn" data-i18n="contact.new">+ جهة جديدة</button>
+      </div>
+      <input type="search" id="contactSearch" class="search" data-i18n-ph="contact.search" placeholder="دوّر باسم أو رقم..." />
+      <div id="contactsList" class="contacts-grid"></div>
+    </section>
+
+    <!-- الإعدادات -->
+    <section id="view-settings" class="view">
+      <div class="view-head"><h1 data-i18n="nav.settings">الإعدادات</h1></div>
+      <form id="settingsForm" class="card form-card">
+        <label><span data-i18n="set.ownerName">اسمك</span><input name="owner_name" /></label>
+        <label><span data-i18n="set.bizName">اسم المحل/العمل</span><input name="business_name" /></label>
+        <label><span data-i18n="set.phone">رقم الهاتف</span><input name="phone" /></label>
+        <label><span data-i18n="set.currency">العملة</span><input name="currency" value="IQD" /></label>
+        <button class="btn primary" data-i18n="set.save">حفظ</button>
+      </form>
+    </section>
+  </main>
+
+  <!-- نافذة دين جديد -->
+  <dialog id="debtDialog">
+    <form id="debtForm" method="dialog">
+      <h2 data-i18n="debt.new">دين جديد</h2>
+      <label><span data-i18n="debt.contact">الجهة</span>
+        <select name="contact_id" id="debtContactSelect" required></select>
+      </label>
+      <label><span data-i18n="debt.title">العنوان (شنو الدين؟)</span><input name="title" data-i18n-ph="debt.titlePh" placeholder="مثال: تلفزيون، سلفة، بضاعة" required /></label>
+      <div class="form-row">
+        <label><span data-i18n="debt.total">المبلغ الكلي (دينار)</span><input name="total_amount" type="number" min="1" required /></label>
+        <label><span data-i18n="debt.count">عدد الأقساط</span><input name="installments_count" type="number" min="1" max="60" value="1" required /></label>
+      </div>
+      <div class="form-row">
+        <label><span data-i18n="debt.direction">الاتجاه</span>
+          <select name="direction">
+            <option value="owed_to_me" data-i18n="debt.dirToMe">إلي (الفلوس راح تجيني)</option>
+            <option value="i_owe" data-i18n="debt.dirIOwe">عليّ (آني لازم أدفع)</option>
+          </select>
+        </label>
+        <label><span data-i18n="debt.startDate">تاريخ أول قسط</span><input name="start_date" type="date" required /></label>
+      </div>
+      <label><span data-i18n="debt.note">ملاحظة</span><input name="note" data-i18n-ph="opt" placeholder="اختياري" /></label>
+      <div class="dialog-actions">
+        <button value="cancel" class="btn ghost" data-i18n="cancel">إلغاء</button>
+        <button id="debtSubmit" class="btn primary" data-i18n="debt.create">إنشاء وجدولة الأقساط</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- نافذة جهة جديدة -->
+  <dialog id="contactDialog">
+    <form id="contactForm" method="dialog">
+      <h2 data-i18n="contact.new">جهة جديدة</h2>
+      <label><span data-i18n="contact.name">الاسم</span><input name="name" required /></label>
+      <label><span data-i18n="set.phone">الهاتف</span><input name="phone" /></label>
+      <label><span data-i18n="debt.note">ملاحظة</span><input name="note" /></label>
+      <div class="dialog-actions">
+        <button value="cancel" class="btn ghost" data-i18n="cancel">إلغاء</button>
+        <button class="btn primary" data-i18n="set.save">حفظ</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- نافذة تفاصيل الدين والدفع -->
+  <dialog id="detailDialog">
+    <div id="detailContent"></div>
+    <div class="dialog-actions">
+      <button class="btn ghost" id="closeDetail" data-i18n="close">إغلاق</button>
+    </div>
+  </dialog>
+
+  <div id="toast" class="toast"></div>
+  <footer class="foot" data-i18n="footer">قسّطها · صُنع بالعراق — Ibrahim Ghaiyth</footer>
+
+  <script src="assets/app.js"></script>
+</body>
+</html>

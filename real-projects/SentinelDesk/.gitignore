@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+.DS_Store
+# Runtime database (rebuilt from seed.sql via: python init_db.py)
+app/data/sentineldesk.sqlite
+app/data/sentineldesk.sqlite-wal
+app/data/sentineldesk.sqlite-shm

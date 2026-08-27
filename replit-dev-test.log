@@ -1,0 +1,19 @@
+Portfolio preview: http://localhost:5176
+API server: http://localhost:5001/api
+
+  [32m[1mVITE[22m v7.3.3[39m  [2mready in [0m[1m719[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m5176[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://192.168.0.137:[1m5176[22m/[39m
+[17:38:42.258] [32mINFO[39m (29416): [36mServer listening[39m
+    [35mport[39m: 5001
+[17:39:43.930] [32mINFO[39m (29416): [36mrequest completed[39m
+    [35mreq[39m: {
+      "id": 1,
+      "method": "GET",
+      "url": "/api/services"
+    }
+    [35mres[39m: {
+      "statusCode": 200
+    }
+    [35mresponseTime[39m: 9

@@ -1,0 +1,19 @@
+{
+  "name": "rafidainsuite-enterprise-erp",
+  "version": "2.0.0",
+  "description": "RafidainSuite — a large full-stack Enterprise ERP suite (21 modules: finance, supply chain, HR, CRM, projects) with a backend API and a real SQLite database.",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "node server/server.js",
+    "reset-db": "node server/reset-db.js",
+    "test:api": "node server/self-test.js"
+  },
+  "engines": { "node": ">=16" },
+  "dependencies": {
+    "better-sqlite3": "^11.3.0"
+  },
+  "author": "Ibrahim Ghaiyth",
+  "license": "MIT",
+  "keywords": ["enterprise","erp","sqlite","backend","finance","inventory","hr","crm","iraq"]
+}

@@ -1,0 +1,8 @@
+node_modules/
+*.log
+.DS_Store
+.env
+# Runtime database (rebuilt from seed.sql via: npm run reset-db)
+server/data/enterprise_erp.sqlite
+server/data/enterprise_erp.sqlite-wal
+server/data/enterprise_erp.sqlite-shm

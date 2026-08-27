@@ -1,0 +1,9 @@
+node_modules/
+*.log
+.DS_Store
+.env
+# ملفات SQLite المؤقتة (تُنشأ وقت التشغيل)
+server/data/qassitha.sqlite-wal
+server/data/qassitha.sqlite-shm
+# ملاحظة: qassitha.sqlite مضمّنة كقاعدة عرض جاهزة فيها بيانات تجريبية.
+# لإعادة بنائها نظيفة: npm run reset-db
