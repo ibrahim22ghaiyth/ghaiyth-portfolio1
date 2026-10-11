@@ -95,7 +95,7 @@ export function Navigation() {
                 : "border-[var(--brand-line)] bg-[var(--brand-logo-bg)]",
             )}
           >
-            <BrandLogo className="h-9 w-12" eager />
+            <BrandLogo className="h-9 w-12" eager variant={overHero ? "dark" : undefined} />
           </button>
 
           <div className="hidden xl:flex flex-1 items-center justify-center gap-0.5 px-2">
