@@ -1,25 +1,15 @@
 # Netlify configuration for ibrahimig.com
 #
-# READ BEFORE DEPLOYING:
-# The live site currently runs on Netlify. This file documents the
-# minimum safe configuration. Review it against the Netlify dashboard
-# settings before merging — dashboard redirects/headers take precedence
-# over this file in some cases, and conflicting rules can break the site.
-#
 # Known live-site issues (as of 2026-10-11):
 # 1. X-Robots-Tag: noindex, nofollow — site is blocked from search engines.
 #    Fix: remove the noindex header in Netlify dashboard > Site settings >
-#    Edge deploy > Headers, OR add the commented X-Robots-Tag line below.
+#    Edge deploy > Headers.
 # 2. /api/* returns 502 — the Express API server is not reachable from
-#    Netlify. The frontend was built for a single Express server (Railway).
-#    On Netlify the API must either be deployed separately and proxied
-#    (see commented redirect below) or converted to Netlify Functions.
-# 3. The deployed bundle is an older 1.1 MB build. The current local build
-#    splits the JS and the main chunk is ~226 KB. Redeploy to ship it.
+#    Netlify. Deploy the backend separately and uncomment the redirect below.
 
 [build]
   publish = "artifacts/portfolio/dist/public"
-  command = "corepack enable && corepack pnpm install --frozen-lockfile && corepack pnpm run railway:build"
+  command = "corepack enable && corepack pnpm install --no-frozen-lockfile && corepack pnpm --filter @workspace/portfolio run build"
 
 [build.environment]
   NODE_VERSION = "22"
@@ -30,16 +20,19 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
-# Security headers (match what the Express server already sends).
+# Security headers
 [[headers]]
   for = "/*"
   [headers.values]
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(self)"
-    # Uncomment ONLY after confirming the site should be indexed and the
-    # Netlify dashboard noindex header has been removed:
-    # X-Robots-Tag = "index, follow"
+
+# SPA fallback — required for client-side routes (/en, /products, /blog, /admin)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
 
 # --- API proxy (uncomment and set the real host when the backend is up) ---
 # [[redirects]]
@@ -47,9 +40,3 @@
 #   to = "https://YOUR_API_HOST/api/:splat"
 #   status = 200
 #   force = true
-
-# --- SPA fallback (uncomment only if Netlify dashboard has no equivalent) ---
-# [[redirects]]
-#   from = "/*"
-#   to = "/index.html"
-#   status = 200
