@@ -27,7 +27,7 @@ export const projectArchive: ArchiveProject[] = [
     ],
     "liveUrl": "https://academic-accountant.org/",
     "githubUrl": "",
-    "imageUrl": "/project-screenshots/academic-accountant.png",
+    "imageUrl": "/project-screenshots/webp/academic-accountant.webp",
     "featured": true,
     "order": 0,
     "active": true
@@ -104,7 +104,7 @@ export const projectArchive: ArchiveProject[] = [
     ],
     "liveUrl": null,
     "githubUrl": "https://github.com/ibrahim22ghaiyth/Architect-Maamar",
-    "imageUrl": "/project-screenshots/architect-maamar.png",
+    "imageUrl": "/project-screenshots/webp/architect-maamar.webp",
     "featured": true,
     "order": 4,
     "active": true
@@ -142,7 +142,7 @@ export const projectArchive: ArchiveProject[] = [
     ],
     "liveUrl": null,
     "githubUrl": "https://github.com/ibrahim22ghaiyth/Qassitha",
-    "imageUrl": "/project-screenshots/qassitha.png",
+    "imageUrl": "/project-screenshots/webp/qassitha.webp",
     "featured": true,
     "order": 6,
     "active": true

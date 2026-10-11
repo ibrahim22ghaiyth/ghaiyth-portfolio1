@@ -34,11 +34,15 @@ export function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  const isOnHome = currentRouteKey === "/";
+  const overHero = isOnHome && !isScrolled;
+
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      setIsScrolled(window.scrollY > 60);
     };
-    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -54,7 +58,7 @@ export function Navigation() {
     scroll();
   };
 
-  const goToRoute = (href: string, id?: string) => {
+  const goToRoute = (href: string) => {
     setMobileMenuOpen(false);
     setLocation(localizedPath(href));
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -73,37 +77,54 @@ export function Navigation() {
     <>
       <nav
         className={cn(
-          "fixed top-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 w-[96%] max-w-6xl mx-auto rounded-full",
-          isScrolled ? "glass shadow-lg" : "bg-transparent",
+          "fixed inset-x-0 top-0 z-50 border-b backdrop-blur-md transition-all duration-300",
+          overHero
+            ? "border-white/8 bg-transparent"
+            : "border-[var(--brand-line-soft)] bg-background/85",
         )}
         dir={lang === "ar" ? "rtl" : "ltr"}
       >
-        <div className="px-3 py-3 sm:px-4 flex items-center justify-between relative">
-          <div className="flex items-center">
-            <button
-              onClick={() => scrollToSection("home")}
-              aria-label={t.nav.home}
-              className="grid h-12 w-16 place-items-center overflow-hidden rounded-md border border-[var(--brand-line)] bg-[var(--brand-logo-bg)] shadow-[0_8px_28px_var(--brand-blue-glow)]"
-            >
-              <BrandLogo className="h-11 w-14" eager />
-            </button>
-          </div>
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
+          <button
+            onClick={() => scrollToSection("home")}
+            aria-label={t.nav.home}
+            className={cn(
+              "grid h-10 w-14 shrink-0 place-items-center overflow-hidden rounded-md border transition-colors",
+              overHero
+                ? "border-white/12 bg-white/8"
+                : "border-[var(--brand-line)] bg-[var(--brand-logo-bg)]",
+            )}
+          >
+            <BrandLogo className="h-9 w-12" eager />
+          </button>
 
-          <div className="hidden xl:flex items-center gap-1 flex-1 justify-center px-2">
-            {NAV_LINKS.map((link) => (
-              <button
-                key={link.id}
-                onClick={() => link.type === "route" ? goToRoute(link.href, link.id) : scrollToSection(link.id)}
-                className={cn(
-                  "whitespace-nowrap px-2 py-2 rounded-full text-sm font-medium transition-all duration-300 xl:px-3.5",
-                  (link.type === "route" ? currentRouteKey === link.href : currentRouteKey === "/" && activeSection === link.id)
-                    ? "bg-[var(--brand-tag-bg)] text-primary shadow-[0_0_10px_var(--brand-cyan-glow)] border border-primary/30"
-                    : "text-muted-foreground hover:text-[var(--brand-heading)] hover:bg-[var(--brand-panel-2)] border border-transparent",
-                )}
-              >
-                {link.label}
-              </button>
-            ))}
+          <div className="hidden xl:flex flex-1 items-center justify-center gap-0.5 px-2">
+            {NAV_LINKS.map((link) => {
+              const active =
+                link.type === "route"
+                  ? currentRouteKey === link.href
+                  : currentRouteKey === "/" && activeSection === link.id;
+              return (
+                <button
+                  key={link.id}
+                  onClick={() => (link.type === "route" ? goToRoute(link.href) : scrollToSection(link.id))}
+                  aria-current={active ? "page" : undefined}
+                  data-active={active || undefined}
+                  className={cn(
+                    "nav-link relative whitespace-nowrap px-3 py-2 text-sm transition-colors duration-200",
+                    overHero
+                      ? active
+                        ? "font-medium text-white after:absolute after:inset-x-3 after:-bottom-0.5 after:h-0.5 after:bg-[#6BA3FF]"
+                        : "text-white/55 hover:text-white"
+                      : active
+                        ? "font-medium text-[var(--brand-heading)] after:absolute after:inset-x-3 after:-bottom-0.5 after:h-0.5 after:bg-primary"
+                        : "text-muted-foreground hover:text-[var(--brand-heading)]",
+                  )}
+                >
+                  {link.label}
+                </button>
+              );
+            })}
           </div>
 
           <div className="flex items-center gap-2">
@@ -112,8 +133,10 @@ export function Navigation() {
               title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
               aria-label={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
               className={cn(
-                "flex h-9 w-9 items-center justify-center rounded-full text-xs font-bold transition-all border",
-                "bg-[var(--brand-tag-bg)] border-primary/30 text-primary hover:bg-primary hover:text-primary-foreground",
+                "nav-icon-btn flex h-9 w-9 items-center justify-center rounded-md border transition-colors",
+                overHero
+                  ? "border-white/12 bg-white/5 text-white/70 hover:border-white/30 hover:text-white"
+                  : "border-[var(--brand-line)] bg-[var(--brand-panel)] text-foreground hover:border-primary hover:text-primary",
               )}
             >
               {theme === "dark" ? <Sun size={15} /> : <Moon size={15} />}
@@ -127,8 +150,10 @@ export function Navigation() {
               title={lang === "en" ? "Switch to Arabic" : "Switch to English"}
               aria-label={lang === "en" ? "Switch to Arabic" : "Switch to English"}
               className={cn(
-                "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all border",
-                "bg-[var(--brand-tag-bg)] border-primary/30 text-primary hover:bg-primary hover:text-primary-foreground",
+                "nav-icon-btn flex items-center gap-1.5 rounded-md border px-3 py-2 text-xs font-medium transition-colors",
+                overHero
+                  ? "border-white/12 bg-white/5 text-white/70 hover:border-white/30 hover:text-white"
+                  : "border-[var(--brand-line)] bg-[var(--brand-panel)] text-foreground hover:border-primary hover:text-primary",
               )}
             >
               <Languages size={14} />
@@ -137,7 +162,10 @@ export function Navigation() {
           </div>
 
           <button
-            className="xl:hidden text-foreground p-1 ms-2"
+            className={cn(
+              "p-1 xl:hidden ms-1 transition-colors",
+              overHero ? "text-white" : "text-foreground",
+            )}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
             aria-expanded={mobileMenuOpen}
@@ -148,16 +176,16 @@ export function Navigation() {
       </nav>
 
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-40 bg-background/95 backdrop-blur-sm xl:hidden flex flex-col items-center justify-center gap-6">
+        <div className="fixed inset-0 z-40 bg-[#05070B] xl:hidden flex flex-col items-center justify-center gap-6">
           {NAV_LINKS.map((link) => (
             <button
               key={link.id}
-              onClick={() => link.type === "route" ? goToRoute(link.href, link.id) : scrollToSection(link.id)}
+              onClick={() => link.type === "route" ? goToRoute(link.href) : scrollToSection(link.id)}
               className={cn(
                 "text-2xl font-medium tracking-wide transition-all",
                 (link.type === "route" ? currentRouteKey === link.href : currentRouteKey === "/" && activeSection === link.id)
-                  ? "text-primary"
-                  : "text-muted-foreground hover:text-foreground",
+                  ? "text-[#6BA3FF]"
+                  : "text-white/50 hover:text-white",
               )}
             >
               {link.label}
@@ -166,7 +194,8 @@ export function Navigation() {
           <div className="flex items-center gap-4 mt-4">
             <button
               onClick={toggleTheme}
-              className="flex h-10 w-10 items-center justify-center rounded-full border bg-[var(--brand-tag-bg)] border-primary/30 text-primary"
+              aria-label={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+              className="flex h-10 w-10 items-center justify-center rounded-md border border-white/12 bg-white/5 text-white/70"
             >
               {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
             </button>
@@ -177,7 +206,7 @@ export function Navigation() {
                 toggleLang();
                 setMobileMenuOpen(false);
               }}
-              className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold border bg-[var(--brand-tag-bg)] border-primary/30 text-primary"
+              className="flex items-center gap-2 rounded-md border border-white/12 bg-white/5 px-4 py-2 text-sm font-medium text-white/70"
             >
               <Languages size={16} />
               {lang === "en" ? "العربية" : "English"}

@@ -6,97 +6,100 @@ import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export function ContactSection() {
-  const { t } = useLanguage();
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
-  });
+  const { t, lang } = useLanguage();
+  const isAr = lang === "ar";
+  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
 
   const sendMessage = useSendMessage();
   const { toast } = useToast();
 
+  const whatsappText = isAr
+    ? "مرحباً إبراهيم، أريد مناقشة مشروع ويب جديد."
+    : "Hello Ibrahim, I want to discuss a new web project.";
+  const whatsappHref = `https://wa.me/9647805808975?text=${encodeURIComponent(whatsappText)}`;
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (sendMessage.isPending) return;
     sendMessage.mutate(
-      { data: formData },
+      {
+        data: {
+          ...formData,
+          subject: isAr ? "استفسار من موقع ibrahimig.com" : "Inquiry via ibrahimig.com",
+        },
+      },
       {
         onSuccess: () => {
-          toast({
-            title: t.contact.successTitle,
-            description: t.contact.successDesc,
-          });
-          setFormData({ name: "", email: "", subject: "", message: "" });
+          toast({ title: t.contact.successTitle, description: t.contact.successDesc });
+          setFormData({ name: "", email: "", message: "" });
         },
         onError: () => {
-          toast({
-            title: t.contact.errorTitle,
-            description: t.contact.errorDesc,
-            variant: "destructive",
-          });
+          toast({ title: t.contact.errorTitle, description: t.contact.errorDesc, variant: "destructive" });
         },
       },
     );
   };
 
+  const inputCls =
+    "w-full rounded-lg border border-[var(--brand-line)] bg-[var(--brand-panel-2)] px-4 py-3.5 text-[var(--brand-heading)] placeholder:text-[var(--brand-muted)] focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-colors";
+
   return (
-    <section id="contact" className="brand-section py-24 relative border-t border-[var(--brand-line-soft)]">
-      <div className="container mx-auto px-6">
-        <div className="max-w-4xl mx-auto text-center mb-16">
-          <p className="mb-3 font-mono text-xs uppercase tracking-[0.2em] text-primary">// {t.contact.eyebrow}</p>
-          <h2 className="brand-heading text-3xl md:text-5xl font-extrabold mb-6">
+    <section id="contact" className="brand-section relative py-24 sm:py-28 md:py-32">
+      <div className="container mx-auto px-4 sm:px-6">
+        <div className="mx-auto mb-16 max-w-3xl text-center">
+          <p className="brand-eyebrow mb-4">{t.contact.eyebrow}</p>
+          <h2 className="brand-heading mb-5 text-3xl font-bold leading-tight sm:text-4xl md:text-5xl">
             {t.contact.title} <span className="text-primary">{t.contact.titleHighlight}</span> {t.contact.titleEnd}
           </h2>
-          <p className="brand-copy max-w-2xl mx-auto leading-7">
-            {t.contact.subtitle}
-          </p>
+          <div className="accent-bar mx-auto mb-6" />
+          <p className="brand-copy mx-auto max-w-2xl text-base leading-8">{t.contact.subtitle}</p>
         </div>
 
-        <div className="grid md:grid-cols-5 gap-12 max-w-5xl mx-auto">
+        <div className="mx-auto grid max-w-5xl gap-12 md:grid-cols-5">
           <motion.div
-            className="md:col-span-2 space-y-8"
+            className="space-y-8 md:col-span-2"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.5 }}
           >
             <div>
-              <h3 className="text-xl font-bold text-[var(--brand-heading)] mb-2">{t.contact.getInTouch}</h3>
-              <p className="text-muted-foreground text-sm">{t.contact.getInTouchSub}</p>
+              <h3 className="brand-heading mb-2 text-xl font-bold">{t.contact.getInTouch}</h3>
+              <p className="text-sm brand-muted">{t.contact.getInTouchSub}</p>
             </div>
 
-            <div className="space-y-4">
-              <a href="mailto:info@ibrahimig.com" className="flex items-center gap-4 p-4 rounded-xl bg-card border border-[var(--brand-line)] hover:border-primary/30 transition-colors group break-all">
-                <div className="w-10 h-10 shrink-0 rounded-md bg-[var(--brand-tag-bg)] flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                  <Mail size={20} />
+            <div className="space-y-3">
+              <a href="mailto:info@ibrahimig.com" className="brand-panel card-lift flex items-center gap-4 rounded-xl p-5 group break-all">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-primary/15 bg-[var(--brand-tag-bg)] text-primary">
+                  <Mail size={19} strokeWidth={1.8} />
                 </div>
                 <div>
-                  <div className="text-xs text-muted-foreground font-mono mb-1">{t.contact.emailLabel}</div>
-                  <div className="text-sm font-medium text-[var(--brand-heading)]">info@ibrahimig.com</div>
+                  <div className="brand-eyebrow mb-0.5">{t.contact.emailLabel}</div>
+                  <div className="text-sm font-semibold text-[var(--brand-heading)]">info@ibrahimig.com</div>
                 </div>
               </a>
-              <a href="https://wa.me/9647805808975" target="_blank" rel="noreferrer" className="flex items-center gap-4 p-4 rounded-xl bg-card border border-[var(--brand-line)] hover:border-primary/30 transition-colors group break-all">
-                <div className="w-10 h-10 shrink-0 rounded-md bg-[var(--brand-tag-bg)] flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                  <MessageCircle size={20} />
+              <a href={whatsappHref} target="_blank" rel="noreferrer" className="brand-panel card-lift flex items-center gap-4 rounded-xl p-5 group break-all">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-primary/15 bg-[var(--brand-tag-bg)] text-primary">
+                  <MessageCircle size={19} strokeWidth={1.8} />
                 </div>
                 <div>
-                  <div className="text-xs text-muted-foreground font-mono mb-1">{t.contact.whatsapp}</div>
-                  <div className="text-sm font-medium text-[var(--brand-heading)]" dir="ltr">+964 7805808975</div>
+                  <div className="brand-eyebrow mb-0.5">{t.contact.whatsapp}</div>
+                  <div className="text-sm font-semibold text-[var(--brand-heading)]" dir="ltr">+964 7805808975</div>
                 </div>
               </a>
             </div>
 
             <div>
-              <h4 className="text-sm font-mono text-muted-foreground mb-4 uppercase tracking-wider">{t.contact.social}</h4>
-              <div className="flex gap-4">
+              <h4 className="brand-eyebrow mb-3">{t.contact.social}</h4>
+              <div className="flex gap-3">
                 {[
                   { icon: Github, href: "https://github.com/ibrahim22ghaiyth", label: "GitHub" },
                   { icon: Linkedin, href: "https://www.linkedin.com/in/ibrahim-ghaiyth-3144a1350", label: "LinkedIn" },
                   { icon: Instagram, href: "https://www.instagram.com/ib.et", label: "Instagram" },
-                  { icon: MessageCircle, href: "https://wa.me/9647805808975", label: "WhatsApp" },
+                  { icon: MessageCircle, href: whatsappHref, label: "WhatsApp" },
                 ].map((social, i) => (
-                  <a key={i} href={social.href} target="_blank" rel="noreferrer" aria-label={social.label} className="w-12 h-12 rounded-md bg-card border border-[var(--brand-line)] flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary/50 transition-all">
-                    <social.icon size={20} />
+                  <a key={i} href={social.href} target="_blank" rel="noreferrer" aria-label={social.label} className="brand-panel flex h-11 w-11 items-center justify-center rounded-lg text-[var(--brand-muted)] transition-colors hover:border-primary/40 hover:text-primary">
+                    <social.icon size={18} />
                   </a>
                 ))}
               </div>
@@ -104,74 +107,66 @@ export function ContactSection() {
           </motion.div>
 
           <motion.form
-            className="md:col-span-3 space-y-4 p-8 rounded-lg brand-panel"
+            className="brand-panel space-y-5 rounded-xl p-7 sm:p-8 md:col-span-3"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.5, delay: 0.12 }}
             onSubmit={handleSubmit}
           >
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <label htmlFor="contact-name" className="text-xs font-mono text-muted-foreground uppercase">{t.contact.name}</label>
+                <label htmlFor="contact-name" className="brand-eyebrow">{t.contact.name}</label>
                 <input
                   id="contact-name"
                   type="text"
                   value={formData.name}
                   onChange={e => setFormData({ ...formData, name: e.target.value })}
                   required
-                  className="w-full bg-background border border-[var(--brand-line)] rounded-lg px-4 py-3 text-[var(--brand-heading)] focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+                  minLength={2}
+                  maxLength={100}
+                  className={inputCls}
                   placeholder={t.contact.namePlaceholder}
                 />
               </div>
               <div className="space-y-2">
-                <label htmlFor="contact-email" className="text-xs font-mono text-muted-foreground uppercase">{t.contact.email}</label>
+                <label htmlFor="contact-email" className="brand-eyebrow">{t.contact.email}</label>
                 <input
                   id="contact-email"
                   type="email"
                   value={formData.email}
                   onChange={e => setFormData({ ...formData, email: e.target.value })}
                   required
-                  className="w-full bg-background border border-[var(--brand-line)] rounded-lg px-4 py-3 text-[var(--brand-heading)] focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+                  maxLength={254}
+                  className={inputCls}
                   placeholder={t.contact.emailPlaceholder}
                 />
               </div>
             </div>
-            <div className="space-y-2 pt-2">
-              <label htmlFor="contact-subject" className="text-xs font-mono text-muted-foreground uppercase">{t.contact.subject}</label>
-              <input
-                id="contact-subject"
-                type="text"
-                value={formData.subject}
-                onChange={e => setFormData({ ...formData, subject: e.target.value })}
-                required
-                className="w-full bg-background border border-[var(--brand-line)] rounded-lg px-4 py-3 text-[var(--brand-heading)] focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
-                placeholder={t.contact.subjectPlaceholder}
-              />
-            </div>
-            <div className="space-y-2 pt-2">
-              <label htmlFor="contact-message" className="text-xs font-mono text-muted-foreground uppercase">{t.contact.message}</label>
+            <div className="space-y-2">
+              <label htmlFor="contact-message" className="brand-eyebrow">{t.contact.message}</label>
               <textarea
                 id="contact-message"
                 value={formData.message}
                 onChange={e => setFormData({ ...formData, message: e.target.value })}
                 required
-                className="w-full bg-background border border-[var(--brand-line)] rounded-lg px-4 py-3 text-[var(--brand-heading)] h-32 resize-none focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+                minLength={5}
+                maxLength={5000}
+                className={`${inputCls} h-36 resize-none`}
                 placeholder={t.contact.messagePlaceholder}
               ></textarea>
             </div>
             <button
               type="submit"
               disabled={sendMessage.isPending}
-              className="brand-button w-full flex items-center justify-center gap-2 py-4 rounded-md font-bold mt-4 transition-all hover:glow-md disabled:opacity-50 disabled:cursor-not-allowed"
+              className="brand-button mt-2 flex w-full items-center justify-center gap-2.5 rounded-lg py-4 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {sendMessage.isPending ? t.contact.sendingBtn : t.contact.sendBtn} <Send size={18} />
+              {sendMessage.isPending ? t.contact.sendingBtn : t.contact.sendBtn} <Send size={17} />
             </button>
+            <p className="text-xs leading-5 brand-muted">{t.contact.formNote}</p>
           </motion.form>
         </div>
       </div>
     </section>
   );
 }
-
-

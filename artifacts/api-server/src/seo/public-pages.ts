@@ -353,7 +353,8 @@ function renderHead(page: SeoPage) {
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="bingbot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-    <meta name="theme-color" content="#0B1829" />
+    <meta name="theme-color" content="#F5F6F8" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0E1116" media="(prefers-color-scheme: dark)" />
     <link rel="canonical" href="${pageCanonical}" />
     <link rel="alternate" hreflang="ar-IQ" href="${alt.ar}" />
     <link rel="alternate" hreflang="ar" href="${alt.ar}" />
@@ -375,15 +376,29 @@ function renderHead(page: SeoPage) {
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
+    <script src="/theme-boot.js"></script>
     <script type="application/ld+json">${jsonLd(page).replace(/</g, "\\u003c")}</script>
   `;
 }
 
-export function renderPublicPage(templatePath: string, page: SeoPage) {
+const templateCache = new Map<string, { template: string; assetTags: string }>();
+
+function readTemplate(templatePath: string) {
+  const cached = templateCache.get(templatePath);
+  if (cached) return cached;
+
   const template = readFileSync(templatePath, "utf8");
   const assetTags = (template.match(/<(?:script|link)[^>]+(?:><\/script>|\/?>)/g) || [])
     .filter((tag) => tag.includes("/assets/"))
     .join("\n");
+
+  const entry = { template, assetTags };
+  templateCache.set(templatePath, entry);
+  return entry;
+}
+
+export function renderPublicPage(templatePath: string, page: SeoPage) {
+  const { template, assetTags } = readTemplate(templatePath);
 
   return template
     .replace(/<html[^>]*>/, `<html lang="${page.locale}" dir="${page.locale === "ar" ? "rtl" : "ltr"}">`)

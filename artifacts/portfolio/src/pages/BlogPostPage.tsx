@@ -42,50 +42,60 @@ export function BlogPostPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navigation />
-      <main className="pt-28">
-        <section className="relative overflow-hidden py-12" dir={lang === "ar" ? "rtl" : "ltr"}>
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_70%_20%,var(--brand-blue-glow),transparent_34%)]" />
-          <div className="container relative mx-auto px-6">
-            <Link href={lang === "en" ? "/en/blog" : "/blog"} className="mb-8 inline-flex items-center gap-2 rounded-md border border-[var(--brand-line)] bg-[var(--brand-panel)] px-4 py-2 text-sm font-bold text-primary">
-              <ArrowLeft size={16} />
+      <main>
+        <section className="stage-dark relative overflow-hidden pb-16 pt-32 sm:pt-36" dir={lang === "ar" ? "rtl" : "ltr"}>
+          <div className="hero-mesh absolute inset-0 pointer-events-none" />
+          <div className="hero-grid absolute inset-0 pointer-events-none" />
+          <div className="container relative z-10 mx-auto px-4 sm:px-6">
+            <Link href={lang === "en" ? "/en/blog" : "/blog"} className="mb-8 inline-flex items-center gap-2 rounded-lg border border-white/12 bg-white/5 px-4 py-2.5 text-sm font-semibold text-white/70 backdrop-blur-sm transition-colors hover:border-white/25 hover:text-white">
+              <ArrowLeft size={15} className="rtl:rotate-180" />
               {t.nav.blog}
             </Link>
 
             {isLoading ? (
-              <div className="brand-panel rounded-xl p-8 text-center text-[var(--brand-muted)]">{t.common.loading}</div>
+              <div className="rounded-xl border border-white/8 bg-white/4 p-10 text-center text-white/40 backdrop-blur-sm">{t.common.loading}</div>
             ) : isError || !post ? (
-              <div className="brand-panel rounded-xl p-8 text-center">
-                <Newspaper className="mx-auto mb-3 text-primary" />
-                <h1 className="text-2xl font-black text-[var(--brand-heading)]">{t.blog.emptyTitle}</h1>
+              <div className="rounded-xl border border-white/8 bg-white/4 p-10 text-center backdrop-blur-sm">
+                <Newspaper className="mx-auto mb-3 text-white/30" size={36} strokeWidth={1.5} />
+                <h1 className="text-2xl font-bold text-white">{t.blog.emptyTitle}</h1>
               </div>
             ) : (
-              <article className="mx-auto max-w-4xl">
-                {post.coverImageUrl ? (
-                  <div className="mb-8 aspect-[16/9] overflow-hidden rounded-2xl border border-[var(--brand-line)] bg-[var(--brand-panel)]">
-                    <img src={post.coverImageUrl} alt={title} className="h-full w-full object-cover" />
-                  </div>
-                ) : null}
-                <div className="mb-4 flex flex-wrap items-center gap-3 text-sm text-[var(--brand-muted)]">
+              <div className="max-w-3xl">
+                <div className="mb-5 flex flex-wrap items-center gap-3 text-sm text-white/35">
                   <span className="inline-flex items-center gap-2">
-                    <CalendarDays size={16} />
+                    <CalendarDays size={14} />
                     <time dateTime={post.publishedAt}>{new Date(post.publishedAt).toLocaleDateString(lang === "ar" ? "ar-IQ" : "en-US")}</time>
                   </span>
                   {(post.tags || []).map((tag) => (
-                    <span key={tag} className="rounded-full bg-[var(--brand-tag-bg)] px-3 py-1 text-xs text-primary">{tag}</span>
+                    <span key={tag} className="rounded-md border border-white/10 bg-white/5 px-2.5 py-1 font-mono text-[11px] text-white/40">{tag}</span>
                   ))}
                 </div>
-                <h1 className="text-4xl font-black leading-tight text-[var(--brand-heading)] md:text-6xl">{title}</h1>
-                <p className="mt-5 text-lg leading-8 text-[var(--brand-text-2)]">{excerpt}</p>
-                <div className="mt-10 whitespace-pre-line rounded-2xl border border-[var(--brand-line)] bg-[var(--brand-panel)] p-6 text-base leading-9 text-[var(--brand-text)] md:p-8">
-                  {content}
-                </div>
-              </article>
+                <h1 className="mb-5 text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl">{title}</h1>
+                <div className="accent-bar" />
+              </div>
             )}
           </div>
         </section>
+
+        {post && !isError ? (
+          <section className="brand-section py-16 sm:py-20" dir={lang === "ar" ? "rtl" : "ltr"}>
+            <div className="container mx-auto px-4 sm:px-6">
+              <article className="mx-auto max-w-4xl">
+                {post.coverImageUrl ? (
+                  <div className="brand-panel mb-10 aspect-[16/9] overflow-hidden rounded-xl">
+                    <img src={post.coverImageUrl} alt={title} className="h-full w-full object-cover" />
+                  </div>
+                ) : null}
+                <p className="brand-copy mb-10 text-lg leading-8">{excerpt}</p>
+                <div className="brand-panel whitespace-pre-line rounded-xl p-7 text-base leading-9 text-[var(--brand-text)] sm:p-9">
+                  {content}
+                </div>
+              </article>
+            </div>
+          </section>
+        ) : null}
         <Footer />
       </main>
     </div>
   );
 }
-

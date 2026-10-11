@@ -18,13 +18,9 @@ if (isProductionRuntime && (!ADMIN_USERNAME || ADMIN_PASSWORD.length < 10)) {
 }
 
 function safeCompare(value: string, expected: string): boolean {
-  const valueBuffer = Buffer.from(value);
-  const expectedBuffer = Buffer.from(expected);
-  if (valueBuffer.length !== expectedBuffer.length) {
-    crypto.timingSafeEqual(expectedBuffer, expectedBuffer);
-    return false;
-  }
-  return crypto.timingSafeEqual(valueBuffer, expectedBuffer);
+  const valueHash = crypto.createHash("sha256").update(value, "utf8").digest();
+  const expectedHash = crypto.createHash("sha256").update(expected, "utf8").digest();
+  return crypto.timingSafeEqual(valueHash, expectedHash);
 }
 
 router.post("/auth/login", (req, res) => {
@@ -37,7 +33,9 @@ router.post("/auth/login", (req, res) => {
     res.status(400).json({ error: "Username and password required" });
     return;
   }
-  if (safeCompare(normalizedUsername, normalizedAdminUsername) && safeCompare(normalizedPassword, ADMIN_PASSWORD)) {
+  const usernameMatches = safeCompare(normalizedUsername, normalizedAdminUsername);
+  const passwordMatches = safeCompare(normalizedPassword, ADMIN_PASSWORD);
+  if (usernameMatches && passwordMatches) {
     const token = signAdminToken(ADMIN_USERNAME);
     res.json({ token, username: ADMIN_USERNAME });
   } else {

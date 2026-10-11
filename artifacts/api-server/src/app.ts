@@ -1,4 +1,4 @@
-import express, { type Express } from "express";
+import express, { type Express, type NextFunction, type Request, type Response } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
@@ -86,9 +86,7 @@ app.use((_req, res, next) => {
 });
 app.use(
   cors({
-    origin: isProduction
-      ? [/^https:\/\/([a-z0-9-]+\.)?ibrahimig\.com$/i, /\.up\.railway\.app$/i]
-      : true,
+    origin: isProduction ? [/^https:\/\/([a-z0-9-]+\.)?ibrahimig\.com$/i] : true,
     credentials: false,
   }),
 );
@@ -113,7 +111,16 @@ app.use(
   }),
 );
 app.use(
-  ["/api/auth/login", "/api/messages"],
+  "/api/auth/login",
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 10,
+    standardHeaders: true,
+    legacyHeaders: false,
+  }),
+);
+app.use(
+  "/api/messages",
   rateLimit({
     windowMs: 15 * 60 * 1000,
     limit: 20,
@@ -123,6 +130,10 @@ app.use(
 );
 
 app.use("/api", router);
+
+app.use("/api", (_req, res) => {
+  res.status(404).json({ error: "Not found" });
+});
 
 const moduleDir = path.dirname(fileURLToPath(import.meta.url));
 const clientDistPath = path.resolve(moduleDir, "../../portfolio/dist/public");
@@ -173,10 +184,41 @@ if (existsSync(clientDistPath)) {
     res.sendFile(path.join(clientDistPath, "index.html"));
   });
 
-  app.use(express.static(clientDistPath));
+  app.use(
+    "/assets",
+    express.static(path.join(clientDistPath, "assets"), {
+      immutable: true,
+      maxAge: "1y",
+    }),
+  );
+  app.use(
+    express.static(clientDistPath, {
+      index: false,
+      setHeaders(res, filePath) {
+        if (/\.(?:png|jpe?g|webp|gif|svg|ico|woff2?|ttf|pdf)$/i.test(filePath)) {
+          res.setHeader("Cache-Control", "public, max-age=604800");
+        }
+      },
+    }),
+  );
   app.get(/^(?!\/api).*/, (_req, res) => {
     res.sendFile(path.join(clientDistPath, "index.html"));
   });
 }
+
+app.use((err: unknown, _req: Request, res: Response, next: NextFunction) => {
+  if (res.headersSent) {
+    next(err);
+    return;
+  }
+
+  logger.error({ err }, "Unhandled request error");
+
+  const rawStatus =
+    typeof err === "object" && err !== null && "status" in err ? Number((err as { status?: unknown }).status) : NaN;
+  const status = Number.isInteger(rawStatus) && rawStatus >= 400 && rawStatus < 600 ? rawStatus : 500;
+
+  res.status(status).json({ error: status >= 500 ? "Internal server error" : "Bad request" });
+});
 
 export default app;

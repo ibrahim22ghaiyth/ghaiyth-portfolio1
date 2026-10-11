@@ -77,10 +77,14 @@ function AdminGate({ children }: { children: React.ReactNode }) {
   });
 
   useEffect(() => {
-    if (me.isError) {
+    if (!me.isError) {
+      return;
+    }
+    const status = "status" in me.error ? Number((me.error as { status: unknown }).status) : NaN;
+    if (status === 401) {
       localStorage.removeItem("admin_token");
     }
-  }, [me.isError]);
+  }, [me.isError, me.error]);
 
   if (!token) {
     return <Redirect to="/admin/login" />;
@@ -97,6 +101,23 @@ function AdminGate({ children }: { children: React.ReactNode }) {
   }
 
   if (me.isError) {
+    const status = "status" in me.error ? Number((me.error as { status: unknown }).status) : NaN;
+
+    if (status !== 401) {
+      return (
+        <div className="min-h-screen bg-background text-foreground dark flex flex-col items-center justify-center gap-4 px-6 text-center">
+          <p className="text-sm text-muted-foreground font-mono">{t.admin.apiConnectionError}</p>
+          <button
+            type="button"
+            onClick={() => void me.refetch()}
+            className="min-h-11 rounded-md border border-primary/35 px-4 py-2 text-sm font-bold text-primary transition hover:bg-primary hover:text-primary-foreground"
+          >
+            {t.admin.retry}
+          </button>
+        </div>
+      );
+    }
+
     return <Redirect to="/admin/login" />;
   }
 

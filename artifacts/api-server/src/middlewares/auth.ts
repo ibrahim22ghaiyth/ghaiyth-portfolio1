@@ -26,6 +26,7 @@ export function requireAdmin(req: Request, res: Response, next: NextFunction): v
   const token = authHeader.slice(7);
   try {
     const payload = jwt.verify(token, JWT_SECRET || "local-development-secret-only", {
+      algorithms: ["HS256"],
       issuer: "ibrahimig-admin",
       audience: "ibrahimig-dashboard",
     }) as AdminPayload;

@@ -9,7 +9,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 
 export function AdminLogin() {
   const { t } = useLanguage();
-  const [username, setUsername] = useState("admin");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [, setLocation] = useLocation();
   const { toast } = useToast();

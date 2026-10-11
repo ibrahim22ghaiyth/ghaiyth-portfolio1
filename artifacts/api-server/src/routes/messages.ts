@@ -2,20 +2,17 @@ import { Router } from "express";
 import { db, messagesTable } from "@workspace/db";
 import { eq, desc } from "drizzle-orm";
 import { requireAdmin } from "../middlewares/auth";
+import { messageInputSchema } from "./schemas";
 
 const router = Router();
 
 router.post("/messages", async (req, res) => {
-  const { name, email, subject, message } = req.body as {
-    name?: string;
-    email?: string;
-    subject?: string;
-    message?: string;
-  };
-  if (!name || !email || !subject || !message) {
-    res.status(400).json({ error: "name, email, subject, message are required" });
+  const parsed = messageInputSchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.issues[0]?.message || "Invalid message payload" });
     return;
   }
+  const { name, email, subject, message } = parsed.data;
   const [msg] = await db
     .insert(messagesTable)
     .values({ name, email, subject, message, status: "unread" })

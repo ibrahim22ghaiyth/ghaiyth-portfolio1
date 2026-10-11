@@ -6,6 +6,7 @@ import { requireAdmin } from "../middlewares/auth";
 import { getDatabaseUrl } from "@workspace/db/connection-string";
 import { projectArchive } from "../data/projectArchive";
 import { defaultProducts } from "../data/defaultProducts";
+import { messageInputSchema } from "./schemas";
 
 const router: IRouter = Router();
 const databaseUrl = getDatabaseUrl();
@@ -224,51 +225,8 @@ if (databaseUrl) {
     active: boolean;
   };
 
-  let nextPreviewTestimonialId = 4;
-  const previewTestimonials: PreviewTestimonial[] = [
-    {
-      id: 1,
-      clientName: "Academic Accountant Team",
-      clientNameAr: "فريق المحاسب الأكاديمي",
-      company: "Academic Accountant",
-      companyAr: "المحاسب الأكاديمي",
-      projectName: "Accounting and training platform",
-      projectNameAr: "منصة محاسبة وتدريب مالي",
-      feedback: "Ibrahim delivered a professional bilingual platform with clean pages, a practical admin panel, and the security details we needed before launch.",
-      feedbackAr: "إبراهيم أنجز منصة احترافية ثنائية اللغة بصفحات مرتبة ولوحة إدارة عملية وتفاصيل حماية كنا نحتاجها قبل الإطلاق.",
-      rating: 5,
-      order: 1,
-      active: true,
-    },
-    {
-      id: 2,
-      clientName: "Qassitha Product Team",
-      clientNameAr: "فريق قسّطها",
-      company: "Qassitha",
-      companyAr: "قسّطها",
-      projectName: "Installment tracking interface",
-      projectNameAr: "واجهة متابعة الأقساط",
-      feedback: "The workflow became clearer and easier to present, with an interface focused on the real daily problem instead of unnecessary complexity.",
-      feedbackAr: "صار مسار العمل أوضح وأسهل بالعرض، والواجهة ركزت على المشكلة اليومية الحقيقية بدون تعقيد زائد.",
-      rating: 5,
-      order: 2,
-      active: true,
-    },
-    {
-      id: 3,
-      clientName: "Architect Planning Client",
-      clientNameAr: "عميل منصة مِعمار",
-      company: "Architect",
-      companyAr: "مِعمار",
-      projectName: "Project planning assistant",
-      projectNameAr: "مساعد تخطيط المشاريع",
-      feedback: "The product helped turn loose project ideas into a structured plan with clear steps, bilingual content, and a polished user experience.",
-      feedbackAr: "المنتج ساعد بتحويل أفكار المشاريع غير المرتبة إلى خطة واضحة بخطوات منظمة ومحتوى ثنائي اللغة وتجربة استخدام مصقولة.",
-      rating: 5,
-      order: 3,
-      active: true,
-    },
-  ];
+  let nextPreviewTestimonialId = 1;
+  const previewTestimonials: PreviewTestimonial[] = [];
 
   type PreviewMessage = {
     id: number;
@@ -631,17 +589,13 @@ if (databaseUrl) {
   });
 
   router.post("/messages", (req, res) => {
-    const { name, email, subject, message } = req.body as {
-      name?: string;
-      email?: string;
-      subject?: string;
-      message?: string;
-    };
-
-    if (!name || !email || !subject || !message) {
-      res.status(400).json({ error: "name, email, subject, message are required" });
+    const parsed = messageInputSchema.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(400).json({ error: parsed.error.issues[0]?.message || "Invalid message payload" });
       return;
     }
+
+    const { name, email, subject, message } = parsed.data;
 
     const previewMessage: PreviewMessage = {
       id: nextPreviewMessageId++,

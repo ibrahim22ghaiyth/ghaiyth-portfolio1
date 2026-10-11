@@ -12,7 +12,17 @@ if (!databaseUrl) {
   );
 }
 
-export const pool = new Pool({ connectionString: databaseUrl });
+export const pool = new Pool({
+  connectionString: databaseUrl,
+  max: 10,
+  idleTimeoutMillis: 30_000,
+  connectionTimeoutMillis: 10_000,
+});
+
+pool.on("error", (err: Error) => {
+  console.error("[db] Unexpected error on idle client:", err.message);
+});
+
 export const db = drizzle(pool, { schema });
 
 export * from "./schema";

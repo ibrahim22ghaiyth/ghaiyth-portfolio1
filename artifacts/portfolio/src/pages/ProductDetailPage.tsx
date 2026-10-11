@@ -53,71 +53,83 @@ export function ProductDetailPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navigation />
-      <main className="pt-28">
-        <section className="relative overflow-hidden py-12" dir={lang === "ar" ? "rtl" : "ltr"}>
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_25%_15%,var(--brand-cyan-glow),transparent_30%),radial-gradient(circle_at_80%_50%,var(--brand-blue-glow),transparent_36%)]" />
-          <div className="container relative mx-auto px-6">
-            <Link href={lang === "en" ? "/en/products" : "/products"} className="mb-8 inline-flex items-center gap-2 rounded-md border border-[var(--brand-line)] bg-[var(--brand-panel)] px-4 py-2 text-sm font-bold text-primary">
-              <ArrowLeft size={16} />
+      <main>
+        <section className="stage-dark relative overflow-hidden pb-16 pt-32 sm:pt-36" dir={lang === "ar" ? "rtl" : "ltr"}>
+          <div className="hero-mesh absolute inset-0 pointer-events-none" />
+          <div className="hero-grid absolute inset-0 pointer-events-none" />
+          <div className="container relative z-10 mx-auto px-4 sm:px-6">
+            <Link href={lang === "en" ? "/en/products" : "/products"} className="mb-8 inline-flex items-center gap-2 rounded-lg border border-white/12 bg-white/5 px-4 py-2.5 text-sm font-semibold text-white/70 backdrop-blur-sm transition-colors hover:border-white/25 hover:text-white">
+              <ArrowLeft size={15} className="rtl:rotate-180" />
               {t.nav.products}
             </Link>
 
             {isLoading ? (
-              <div className="brand-panel rounded-xl p-8 text-center text-[var(--brand-muted)]">{t.common.loading}</div>
+              <div className="rounded-xl border border-white/8 bg-white/4 p-10 text-center text-white/40 backdrop-blur-sm">{t.common.loading}</div>
             ) : isError || !product ? (
-              <div className="brand-panel rounded-xl p-8 text-center">
-                <PackageCheck className="mx-auto mb-3 text-primary" />
-                <h1 className="text-2xl font-black text-[var(--brand-heading)]">{t.notFound.title}</h1>
+              <div className="rounded-xl border border-white/8 bg-white/4 p-10 text-center backdrop-blur-sm">
+                <PackageCheck className="mx-auto mb-3 text-white/30" size={40} strokeWidth={1.5} />
+                <h1 className="text-2xl font-bold text-white">{t.notFound.title}</h1>
               </div>
             ) : (
-              <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
-                <div className="brand-panel overflow-hidden rounded-2xl">
-                  {product.imageUrl ? (
-                    <img src={product.imageUrl} alt={title} className="aspect-[4/3] w-full object-cover" />
-                  ) : (
-                    <div className="grid aspect-[4/3] place-items-center text-primary">
-                      <PackageCheck size={72} />
-                    </div>
-                  )}
+              <div className="max-w-3xl">
+                <div className="brand-eyebrow mb-4" style={{ color: "#6BA3FF" }}>
+                  {product.template || "digital"}
                 </div>
-                <div className="brand-panel rounded-2xl p-6 md:p-8">
-                  <div className="mb-4 flex flex-wrap gap-2">
-                    <span className="rounded-full bg-[var(--brand-tag-bg)] px-3 py-1 text-xs font-bold uppercase text-primary">
-                      {product.template || "digital"}
-                    </span>
-                    {product.deliveryType ? (
-                      <span className="rounded-full border border-[var(--brand-line)] px-3 py-1 text-xs text-[var(--brand-muted)]">
-                        {product.deliveryType}
-                      </span>
-                    ) : null}
-                  </div>
-                  <h1 className="text-4xl font-black leading-tight text-[var(--brand-heading)] md:text-6xl">{title}</h1>
-                  <p className="mt-5 whitespace-pre-line text-lg leading-8 text-[var(--brand-text-2)]">{description}</p>
-                  <div className="mt-6 flex flex-wrap gap-2">
-                    {(product.tags || []).map((tag) => (
-                      <span key={tag} className="rounded-full bg-[var(--brand-tag-bg)] px-3 py-1 text-xs text-primary">{tag}</span>
-                    ))}
-                  </div>
-                  <div className="mt-8 rounded-xl border border-[var(--brand-line)] bg-[var(--brand-panel-2)] p-5">
-                    <div className="mb-2 flex items-center gap-2 font-black text-[var(--brand-heading)]">
-                      <ShieldCheck size={18} className="text-primary" />
-                      <span>{product.priceLabel || t.products.betaShort}</span>
-                    </div>
-                    {product.purchaseNote ? (
-                      <p className="text-sm leading-7 text-[var(--brand-text-2)]">{product.purchaseNote}</p>
-                    ) : (
-                      <p className="text-sm leading-7 text-[var(--brand-text-2)]">{t.products.paymentNote}</p>
-                    )}
-                  </div>
-                  <a href={checkoutUrl} target="_blank" rel="noreferrer" className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-4 text-base font-black text-primary-foreground shadow-[0_18px_50px_var(--brand-blue-glow)]">
-                    {checkoutLabel}
-                    <MessageCircle size={19} />
-                  </a>
-                </div>
+                <h1 className="mb-5 text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl">{title}</h1>
+                <div className="accent-bar" />
               </div>
             )}
           </div>
         </section>
+
+        {product && !isError ? (
+          <section className="brand-section py-16 sm:py-20" dir={lang === "ar" ? "rtl" : "ltr"}>
+            <div className="container mx-auto px-4 sm:px-6">
+              <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
+                <div className="brand-panel overflow-hidden rounded-xl">
+                  {product.imageUrl ? (
+                    <img src={product.imageUrl} alt={title} className="aspect-[4/3] w-full object-cover" />
+                  ) : (
+                    <div className="grid aspect-[4/3] place-items-center text-primary">
+                      <PackageCheck size={72} strokeWidth={1.5} />
+                    </div>
+                  )}
+                </div>
+                <div className="brand-panel rounded-xl p-7 sm:p-9">
+                  <div className="mb-4 flex flex-wrap items-center gap-2">
+                    <span className="brand-eyebrow">{product.template || "digital"}</span>
+                    {product.deliveryType ? (
+                      <span className="rounded-md border border-[var(--brand-line)] bg-[var(--brand-panel-2)] px-2.5 py-1 font-mono text-xs brand-muted">
+                        {product.deliveryType}
+                      </span>
+                    ) : null}
+                  </div>
+                  <h2 className="brand-heading mb-5 text-3xl font-bold leading-tight sm:text-4xl">{title}</h2>
+                  <div className="accent-bar mb-6" />
+                  <p className="brand-copy whitespace-pre-line text-base leading-8">{description}</p>
+                  <div className="mt-6 flex flex-wrap gap-1.5">
+                    {(product.tags || []).map((tag) => (
+                      <span key={tag} className="rounded-md border border-[var(--brand-line)] bg-[var(--brand-panel-2)] px-2.5 py-1 font-mono text-[11px] text-[var(--brand-text-2)]">{tag}</span>
+                    ))}
+                  </div>
+                  <div className="brand-panel mt-8 rounded-xl p-6">
+                    <div className="brand-heading mb-2 flex items-center gap-2 font-bold">
+                      <ShieldCheck size={18} className="text-primary" />
+                      <span>{product.priceLabel || t.products.betaShort}</span>
+                    </div>
+                    <p className="brand-copy text-sm leading-7">
+                      {product.purchaseNote || t.products.paymentNote}
+                    </p>
+                  </div>
+                  <a href={checkoutUrl} target="_blank" rel="noreferrer" className="brand-button mt-6 inline-flex w-full items-center justify-center gap-2.5 rounded-lg px-6 py-4 text-base font-semibold">
+                    {checkoutLabel}
+                    <MessageCircle size={18} />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </section>
+        ) : null}
         <Footer />
       </main>
     </div>

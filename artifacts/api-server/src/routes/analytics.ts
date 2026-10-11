@@ -44,8 +44,7 @@ const getVisitPayload = (req: Request) => {
     getHeader(req.headers["x-country-code"]);
   const country = normalizeCountry(headerCountry || clientCountry);
   const userAgent = getHeader(req.headers["user-agent"]).slice(0, 300);
-  const forwardedFor = getHeader(req.headers["x-forwarded-for"]).split(",")[0]?.trim();
-  const ip = forwardedFor || req.socket.remoteAddress || "unknown";
+  const ip = req.ip || req.socket.remoteAddress || "unknown";
   const visitorKey = clientId || `${ip}:${userAgent}`;
 
   return { clientId: clientId || null, path, country, userAgent, visitorKey };

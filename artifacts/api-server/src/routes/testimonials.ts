@@ -20,53 +20,19 @@ const testimonialInputSchema = z.object({
   active: z.boolean().default(true),
 });
 
-const seedTestimonials = [
-  {
-    clientName: "Academic Accountant Team",
-    clientNameAr: "فريق المحاسب الأكاديمي",
-    company: "Academic Accountant",
-    companyAr: "المحاسب الأكاديمي",
-    projectName: "Accounting and training platform",
-    projectNameAr: "منصة محاسبة وتدريب مالي",
-    feedback:
-      "Ibrahim delivered a professional bilingual platform with clean pages, a practical admin panel, and the security details we needed before launch.",
-    feedbackAr:
-      "إبراهيم أنجز منصة احترافية ثنائية اللغة بصفحات مرتبة ولوحة إدارة عملية وتفاصيل حماية كنا نحتاجها قبل الإطلاق.",
-    rating: 5,
-    order: 1,
-    active: true,
-  },
-  {
-    clientName: "Qassitha Product Team",
-    clientNameAr: "فريق قسّطها",
-    company: "Qassitha",
-    companyAr: "قسّطها",
-    projectName: "Installment tracking interface",
-    projectNameAr: "واجهة متابعة الأقساط",
-    feedback:
-      "The workflow became clearer and easier to present. The interface focuses on the real daily problem instead of adding unnecessary complexity.",
-    feedbackAr:
-      "صار مسار العمل أوضح وأسهل بالعرض. الواجهة ركزت على المشكلة اليومية الحقيقية بدون تعقيد زائد.",
-    rating: 5,
-    order: 2,
-    active: true,
-  },
-  {
-    clientName: "Architect Planning Client",
-    clientNameAr: "عميل منصة مِعمار",
-    company: "Architect",
-    companyAr: "مِعمار",
-    projectName: "Project planning assistant",
-    projectNameAr: "مساعد تخطيط المشاريع",
-    feedback:
-      "The product helped turn loose project ideas into a structured plan with clear steps, bilingual content, and a polished user experience.",
-    feedbackAr:
-      "المنتج ساعد بتحويل أفكار المشاريع غير المرتبة إلى خطة واضحة بخطوات منظمة ومحتوى ثنائي اللغة وتجربة استخدام مصقولة.",
-    rating: 5,
-    order: 3,
-    active: true,
-  },
-];
+const seedTestimonials: Array<{
+  clientName: string;
+  clientNameAr: string | null;
+  company: string;
+  companyAr: string | null;
+  feedback: string;
+  feedbackAr: string | null;
+  projectName: string | null;
+  projectNameAr: string | null;
+  rating: number;
+  order: number;
+  active: boolean;
+}> = [];
 
 let tableReady: Promise<void> | null = null;
 

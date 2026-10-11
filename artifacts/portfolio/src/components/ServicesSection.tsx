@@ -1,8 +1,15 @@
 import { motion } from "framer-motion";
-import * as LucideIcons from "lucide-react";
+import { Code2, Database, LayoutDashboard, MonitorSmartphone, Rocket, type LucideIcon } from "lucide-react";
 import { useListServices } from "@workspace/api-client-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useLanguage } from "@/contexts/LanguageContext";
+
+const serviceIcons: Record<string, LucideIcon> = {
+  MonitorSmartphone,
+  LayoutDashboard,
+  Database,
+  Rocket,
+};
 
 export function ServicesSection() {
   const { data: services, isLoading } = useListServices();
@@ -24,58 +31,59 @@ export function ServicesSection() {
       }));
 
   return (
-    <section id="services" className="brand-section py-24 relative">
-      <div className="container mx-auto px-6">
-
-        <div className="mb-16">
-          <h2 className="brand-heading text-3xl md:text-5xl font-bold mb-4 inline-block">
+    <section id="services" className="brand-section relative py-24 sm:py-28 md:py-32">
+      <div className="container mx-auto px-4 sm:px-6">
+        <div className="mb-14 max-w-3xl">
+          <p className="brand-eyebrow mb-4">
+            {lang === "ar" ? "الخدمات" : "Services"}
+          </p>
+          <h2 className="brand-heading mb-5 text-3xl font-bold leading-tight sm:text-4xl md:text-5xl">
             {t.services.title}
-            <div className="h-1 w-1/3 bg-primary mt-2 rounded-full" />
           </h2>
-          <p className="text-muted-foreground font-mono">{t.services.subtitle}</p>
+          <div className="accent-bar mb-5" />
+          <p className="brand-copy max-w-xl text-base leading-8">{t.services.subtitle}</p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid gap-5 md:grid-cols-2 lg:gap-6">
           {isLoading ? (
             Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="p-8 rounded-2xl brand-panel h-64">
-                <Skeleton className="w-14 h-14 rounded-xl mb-6 bg-[var(--brand-panel-2)]" />
-                <Skeleton className="h-6 w-1/2 mb-3 bg-[var(--brand-panel-2)]" />
+              <div key={i} className="p-8 rounded-xl brand-panel h-64">
+                <Skeleton className="w-12 h-12 rounded-lg mb-6 bg-[var(--brand-panel-2)]" />
+                <Skeleton className="h-6 w-1/2 mb-4 bg-[var(--brand-panel-2)]" />
                 <Skeleton className="h-4 w-full mb-2 bg-[var(--brand-panel-2)]" />
                 <Skeleton className="h-4 w-4/5 bg-[var(--brand-panel-2)]" />
               </div>
             ))
           ) : (
             displayServices.map((service, index) => {
-              const Icon = (LucideIcons as any)[service.icon] || LucideIcons.Code2;
+              const Icon = serviceIcons[service.icon] || Code2;
 
               return (
                 <motion.div
                   key={service.id}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1, duration: 0.5 }}
-                  className="group p-8 rounded-2xl brand-panel hover:border-primary/50 transition-all hover:glow-md relative overflow-hidden"
+                  viewport={{ once: true, margin: "-40px" }}
+                  transition={{ delay: index * 0.08, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                  className="brand-panel card-lift group relative overflow-hidden rounded-xl p-7 sm:p-8"
                 >
-                  <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
-                    <Icon size={120} />
+                  <div className="absolute top-6 end-6 font-mono text-5xl font-bold text-[var(--brand-panel-2)] select-none transition-colors duration-300 group-hover:text-[var(--brand-tag-bg)]">
+                    {String(index + 1).padStart(2, "0")}
                   </div>
 
-                  <div className="w-14 h-14 rounded-xl bg-[var(--brand-tag-bg)] flex items-center justify-center mb-6 text-primary border border-primary/20 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                    <Icon size={28} />
-                  </div>
+                  <div className="relative">
+                    <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-lg border border-primary/15 bg-[var(--brand-tag-bg)] text-primary transition-colors duration-300 group-hover:border-primary/40">
+                      <Icon size={22} strokeWidth={1.8} />
+                    </div>
 
-                  <h3 className="text-xl font-bold mb-3 text-[var(--brand-heading)]">{service.title}</h3>
-                  <p className="text-muted-foreground leading-relaxed relative z-10">
-                    {service.description}
-                  </p>
+                    <h3 className="brand-heading mb-3 text-xl font-bold">{service.title}</h3>
+                    <p className="brand-copy text-sm leading-7">{service.description}</p>
+                  </div>
                 </motion.div>
               );
             })
           )}
         </div>
-
       </div>
     </section>
   );
