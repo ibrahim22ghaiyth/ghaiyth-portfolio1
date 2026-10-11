@@ -93,10 +93,10 @@ export function HeroSection() {
       ))}
 
       {/* Geometric shapes */}
-      <div className="absolute top-[20%] left-[5%] hidden h-16 w-16 rotate-45 rounded-lg border border-[#6BA3FF]/10 animate-float-slow lg:block" />
-      <div className="absolute top-[60%] right-[8%] hidden h-10 w-10 rounded-full border border-[#6BA3FF]/8 animate-float-delay-2 lg:block" />
-      <div className="absolute top-[35%] right-[15%] hidden h-8 w-8 rotate-12 rounded-sm bg-[#6BA3FF]/5 animate-float-delay-1 lg:block" />
-      <div className="absolute bottom-[20%] left-[12%] hidden h-6 w-6 rounded-full bg-[#6BA3FF]/8 animate-float-delay-3 lg:block" />
+      <div className="absolute top-[20%] left-[5%] hidden h-16 w-16 rotate-45 rounded-lg border border-[#3B82F6]/10 animate-float-slow lg:block" />
+      <div className="absolute top-[60%] right-[8%] hidden h-10 w-10 rounded-full border border-[#3B82F6]/8 animate-float-delay-2 lg:block" />
+      <div className="absolute top-[35%] right-[15%] hidden h-8 w-8 rotate-12 rounded-sm bg-[#3B82F6]/5 animate-float-delay-1 lg:block" />
+      <div className="absolute bottom-[20%] left-[12%] hidden h-6 w-6 rounded-full bg-[#3B82F6]/8 animate-float-delay-3 lg:block" />
 
       <div className="container relative z-10 mx-auto flex min-h-[calc(100svh-8rem)] items-center px-4 sm:px-6">
         <div className="grid w-full items-center gap-12 md:grid-cols-[1.1fr_0.9fr] md:gap-16 lg:gap-20">
@@ -175,8 +175,8 @@ export function HeroSection() {
                   transition={{ duration: 0.4, delay: 0.5 + i * 0.1 }}
                   className="flex items-center gap-2 text-[13px] text-white/45"
                 >
-                  <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#6BA3FF]/15">
-                    <Check size={10} className="text-[#6BA3FF]" />
+                  <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#3B82F6]/15">
+                    <Check size={10} className="text-[#3B82F6]" />
                   </span>
                   <span>{item}</span>
                 </motion.li>
@@ -194,7 +194,7 @@ export function HeroSection() {
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3, delay: 0.6 + i * 0.05 }}
-                    className="glass flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-white/40 transition-all duration-300 hover:border-[#6BA3FF]/40 hover:text-[#6BA3FF] hover:shadow-[0_0_12px_rgba(107,163,255,0.15)]"
+                    className="glass flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-white/40 transition-all duration-300 hover:border-[#3B82F6]/40 hover:text-[#3B82F6] hover:shadow-[0_0_12px_rgba(59,130,246,0.15)]"
                   >
                     <tech.icon className="h-3.5 w-3.5" />
                     <span className="font-mono text-[11px]">{tech.name}</span>
@@ -254,7 +254,7 @@ export function HeroSection() {
             </motion.div>
 
             <div className="glass-strong relative aspect-[4/5] w-full overflow-hidden rounded-2xl">
-              <div className="absolute inset-0 bg-gradient-to-br from-[#0B5ED7]/10 via-transparent to-[#0B5ED7]/5" />
+              <div className="absolute inset-0 bg-gradient-to-br from-[#3B82F6]/10 via-transparent to-[#3B82F6]/5" />
 
               {/* Window chrome */}
               <div className="absolute inset-x-0 top-0 z-10 flex items-center justify-between border-b border-white/8 px-5 py-4">
@@ -266,7 +266,7 @@ export function HeroSection() {
                   </div>
                   <span className="ms-3 font-mono text-xs font-medium text-white/30">ibrahimig.com</span>
                 </div>
-                <span className="font-mono text-xs text-[#6BA3FF]">{"{"}</span>
+                <span className="font-mono text-xs text-[#3B82F6]">{"{"}</span>
               </div>
 
               {/* Portrait */}
@@ -287,10 +287,10 @@ export function HeroSection() {
               {/* Code footer */}
               <div className="absolute inset-x-0 bottom-0 z-10 border-t border-white/8 px-5 py-4">
                 <p className="font-mono text-[11px] text-white/25">
-                  <span className="text-[#6BA3FF]">const</span> profile = {"{"}
+                  <span className="text-[#3B82F6]">const</span> profile = {"{"}
                 </p>
                 <p className="ps-4 font-mono text-[11px] text-white/35">
-                  role: <span className="text-[#6BA3FF]">"Full-Stack Developer"</span>
+                  role: <span className="text-[#3B82F6]">"Full-Stack Developer"</span>
                   <span className="typing-cursor" />
                 </p>
                 <p className="font-mono text-[11px] text-white/25">{"}"}</p>
@@ -301,7 +301,7 @@ export function HeroSection() {
       </div>
 
       {/* Bottom gradient fade */}
-      <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#05070B] to-transparent pointer-events-none" />
+      <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#0A0D14] to-transparent pointer-events-none" />
     </section>
   );
 }

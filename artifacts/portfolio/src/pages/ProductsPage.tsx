@@ -64,7 +64,7 @@ export function ProductsPage() {
           <div className="container relative z-10 mx-auto px-4 sm:px-6">
             <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
               <div>
-                <div className="brand-eyebrow mb-4 inline-flex items-center gap-2" style={{ color: "#6BA3FF" }}>
+                <div className="brand-eyebrow mb-4 inline-flex items-center gap-2" style={{ color: "#3B82F6" }}>
                   <Sparkles size={14} />
                   {t.products.beta}
                 </div>
@@ -92,7 +92,7 @@ export function ProductsPage() {
                     transition={{ delay: 0.15 + index * 0.08 }}
                     className="flex items-center gap-4 rounded-xl border border-white/8 bg-white/4 p-4 backdrop-blur-sm"
                   >
-                    <span className="grid h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-[#6BA3FF]">
+                    <span className="grid h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-[#3B82F6]">
                       <BadgeCheck size={20} strokeWidth={1.8} />
                     </span>
                     <p className="text-sm font-medium text-white/60">{promise}</p>

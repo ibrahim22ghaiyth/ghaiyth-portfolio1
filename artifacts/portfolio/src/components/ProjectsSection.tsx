@@ -82,7 +82,7 @@ export function ProjectsSection() {
                   />
                   {/* Multi-layer gradient overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#0B5ED7]/5 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#3B82F6]/5 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
                   {/* Status badge */}
                   <div className="absolute top-4 start-4">

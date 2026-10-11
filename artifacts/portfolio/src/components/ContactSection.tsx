@@ -42,7 +42,7 @@ export function ContactSection() {
   };
 
   const getInputCls = (field: string) =>
-    `w-full rounded-lg border bg-[var(--brand-panel-2)] px-4 py-3.5 text-[var(--brand-heading)] placeholder:text-[var(--brand-muted)] transition-all duration-300 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 focus:shadow-[0_0_0_4px_rgba(11,94,215,0.06)] ${
+    `w-full rounded-lg border bg-[var(--brand-panel-2)] px-4 py-3.5 text-[var(--brand-heading)] placeholder:text-[var(--brand-muted)] transition-all duration-300 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 focus:shadow-[0_0_0_4px_rgba(59,130,246,0.06)] ${
       focusedField === field ? "border-primary" : "border-[var(--brand-line)]"
     }`;
 
@@ -83,7 +83,7 @@ export function ContactSection() {
 
             <div className="space-y-3">
               <a href="mailto:info@ibrahimig.com" className="gradient-border card-sweep group flex items-center gap-4 rounded-xl p-5 break-all">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-primary/15 bg-[var(--brand-tag-bg)] text-primary transition-all duration-300 group-hover:shadow-[0_0_16px_rgba(11,94,215,0.12)] group-hover:scale-105">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-primary/15 bg-[var(--brand-tag-bg)] text-primary transition-all duration-300 group-hover:shadow-[0_0_16px_rgba(59,130,246,0.12)] group-hover:scale-105">
                   <Mail size={20} strokeWidth={1.8} />
                 </div>
                 <div>
@@ -92,7 +92,7 @@ export function ContactSection() {
                 </div>
               </a>
               <a href={whatsappHref} target="_blank" rel="noreferrer" className="gradient-border card-sweep group flex items-center gap-4 rounded-xl p-5 break-all">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-primary/15 bg-[var(--brand-tag-bg)] text-primary transition-all duration-300 group-hover:shadow-[0_0_16px_rgba(11,94,215,0.12)] group-hover:scale-105">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-primary/15 bg-[var(--brand-tag-bg)] text-primary transition-all duration-300 group-hover:shadow-[0_0_16px_rgba(59,130,246,0.12)] group-hover:scale-105">
                   <MessageCircle size={20} strokeWidth={1.8} />
                 </div>
                 <div>
@@ -121,7 +121,7 @@ export function ContactSection() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.3, delay: 0.1 + i * 0.05 }}
-                    className="gradient-border icon-magnetic flex h-12 w-12 items-center justify-center rounded-xl text-[var(--brand-muted)] hover:text-primary hover:shadow-[0_0_16px_rgba(11,94,215,0.1)]"
+                    className="gradient-border icon-magnetic flex h-12 w-12 items-center justify-center rounded-xl text-[var(--brand-muted)] hover:text-primary hover:shadow-[0_0_16px_rgba(59,130,246,0.1)]"
                   >
                     <social.icon size={19} />
                   </motion.a>

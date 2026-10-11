@@ -85,7 +85,7 @@ export function ServicesSection() {
                   </div>
 
                   <div className="relative">
-                    <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-xl border border-primary/15 bg-[var(--brand-tag-bg)] text-primary transition-all duration-400 group-hover:border-primary/40 group-hover:shadow-[0_0_20px_rgba(11,94,215,0.12)] group-hover:scale-105">
+                    <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-xl border border-primary/15 bg-[var(--brand-tag-bg)] text-primary transition-all duration-400 group-hover:border-primary/40 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.12)] group-hover:scale-105">
                       <Icon size={24} strokeWidth={1.8} />
                     </div>
 

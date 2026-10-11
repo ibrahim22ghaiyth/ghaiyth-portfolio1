@@ -69,7 +69,7 @@ export function Footer() {
             <BrandLogo className="h-20 w-20 sm:h-24 sm:w-24" eager variant="dark" />
           </div>
           <p className="max-w-xs text-sm leading-6 text-white/35">{t.footer.summary}</p>
-          <div className="mt-6 h-px w-16 bg-gradient-to-r from-[#6BA3FF]/40 to-transparent" />
+          <div className="mt-6 h-px w-16 bg-gradient-to-r from-[#3B82F6]/40 to-transparent" />
         </div>
 
         <div>
@@ -82,20 +82,20 @@ export function Footer() {
                 className="group w-fit text-sm text-white/45 transition-all duration-300 hover:text-white"
               >
                 <span className="inline-flex items-center gap-2">
-                  <span className="h-px w-0 bg-[#6BA3FF] transition-all duration-300 group-hover:w-3" />
+                  <span className="h-px w-0 bg-[#3B82F6] transition-all duration-300 group-hover:w-3" />
                   {label}
                 </span>
               </button>
             ))}
             <button onClick={() => goTo("/products")} className="group w-fit text-sm text-white/45 transition-all duration-300 hover:text-white">
               <span className="inline-flex items-center gap-2">
-                <span className="h-px w-0 bg-[#6BA3FF] transition-all duration-300 group-hover:w-3" />
+                <span className="h-px w-0 bg-[#3B82F6] transition-all duration-300 group-hover:w-3" />
                 {t.nav.products}
               </span>
             </button>
             <button onClick={() => goTo("/blog")} className="group w-fit text-sm text-white/45 transition-all duration-300 hover:text-white">
               <span className="inline-flex items-center gap-2">
-                <span className="h-px w-0 bg-[#6BA3FF] transition-all duration-300 group-hover:w-3" />
+                <span className="h-px w-0 bg-[#3B82F6] transition-all duration-300 group-hover:w-3" />
                 {t.nav.blog}
               </span>
             </button>
@@ -107,11 +107,11 @@ export function Footer() {
           <div className="grid justify-items-start gap-3.5 text-sm text-white/45 rtl:justify-items-end">
             <a href="mailto:info@ibrahimig.com" className="group inline-flex items-center gap-3 transition-colors hover:text-white">
               <span dir="ltr">info@ibrahimig.com</span>
-              <Mail size={15} className="shrink-0 text-white/30 transition-colors group-hover:text-[#6BA3FF]" />
+              <Mail size={15} className="shrink-0 text-white/30 transition-colors group-hover:text-[#3B82F6]" />
             </a>
             <a href="https://wa.me/9647805808975" target="_blank" rel="noreferrer" className="group inline-flex items-center gap-3 transition-colors hover:text-white">
               <span dir="ltr">+964 7805808975</span>
-              <MessageCircle size={15} className="shrink-0 text-white/30 transition-colors group-hover:text-[#6BA3FF]" />
+              <MessageCircle size={15} className="shrink-0 text-white/30 transition-colors group-hover:text-[#3B82F6]" />
             </a>
           </div>
           <h3 className="mb-4 mt-8 text-[11px] font-semibold uppercase tracking-[0.16em] text-white/25">{t.footer.social}</h3>
@@ -127,7 +127,7 @@ export function Footer() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label={label}
-                className="glass icon-magnetic grid h-11 w-11 place-items-center rounded-xl text-white/40 hover:border-white/25 hover:text-white hover:shadow-[0_0_16px_rgba(107,163,255,0.12)]"
+                className="glass icon-magnetic grid h-11 w-11 place-items-center rounded-xl text-white/40 hover:border-white/25 hover:text-white hover:shadow-[0_0_16px_rgba(59,130,246,0.12)]"
               >
                 <Icon size={17} />
               </a>

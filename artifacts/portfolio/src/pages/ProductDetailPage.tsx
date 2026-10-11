@@ -72,7 +72,7 @@ export function ProductDetailPage() {
               </div>
             ) : (
               <div className="max-w-3xl">
-                <div className="brand-eyebrow mb-4" style={{ color: "#6BA3FF" }}>
+                <div className="brand-eyebrow mb-4" style={{ color: "#3B82F6" }}>
                   {product.template || "digital"}
                 </div>
                 <h1 className="mb-5 text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl">{title}</h1>

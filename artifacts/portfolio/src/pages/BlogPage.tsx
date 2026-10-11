@@ -15,7 +15,7 @@ export function BlogPage() {
           <div className="hero-grid absolute inset-0 pointer-events-none" />
           <div className="container relative z-10 mx-auto px-4 sm:px-6" dir={t.common.loading ? "ltr" : "ltr"}>
             <div className="max-w-3xl" dir="auto">
-              <p className="brand-eyebrow mb-4" style={{ color: "#6BA3FF" }}>{t.blog.beta}</p>
+              <p className="brand-eyebrow mb-4" style={{ color: "#3B82F6" }}>{t.blog.beta}</p>
               <h1 className="mb-5 text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl">{t.blog.pageTitle}</h1>
               <div className="accent-bar mb-5" />
               <p className="max-w-2xl text-base leading-8 text-white/40">{t.blog.pageSubtitle}</p>

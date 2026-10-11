@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useLocation } from "wouter";
 import { useActiveSection } from "@/hooks/use-active-section";
 import { Menu, X, Languages, Moon, Sun } from "lucide-react";
@@ -31,20 +31,7 @@ export function Navigation() {
 
   const sectionLinks = NAV_LINKS.filter((link) => link.type === "section");
   const activeSection = useActiveSection(sectionLinks.map((link) => link.id));
-  const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const isOnHome = currentRouteKey === "/";
-  const overHero = isOnHome && !isScrolled;
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 60);
-    };
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   const scrollToSection = (id: string) => {
     setMobileMenuOpen(false);
@@ -76,26 +63,16 @@ export function Navigation() {
   return (
     <>
       <nav
-        className={cn(
-          "fixed inset-x-0 top-0 z-50 border-b backdrop-blur-md transition-all duration-300",
-          overHero
-            ? "border-white/8 bg-transparent"
-            : "border-[var(--brand-line-soft)] bg-background/85",
-        )}
+        className="fixed inset-x-0 top-0 z-50 border-b border-white/8 bg-[#0A0D14]/85 backdrop-blur-md"
         dir={lang === "ar" ? "rtl" : "ltr"}
       >
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
           <button
             onClick={() => scrollToSection("home")}
             aria-label={t.nav.home}
-            className={cn(
-              "grid h-10 w-14 shrink-0 place-items-center overflow-hidden rounded-md border transition-colors",
-              overHero
-                ? "border-white/12 bg-white/8"
-                : "border-[var(--brand-line)] bg-[var(--brand-logo-bg)]",
-            )}
+            className="grid h-10 w-14 shrink-0 place-items-center overflow-hidden rounded-md border border-white/12 bg-white/8 transition-colors"
           >
-            <BrandLogo className="h-9 w-12" eager variant={overHero ? "dark" : undefined} />
+            <BrandLogo className="h-9 w-12" eager variant="dark" />
           </button>
 
           <div className="hidden xl:flex flex-1 items-center justify-center gap-0.5 px-2">
@@ -112,13 +89,9 @@ export function Navigation() {
                   data-active={active || undefined}
                   className={cn(
                     "nav-link relative whitespace-nowrap px-3 py-2 text-sm transition-colors duration-200",
-                    overHero
-                      ? active
-                        ? "font-medium text-white after:absolute after:inset-x-3 after:-bottom-0.5 after:h-0.5 after:bg-[#6BA3FF]"
-                        : "text-white/55 hover:text-white"
-                      : active
-                        ? "font-medium text-[var(--brand-heading)] after:absolute after:inset-x-3 after:-bottom-0.5 after:h-0.5 after:bg-primary"
-                        : "text-muted-foreground hover:text-[var(--brand-heading)]",
+                    active
+                      ? "font-medium text-white after:absolute after:inset-x-3 after:-bottom-0.5 after:h-0.5 after:bg-[#3B82F6]"
+                      : "text-white/55 hover:text-white",
                   )}
                 >
                   {link.label}
@@ -132,12 +105,7 @@ export function Navigation() {
               onClick={toggleTheme}
               title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
               aria-label={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
-              className={cn(
-                "nav-icon-btn flex h-9 w-9 items-center justify-center rounded-md border transition-colors",
-                overHero
-                  ? "border-white/12 bg-white/5 text-white/70 hover:border-white/30 hover:text-white"
-                  : "border-[var(--brand-line)] bg-[var(--brand-panel)] text-foreground hover:border-primary hover:text-primary",
-              )}
+              className="nav-icon-btn flex h-9 w-9 items-center justify-center rounded-md border border-white/12 bg-white/5 text-white/70 transition-colors hover:border-white/30 hover:text-white"
             >
               {theme === "dark" ? <Sun size={15} /> : <Moon size={15} />}
             </button>
@@ -149,12 +117,7 @@ export function Navigation() {
               }}
               title={lang === "en" ? "Switch to Arabic" : "Switch to English"}
               aria-label={lang === "en" ? "Switch to Arabic" : "Switch to English"}
-              className={cn(
-                "nav-icon-btn flex items-center gap-1.5 rounded-md border px-3 py-2 text-xs font-medium transition-colors",
-                overHero
-                  ? "border-white/12 bg-white/5 text-white/70 hover:border-white/30 hover:text-white"
-                  : "border-[var(--brand-line)] bg-[var(--brand-panel)] text-foreground hover:border-primary hover:text-primary",
-              )}
+              className="nav-icon-btn flex items-center gap-1.5 rounded-md border border-white/12 bg-white/5 px-3 py-2 text-xs font-medium text-white/70 transition-colors hover:border-white/30 hover:text-white"
             >
               <Languages size={14} />
               {lang === "en" ? "العربية" : "English"}
@@ -162,10 +125,7 @@ export function Navigation() {
           </div>
 
           <button
-            className={cn(
-              "p-1 xl:hidden ms-1 transition-colors",
-              overHero ? "text-white" : "text-foreground",
-            )}
+            className="p-1 xl:hidden ms-1 text-white transition-colors"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
             aria-expanded={mobileMenuOpen}
@@ -176,7 +136,7 @@ export function Navigation() {
       </nav>
 
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-40 bg-[#05070B] xl:hidden flex flex-col items-center justify-center gap-6">
+        <div className="fixed inset-0 z-40 bg-[#0A0D14] xl:hidden flex flex-col items-center justify-center gap-6">
           {NAV_LINKS.map((link) => (
             <button
               key={link.id}
@@ -184,7 +144,7 @@ export function Navigation() {
               className={cn(
                 "text-2xl font-medium tracking-wide transition-all",
                 (link.type === "route" ? currentRouteKey === link.href : currentRouteKey === "/" && activeSection === link.id)
-                  ? "text-[#6BA3FF]"
+                  ? "text-[#3B82F6]"
                   : "text-white/50 hover:text-white",
               )}
             >

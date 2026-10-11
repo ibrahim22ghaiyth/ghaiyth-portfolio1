@@ -141,7 +141,7 @@ export function AboutSection() {
                     {t.about.experienceFreelancePeriod}
                   </span>
                 </div>
-                <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-lg border border-primary/15 bg-[var(--brand-tag-bg)] text-primary transition-all duration-300 group-hover:shadow-[0_0_16px_rgba(11,94,215,0.12)]">
+                <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-lg border border-primary/15 bg-[var(--brand-tag-bg)] text-primary transition-all duration-300 group-hover:shadow-[0_0_16px_rgba(59,130,246,0.12)]">
                   <Briefcase size={22} strokeWidth={1.8} />
                 </div>
                 <h4 className="brand-heading mb-2 text-lg font-bold">{t.about.experienceFreelanceRole}</h4>
@@ -178,7 +178,7 @@ export function AboutSection() {
                   >
                     <div className="timeline-dot absolute -start-8 top-7" />
                     <div className="mb-4 flex items-start justify-between gap-4">
-                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-primary/15 bg-[var(--brand-tag-bg)] text-primary transition-all duration-300 group-hover:shadow-[0_0_12px_rgba(11,94,215,0.1)]">
+                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-primary/15 bg-[var(--brand-tag-bg)] text-primary transition-all duration-300 group-hover:shadow-[0_0_12px_rgba(59,130,246,0.1)]">
                         <item.icon size={20} strokeWidth={1.8} />
                       </div>
                       {item.current ? (
@@ -275,7 +275,7 @@ export function AboutSection() {
                   transition={{ duration: 0.35, delay: 0.05 + i * 0.05 }}
                   className="gradient-border card-sweep rounded-xl p-5"
                 >
-                  <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg border border-primary/15 bg-[var(--brand-tag-bg)] text-primary transition-all duration-300 hover:shadow-[0_0_12px_rgba(11,94,215,0.1)] hover:scale-105">
+                  <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg border border-primary/15 bg-[var(--brand-tag-bg)] text-primary transition-all duration-300 hover:shadow-[0_0_12px_rgba(59,130,246,0.1)] hover:scale-105">
                     <skill.icon size={18} strokeWidth={1.8} />
                   </div>
                   <h4 className="brand-heading mb-1 text-sm font-bold">{skill.title}</h4>
