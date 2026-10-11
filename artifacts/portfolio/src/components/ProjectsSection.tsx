@@ -34,16 +34,26 @@ export function ProjectsSection() {
   };
 
   return (
-    <section id="projects" className="brand-section relative py-24 sm:py-28 md:py-32">
-      <div className="container mx-auto px-4 sm:px-6">
-        <div className="mb-14 max-w-3xl">
+    <section id="projects" className="brand-section relative overflow-hidden py-24 sm:py-28 md:py-32">
+      {/* Background decoration */}
+      <div className="absolute top-1/3 left-0 h-52 w-52 rounded-full bg-[var(--brand-blue)]/[0.02] blur-[70px] pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 h-40 w-40 rounded-full bg-[var(--brand-blue)]/[0.03] blur-[60px] pointer-events-none" />
+
+      <div className="container relative mx-auto px-4 sm:px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="mb-14 max-w-3xl"
+        >
           <p className="brand-eyebrow mb-4">{labels.eyebrow}</p>
           <h2 className="brand-heading mb-5 text-3xl font-bold leading-tight sm:text-4xl md:text-5xl">
             {labels.heading}
           </h2>
           <div className="accent-bar mb-5" />
           <p className="brand-copy max-w-xl text-base leading-8">{t.projects.subtitle}</p>
-        </div>
+        </motion.div>
 
         <div className="grid gap-8 lg:grid-cols-3 lg:gap-6">
           {caseStudies.map((project, index) => {
@@ -54,11 +64,11 @@ export function ProjectsSection() {
             return (
               <motion.article
                 key={project.id}
-                initial={{ opacity: 0, y: 24 }}
+                initial={{ opacity: 0, y: 28 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
-                transition={{ delay: index * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                className="brand-panel card-lift group flex flex-col overflow-hidden rounded-xl"
+                transition={{ delay: index * 0.12, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                className="gradient-border card-sweep group flex flex-col overflow-hidden rounded-xl"
               >
                 <div className="relative aspect-[16/10] overflow-hidden">
                   <img
@@ -70,16 +80,29 @@ export function ProjectsSection() {
                     decoding="async"
                     className="img-zoom h-full w-full object-cover object-top"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                  {/* Multi-layer gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#0B5ED7]/5 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+
+                  {/* Status badge */}
                   <div className="absolute top-4 start-4">
-                    <span className={`inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-semibold backdrop-blur-sm ${statusStyles[project.status]}`}>
+                    <span className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] font-semibold backdrop-blur-md ${statusStyles[project.status]}`}>
+                      <span className="relative flex h-1.5 w-1.5">
+                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-current opacity-60" />
+                        <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-current" />
+                      </span>
                       {labels.statusLabel[project.status]}
                     </span>
+                  </div>
+
+                  {/* Hover reveal arrow */}
+                  <div className="absolute bottom-4 end-4 flex h-9 w-9 items-center justify-center rounded-full bg-white/10 backdrop-blur-md opacity-0 translate-y-2 transition-all duration-400 group-hover:opacity-100 group-hover:translate-y-0">
+                    <ExternalLink size={15} className="text-white" />
                   </div>
                 </div>
 
                 <div className="flex flex-1 flex-col p-6 sm:p-7">
-                  <h3 className="brand-heading mb-3 text-xl font-bold leading-snug sm:text-2xl">
+                  <h3 className="brand-heading mb-3 text-xl font-bold leading-snug transition-colors duration-300 group-hover:text-[var(--brand-blue)] sm:text-2xl">
                     {content.name}
                   </h3>
 
@@ -89,7 +112,7 @@ export function ProjectsSection() {
                     {project.stack.map((tech) => (
                       <span
                         key={tech}
-                        className="rounded-md border border-[var(--brand-line)] bg-[var(--brand-panel-2)] px-2.5 py-1 font-mono text-[11px] text-[var(--brand-text-2)]"
+                        className="rounded-md border border-[var(--brand-line)] bg-[var(--brand-panel-2)] px-2.5 py-1 font-mono text-[11px] text-[var(--brand-text-2)] transition-colors duration-300 group-hover:border-[var(--brand-blue)]/20"
                       >
                         {tech}
                       </span>
@@ -104,7 +127,7 @@ export function ProjectsSection() {
                             href={project.links.live}
                             target="_blank"
                             rel="noreferrer"
-                            className="brand-button inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg px-4 text-sm font-semibold"
+                            className="brand-button btn-glow inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg px-4 text-sm font-semibold"
                           >
                             {t.projects.liveDemo} <ExternalLink size={15} />
                           </a>
@@ -115,7 +138,7 @@ export function ProjectsSection() {
                             target="_blank"
                             rel="noreferrer"
                             aria-label={`${content.name} GitHub`}
-                            className="btn-outline inline-flex min-h-11 w-12 items-center justify-center rounded-lg"
+                            className="btn-outline icon-magnetic inline-flex min-h-11 w-12 items-center justify-center rounded-lg"
                           >
                             <Github size={17} />
                           </a>
@@ -140,7 +163,7 @@ export function ProjectsSection() {
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: "auto", opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                         className="overflow-hidden"
                       >
                         <div className="mt-4 grid gap-4 rounded-lg border border-[var(--brand-line-soft)] bg-[var(--brand-panel-2)] p-5 text-sm leading-7 text-[var(--brand-text-2)]">

@@ -31,9 +31,19 @@ export function ServicesSection() {
       }));
 
   return (
-    <section id="services" className="brand-section relative py-24 sm:py-28 md:py-32">
-      <div className="container mx-auto px-4 sm:px-6">
-        <div className="mb-14 max-w-3xl">
+    <section id="services" className="brand-section relative overflow-hidden py-24 sm:py-28 md:py-32">
+      {/* Subtle background decoration */}
+      <div className="absolute top-0 right-0 h-64 w-64 rounded-full bg-[var(--brand-blue)]/[0.03] blur-[80px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 h-48 w-48 rounded-full bg-[var(--brand-blue)]/[0.02] blur-[60px] pointer-events-none" />
+
+      <div className="container relative mx-auto px-4 sm:px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="mb-14 max-w-3xl"
+        >
           <p className="brand-eyebrow mb-4">
             {lang === "ar" ? "الخدمات" : "Services"}
           </p>
@@ -42,7 +52,7 @@ export function ServicesSection() {
           </h2>
           <div className="accent-bar mb-5" />
           <p className="brand-copy max-w-xl text-base leading-8">{t.services.subtitle}</p>
-        </div>
+        </motion.div>
 
         <div className="grid gap-5 md:grid-cols-2 lg:gap-6">
           {isLoading ? (
@@ -61,23 +71,31 @@ export function ServicesSection() {
               return (
                 <motion.div
                   key={service.id}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 24 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-40px" }}
-                  transition={{ delay: index * 0.08, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                  className="brand-panel card-lift group relative overflow-hidden rounded-xl p-7 sm:p-8"
+                  transition={{ delay: index * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                  className="gradient-border card-sweep group relative overflow-hidden rounded-xl p-7 sm:p-8"
                 >
-                  <div className="absolute top-6 end-6 font-mono text-5xl font-bold text-[var(--brand-panel-2)] select-none transition-colors duration-300 group-hover:text-[var(--brand-tag-bg)]">
+                  {/* Animated background glow on hover */}
+                  <div className="absolute -top-20 -right-20 h-40 w-40 rounded-full bg-[var(--brand-blue)]/5 opacity-0 blur-[40px] transition-opacity duration-500 group-hover:opacity-100" />
+
+                  <div className="absolute top-6 end-6 font-mono text-6xl font-bold leading-none text-[var(--brand-panel-2)] select-none transition-all duration-500 group-hover:text-[var(--brand-blue)]/10 group-hover:scale-110">
                     {String(index + 1).padStart(2, "0")}
                   </div>
 
                   <div className="relative">
-                    <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-lg border border-primary/15 bg-[var(--brand-tag-bg)] text-primary transition-colors duration-300 group-hover:border-primary/40">
-                      <Icon size={22} strokeWidth={1.8} />
+                    <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-xl border border-primary/15 bg-[var(--brand-tag-bg)] text-primary transition-all duration-400 group-hover:border-primary/40 group-hover:shadow-[0_0_20px_rgba(11,94,215,0.12)] group-hover:scale-105">
+                      <Icon size={24} strokeWidth={1.8} />
                     </div>
 
-                    <h3 className="brand-heading mb-3 text-xl font-bold">{service.title}</h3>
+                    <h3 className="brand-heading mb-3 text-xl font-bold transition-colors duration-300 group-hover:text-[var(--brand-blue)]">
+                      {service.title}
+                    </h3>
                     <p className="brand-copy text-sm leading-7">{service.description}</p>
+
+                    {/* Bottom accent line that grows on hover */}
+                    <div className="mt-6 h-px w-0 bg-gradient-to-r from-[var(--brand-blue)] to-transparent transition-all duration-500 group-hover:w-full" />
                   </div>
                 </motion.div>
               );

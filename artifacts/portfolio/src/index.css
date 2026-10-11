@@ -279,6 +279,66 @@ html[lang="ar"] [class*="tracking-"] {
   letter-spacing: 0;
 }
 
+/* ── Top-level keyframes ── */
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  33% { transform: translateY(-12px) rotate(2deg); }
+  66% { transform: translateY(6px) rotate(-1deg); }
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  50% { transform: translateY(-20px) translateX(8px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.05); }
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes orbit {
+  from { transform: rotate(0deg) translateX(120px) rotate(0deg); }
+  to { transform: rotate(360deg) translateX(120px) rotate(-360deg); }
+}
+
+@keyframes typewriter {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes blink-caret {
+  0%, 100% { border-color: transparent; }
+  50% { border-color: #6BA3FF; }
+}
+
+@keyframes drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(30px, -20px) scale(1.05); }
+  50% { transform: translate(-10px, 15px) scale(0.95); }
+  75% { transform: translate(20px, 10px) scale(1.02); }
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.8); opacity: 0.6; }
+  100% { transform: scale(2); opacity: 0; }
+}
+
 @layer utilities {
   /* ── Dual-gradient stage: hero + footer always dark ── */
   .stage-dark {
@@ -489,6 +549,248 @@ html[lang="ar"] [class*="tracking-"] {
   section:not(#home) {
     content-visibility: auto;
     contain-intrinsic-size: 900px;
+  }
+
+  .animate-float { animation: float 6s ease-in-out infinite; }
+  .animate-float-slow { animation: float-slow 8s ease-in-out infinite; }
+  .animate-float-delay-1 { animation: float 6s ease-in-out 1s infinite; }
+  .animate-float-delay-2 { animation: float 6s ease-in-out 2s infinite; }
+  .animate-float-delay-3 { animation: float 6s ease-in-out 3s infinite; }
+  .animate-pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
+  .animate-spin-slow { animation: spin-slow 20s linear infinite; }
+  .animate-drift { animation: drift 12s ease-in-out infinite; }
+  .animate-shimmer { animation: shimmer 2s ease-in-out infinite; }
+
+  /* ── Glass morphism ── */
+  .glass {
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(16px) saturate(1.4);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .glass-strong {
+    background: rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(24px) saturate(1.6);
+    -webkit-backdrop-filter: blur(24px) saturate(1.6);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  /* ── Gradient border (animated on hover) ── */
+  .gradient-border {
+    position: relative;
+    border: 1px solid var(--brand-line);
+    background: var(--brand-panel);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .gradient-border:hover {
+    border-color: var(--brand-blue);
+    box-shadow: 0 0 0 1px var(--brand-blue-glow), 0 4px 20px var(--brand-blue-glow);
+  }
+
+  /* ── Noise texture overlay ── */
+  .noise::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.03;
+    pointer-events: none;
+    background-image: repeating-conic-gradient(rgba(255,255,255,0.05) 0% 25%, transparent 0% 50%);
+    background-size: 4px 4px;
+  }
+
+  /* ── Floating orb shapes ── */
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    pointer-events: none;
+  }
+
+  .orb-blue {
+    background: radial-gradient(circle, rgba(11, 94, 215, 0.25), transparent 70%);
+  }
+
+  .orb-cyan {
+    background: radial-gradient(circle, rgba(6, 182, 212, 0.15), transparent 70%);
+  }
+
+  .orb-purple {
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.12), transparent 70%);
+  }
+
+  /* ── 3D tilt card ── */
+  .tilt-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transform-style: preserve-3d;
+  }
+
+  .tilt-card:hover {
+    transform: perspective(800px) rotateX(2deg) rotateY(-2deg) translateY(-6px);
+    box-shadow: var(--shadow-2xl), 0 0 40px rgba(11, 94, 215, 0.08);
+  }
+
+  /* ── Animated gradient text ── */
+  .text-gradient-animated {
+    background: linear-gradient(135deg, #FFFFFF 0%, #A8C8FF 25%, #0B5ED7 50%, #A8C8FF 75%, #FFFFFF 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradient-shift 4s ease infinite;
+  }
+
+  /* ── Neon glow ── */
+  .neon-glow {
+    box-shadow:
+      0 0 5px rgba(11, 94, 215, 0.3),
+      0 0 15px rgba(11, 94, 215, 0.15),
+      0 0 30px rgba(11, 94, 215, 0.05);
+  }
+
+  .neon-glow-strong {
+    box-shadow:
+      0 0 5px rgba(11, 94, 215, 0.4),
+      0 0 20px rgba(11, 94, 215, 0.2),
+      0 0 40px rgba(11, 94, 215, 0.1),
+      0 0 80px rgba(11, 94, 215, 0.05);
+  }
+
+  /* ── Particle dot ── */
+  .particle {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: rgba(107, 163, 255, 0.5);
+    pointer-events: none;
+  }
+
+  /* ── Hover magnetic icon ── */
+  .icon-magnetic {
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  }
+
+  .icon-magnetic:hover {
+    transform: scale(1.1);
+  }
+
+  /* ── Section divider glow line ── */
+  .divider-glow {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--brand-blue), transparent);
+    opacity: 0.15;
+  }
+
+  /* ── Code card typing cursor ── */
+  .typing-cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    background: #6BA3FF;
+    margin-inline-start: 2px;
+    vertical-align: text-bottom;
+    animation: blink-caret 1s step-end infinite;
+  }
+
+  /* ── Enhanced card hover with gradient sweep ── */
+  .card-sweep {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card-sweep::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      to bottom right,
+      transparent 40%,
+      rgba(11, 94, 215, 0.03) 45%,
+      rgba(11, 94, 215, 0.06) 50%,
+      rgba(11, 94, 215, 0.03) 55%,
+      transparent 60%
+    );
+    transform: translateX(-100%) translateY(-100%);
+    transition: transform 0.8s ease;
+    pointer-events: none;
+  }
+
+  .card-sweep:hover::after {
+    transform: translateX(20%) translateY(20%);
+  }
+
+  /* ── Status pulse dot ── */
+  .pulse-dot {
+    position: relative;
+  }
+
+  .pulse-dot::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    border: 1px solid currentColor;
+    opacity: 0;
+    animation: pulse-ring 2s ease-out infinite;
+  }
+
+  /* ── Timeline ── */
+  .timeline-line {
+    position: absolute;
+    inset-inline-start: 15px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--brand-blue), transparent);
+    opacity: 0.2;
+  }
+
+  .timeline-dot {
+    position: relative;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--brand-blue);
+    box-shadow: 0 0 0 3px var(--brand-bg), 0 0 0 5px color-mix(in srgb, var(--brand-blue) 30%, transparent);
+    flex-shrink: 0;
+  }
+
+  /* ── Skill bar ── */
+  .skill-bar-track {
+    height: 4px;
+    border-radius: 2px;
+    background: var(--brand-panel-2);
+    overflow: hidden;
+  }
+
+  .skill-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--brand-blue), #6BA3FF);
+    transform-origin: left;
+    transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* ── Orbiting badge container ── */
+  .orbit-ring {
+    position: absolute;
+    inset: -40px;
+    border-radius: 50%;
+    border: 1px dashed rgba(107, 163, 255, 0.12);
+    animation: spin-slow 30s linear infinite;
+  }
+
+  .orbit-ring-2 {
+    position: absolute;
+    inset: -80px;
+    border-radius: 50%;
+    border: 1px dashed rgba(107, 163, 255, 0.06);
+    animation: spin-slow 45s linear infinite reverse;
   }
 
   @media (prefers-reduced-motion: reduce) {

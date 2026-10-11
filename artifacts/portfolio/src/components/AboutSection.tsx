@@ -6,10 +6,8 @@ import {
   Layers3,
   Lightbulb,
   MessageSquare,
-  ShieldCheck,
   Target,
   Timer,
-  Trophy,
   Users,
   User,
   Heart,
@@ -19,21 +17,21 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const fallbackSkills = [
-  { id: "fallback-react", name: "React / Next.js", nameAr: "React / Next.js", category: "Frontend", active: true },
-  { id: "fallback-ts", name: "TypeScript / JavaScript", nameAr: "TypeScript / JavaScript", category: "Frontend", active: true },
-  { id: "fallback-html", name: "HTML5 / CSS3", nameAr: "HTML5 / CSS3", category: "Frontend", active: true },
-  { id: "fallback-tailwind", name: "Tailwind CSS / UI Systems", nameAr: "Tailwind CSS / أنظمة الواجهات", category: "Frontend", active: true },
-  { id: "fallback-node", name: "Node.js / Express", nameAr: "Node.js / Express", category: "Backend", active: true },
-  { id: "fallback-php", name: "PHP / REST APIs", nameAr: "PHP / واجهات REST", category: "Backend", active: true },
-  { id: "fallback-postgres", name: "PostgreSQL / Drizzle ORM", nameAr: "PostgreSQL / Drizzle ORM", category: "Database", active: true },
-  { id: "fallback-mysql", name: "MySQL / MongoDB", nameAr: "MySQL / MongoDB", category: "Database", active: true },
-  { id: "fallback-git", name: "Git / GitHub", nameAr: "Git / GitHub", category: "Tools", active: true },
-  { id: "fallback-linux", name: "Linux / Nginx", nameAr: "Linux / Nginx", category: "Tools", active: true },
-  { id: "fallback-deploy", name: "Netlify / Railway / CI/CD", nameAr: "Netlify / Railway / CI/CD", category: "Tools", active: true },
-  { id: "fallback-security", name: "Security / CSP / CSRF / RBAC", nameAr: "الحماية / CSP / CSRF / RBAC", category: "Tools", active: true },
+  { id: "fallback-react", name: "React / Next.js", nameAr: "React / Next.js", category: "Frontend", active: true, level: 92 },
+  { id: "fallback-ts", name: "TypeScript / JavaScript", nameAr: "TypeScript / JavaScript", category: "Frontend", active: true, level: 90 },
+  { id: "fallback-html", name: "HTML5 / CSS3", nameAr: "HTML5 / CSS3", category: "Frontend", active: true, level: 95 },
+  { id: "fallback-tailwind", name: "Tailwind CSS / UI Systems", nameAr: "Tailwind CSS / أنظمة الواجهات", category: "Frontend", active: true, level: 90 },
+  { id: "fallback-node", name: "Node.js / Express", nameAr: "Node.js / Express", category: "Backend", active: true, level: 85 },
+  { id: "fallback-php", name: "PHP / REST APIs", nameAr: "PHP / واجهات REST", category: "Backend", active: true, level: 80 },
+  { id: "fallback-postgres", name: "PostgreSQL / Drizzle ORM", nameAr: "PostgreSQL / Drizzle ORM", category: "Database", active: true, level: 85 },
+  { id: "fallback-mysql", name: "MySQL / MongoDB", nameAr: "MySQL / MongoDB", category: "Database", active: true, level: 82 },
+  { id: "fallback-git", name: "Git / GitHub", nameAr: "Git / GitHub", category: "Tools", active: true, level: 88 },
+  { id: "fallback-linux", name: "Linux / Nginx", nameAr: "Linux / Nginx", category: "Tools", active: true, level: 78 },
+  { id: "fallback-deploy", name: "Netlify / Railway / CI/CD", nameAr: "Netlify / Railway / CI/CD", category: "Tools", active: true, level: 82 },
+  { id: "fallback-security", name: "Security / CSP / CSRF / RBAC", nameAr: "الحماية / CSP / CSRF / RBAC", category: "Tools", active: true, level: 75 },
 ];
 
-const softSkillIcons = [Trophy, Lightbulb, MessageSquare, Timer, Users, Heart];
+const softSkillIcons = [Lightbulb, Target, MessageSquare, Timer, Users, Heart];
 
 export function AboutSection() {
   const { data: skills, isLoading } = useListSkills();
@@ -60,8 +58,8 @@ export function AboutSection() {
   ];
 
   const languages = [
-    { name: t.about.languageArabic, level: t.about.languageArabicLevel, flag: "AR", isNative: true },
-    { name: t.about.languageEnglish, level: t.about.languageEnglishLevel, flag: "EN", isNative: false },
+    { name: t.about.languageArabic, level: t.about.languageArabicLevel, flag: "AR", isNative: true, percent: 100 },
+    { name: t.about.languageEnglish, level: t.about.languageEnglishLevel, flag: "EN", isNative: false, percent: 85 },
   ];
 
   const education = [
@@ -85,7 +83,11 @@ export function AboutSection() {
 
   return (
     <section id="about" className="brand-section relative overflow-hidden py-24 sm:py-28 md:py-32">
-      <div className="container mx-auto px-4 sm:px-6">
+      {/* Background decoration */}
+      <div className="absolute top-20 right-0 h-56 w-56 rounded-full bg-[var(--brand-blue)]/[0.03] blur-[80px] pointer-events-none" />
+      <div className="absolute bottom-20 left-0 h-44 w-44 rounded-full bg-[var(--brand-blue)]/[0.02] blur-[70px] pointer-events-none" />
+
+      <div className="container relative mx-auto px-4 sm:px-6">
 
         {/* Header */}
         <motion.div
@@ -107,7 +109,7 @@ export function AboutSection() {
           </div>
         </motion.div>
 
-        {/* Experience + Education */}
+        {/* Experience + Education — Timeline style */}
         <div className="mb-16 grid gap-8 lg:grid-cols-2">
           {/* Experience */}
           <motion.div
@@ -122,18 +124,29 @@ export function AboutSection() {
             </h3>
             <p className="brand-muted mb-6 text-sm">{t.about.experienceSubtitle}</p>
 
-            <div className="brand-panel card-lift relative rounded-xl p-7 sm:p-8">
-              <div className="absolute top-6 end-6">
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-[11px] font-bold text-emerald-500">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                  {t.about.experienceFreelancePeriod}
-                </span>
-              </div>
-              <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-lg border border-primary/15 bg-[var(--brand-tag-bg)] text-primary">
-                <Briefcase size={22} strokeWidth={1.8} />
-              </div>
-              <h4 className="brand-heading mb-2 text-lg font-bold">{t.about.experienceFreelanceRole}</h4>
-              <p className="brand-copy text-sm leading-7">{t.about.experienceFreelanceDesc}</p>
+            {/* Timeline item */}
+            <div className="relative ps-8">
+              <div className="timeline-line" />
+              <motion.div
+                initial={{ opacity: 0, x: -10 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: 0.2 }}
+                className="gradient-border card-sweep group relative rounded-xl p-7 sm:p-8"
+              >
+                <div className="timeline-dot absolute -start-8 top-8" />
+                <div className="absolute top-6 end-6">
+                  <span className="pulse-dot inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-[11px] font-bold text-emerald-500">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                    {t.about.experienceFreelancePeriod}
+                  </span>
+                </div>
+                <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-lg border border-primary/15 bg-[var(--brand-tag-bg)] text-primary transition-all duration-300 group-hover:shadow-[0_0_16px_rgba(11,94,215,0.12)]">
+                  <Briefcase size={22} strokeWidth={1.8} />
+                </div>
+                <h4 className="brand-heading mb-2 text-lg font-bold">{t.about.experienceFreelanceRole}</h4>
+                <p className="brand-copy text-sm leading-7">{t.about.experienceFreelanceDesc}</p>
+              </motion.div>
             </div>
           </motion.div>
 
@@ -150,29 +163,41 @@ export function AboutSection() {
             </h3>
             <p className="brand-muted mb-6 text-sm">{t.about.educationSubtitle}</p>
 
-            <div className="space-y-4">
-              {education.map((item) => (
-                <div key={item.name} className="brand-panel card-lift rounded-xl p-6 sm:p-7">
-                  <div className="mb-4 flex items-start justify-between gap-4">
-                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-primary/15 bg-[var(--brand-tag-bg)] text-primary">
-                      <item.icon size={20} strokeWidth={1.8} />
+            {/* Timeline items */}
+            <div className="relative ps-8">
+              <div className="timeline-line" />
+              <div className="space-y-6">
+                {education.map((item, i) => (
+                  <motion.div
+                    key={item.name}
+                    initial={{ opacity: 0, x: -10 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: 0.15 + i * 0.1 }}
+                    className="gradient-border card-sweep group relative rounded-xl p-6 sm:p-7"
+                  >
+                    <div className="timeline-dot absolute -start-8 top-7" />
+                    <div className="mb-4 flex items-start justify-between gap-4">
+                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-primary/15 bg-[var(--brand-tag-bg)] text-primary transition-all duration-300 group-hover:shadow-[0_0_12px_rgba(11,94,215,0.1)]">
+                        <item.icon size={20} strokeWidth={1.8} />
+                      </div>
+                      {item.current ? (
+                        <span className="pulse-dot inline-flex items-center gap-1.5 rounded-full border border-sky-500/30 bg-sky-500/10 px-3 py-1 text-[11px] font-bold text-sky-500">
+                          <span className="h-1.5 w-1.5 rounded-full bg-sky-500" />
+                          {item.period}
+                        </span>
+                      ) : (
+                        <span className="brand-muted text-xs font-medium">{item.period}</span>
+                      )}
                     </div>
-                    {item.current ? (
-                      <span className="inline-flex items-center gap-1.5 rounded-full border border-sky-500/30 bg-sky-500/10 px-3 py-1 text-[11px] font-bold text-sky-500">
-                        <span className="h-1.5 w-1.5 rounded-full bg-sky-500" />
-                        {item.period}
-                      </span>
-                    ) : (
-                      <span className="brand-muted text-xs font-medium">{item.period}</span>
-                    )}
-                  </div>
-                  <h4 className="brand-heading mb-1 text-base font-bold">{item.name}</h4>
-                  <p className="text-sm font-medium text-primary">{item.degree}</p>
-                  {item.desc ? (
-                    <p className="brand-copy mt-2 text-sm leading-6">{item.desc}</p>
-                  ) : null}
-                </div>
-              ))}
+                    <h4 className="brand-heading mb-1 text-base font-bold">{item.name}</h4>
+                    <p className="text-sm font-medium text-primary">{item.degree}</p>
+                    {item.desc ? (
+                      <p className="brand-copy mt-2 text-sm leading-6">{item.desc}</p>
+                    ) : null}
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </motion.div>
         </div>
@@ -193,12 +218,28 @@ export function AboutSection() {
             <p className="brand-muted mb-6 text-sm">{t.about.languagesSubtitle}</p>
 
             <div className="grid grid-cols-2 gap-4">
-              {languages.map((lang) => (
-                <div key={lang.name} className="brand-panel card-lift rounded-xl p-6 text-center">
-                  <div className="mb-4 text-4xl font-bold text-[var(--brand-panel-2)] select-none">
+              {languages.map((lang, i) => (
+                <motion.div
+                  key={lang.name}
+                  initial={{ opacity: 0, y: 12 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: 0.1 + i * 0.1 }}
+                  className="gradient-border card-sweep rounded-xl p-6 text-center"
+                >
+                  <div className="mb-4 text-5xl font-bold bg-gradient-to-br from-[var(--brand-blue)]/20 to-[var(--brand-blue)]/5 bg-clip-text text-transparent select-none">
                     {lang.flag}
                   </div>
-                  <h4 className="brand-heading mb-1 text-lg font-bold">{lang.name}</h4>
+                  <h4 className="brand-heading mb-3 text-lg font-bold">{lang.name}</h4>
+                  <div className="skill-bar-track mb-2">
+                    <motion.div
+                      className="skill-bar-fill"
+                      initial={{ scaleX: 0 }}
+                      whileInView={{ scaleX: lang.percent / 100 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 1, delay: 0.3 + i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                    />
+                  </div>
                   <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-bold ${
                     lang.isNative
                       ? "border border-primary/30 bg-[var(--brand-tag-bg)] text-primary"
@@ -206,7 +247,7 @@ export function AboutSection() {
                   }`}>
                     {lang.level}
                   </span>
-                </div>
+                </motion.div>
               ))}
             </div>
           </motion.div>
@@ -225,20 +266,27 @@ export function AboutSection() {
             <p className="brand-muted mb-6 text-sm">{t.about.softSkillsSubtitle}</p>
 
             <div className="grid grid-cols-2 gap-3 sm:gap-4">
-              {softSkills.map((skill) => (
-                <div key={skill.title} className="brand-panel card-lift rounded-xl p-5">
-                  <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-lg border border-primary/15 bg-[var(--brand-tag-bg)] text-primary">
-                    <skill.icon size={17} strokeWidth={1.8} />
+              {softSkills.map((skill, i) => (
+                <motion.div
+                  key={skill.title}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.35, delay: 0.05 + i * 0.05 }}
+                  className="gradient-border card-sweep rounded-xl p-5"
+                >
+                  <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg border border-primary/15 bg-[var(--brand-tag-bg)] text-primary transition-all duration-300 hover:shadow-[0_0_12px_rgba(11,94,215,0.1)] hover:scale-105">
+                    <skill.icon size={18} strokeWidth={1.8} />
                   </div>
                   <h4 className="brand-heading mb-1 text-sm font-bold">{skill.title}</h4>
                   <p className="brand-muted text-xs leading-5">{skill.text}</p>
-                </div>
+                </motion.div>
               ))}
             </div>
           </motion.div>
         </div>
 
-        {/* Technical Skills */}
+        {/* Technical Skills with animated bars */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -265,19 +313,40 @@ export function AboutSection() {
             </div>
           ) : (
             <div className="mt-6 grid gap-7 sm:grid-cols-2 lg:grid-cols-4">
-              {Object.entries(skillGroups).map(([category, items]) => (
+              {Object.entries(skillGroups).map(([category, items], gi) => (
                 <div key={category}>
-                  <h4 className="brand-eyebrow mb-3">{category}</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {items.map((skill) => {
+                  <h4 className="brand-eyebrow mb-4">{category}</h4>
+                  <div className="space-y-3">
+                    {items.map((skill, si) => {
                       const displayName = (lang === "ar" && skill.nameAr) ? skill.nameAr : skill.name;
+                      const level = skill.level || 80;
                       return (
-                        <span
+                        <motion.div
                           key={skill.id}
-                          className="rounded-lg border border-[var(--brand-line)] bg-[var(--brand-panel-2)] px-3 py-1.5 text-[13px] text-[var(--brand-text)] transition-colors hover:border-primary/40 hover:text-primary"
+                          initial={{ opacity: 0, x: -8 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 0.35, delay: gi * 0.08 + si * 0.04 }}
+                          className="group"
                         >
-                          {displayName}
-                        </span>
+                          <div className="mb-1.5 flex items-center justify-between">
+                            <span className="text-[13px] text-[var(--brand-text)] transition-colors group-hover:text-[var(--brand-blue)]">
+                              {displayName}
+                            </span>
+                            <span className="font-mono text-[10px] text-[var(--brand-muted)] opacity-0 transition-opacity group-hover:opacity-100">
+                              {level}%
+                            </span>
+                          </div>
+                          <div className="skill-bar-track">
+                            <motion.div
+                              className="skill-bar-fill"
+                              initial={{ scaleX: 0 }}
+                              whileInView={{ scaleX: level / 100 }}
+                              viewport={{ once: true }}
+                              transition={{ duration: 0.8, delay: 0.2 + gi * 0.08 + si * 0.04, ease: [0.22, 1, 0.36, 1] }}
+                            />
+                          </div>
+                        </motion.div>
                       );
                     })}
                   </div>
