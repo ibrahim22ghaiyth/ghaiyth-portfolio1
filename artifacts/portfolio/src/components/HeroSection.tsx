@@ -61,16 +61,16 @@ export function HeroSection() {
             </div>
 
             <h1 className="max-w-4xl text-4xl font-black leading-[1.1] text-[var(--brand-heading)] sm:text-5xl md:text-6xl lg:text-[4.65rem]">
-              <span className="block">{isAr ? "مواقع وأنظمة ويب" : "Websites and systems"}</span>
-              <span className="dev-title block">{isAr ? "تحوّل الزوار" : "that turn visitors"}</span>
-              <span className="block">{isAr ? "إلى عملاء" : "into clients"}</span>
+              <span className="block">{isAr ? "حوّل زوار موقعك" : "Turn your visitors"}</span>
+              <span className="dev-title block">{isAr ? "إلى عملاء" : "into paying"}</span>
+              <span className="block">{isAr ? "يشترون منك" : "customers"}</span>
             </h1>
 
             <div className="mt-6 flex flex-wrap items-center gap-3">
               <span className="rounded-sm border border-[var(--brand-line)] bg-[var(--brand-panel)] px-3 py-1.5 font-mono text-xs text-[var(--brand-text-2)]">
                 {heroName}
               </span>
-              <span className="rounded-sm border border-cyan-300/25 bg-cyan-300/8 px-3 py-1.5 font-mono text-xs text-cyan-200">
+              <span className="rounded-sm border border-[var(--brand-blue)]/25 bg-[var(--brand-blue)]/8 px-3 py-1.5 font-mono text-xs text-[var(--brand-blue)]">
                 {t.hero.title}
               </span>
             </div>
@@ -80,30 +80,30 @@ export function HeroSection() {
             </p>
 
             <div className="mt-8 grid max-w-xl grid-cols-1 gap-3 min-[460px]:grid-cols-2">
-              <button
-                onClick={() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })}
+              <a
+                href={`https://wa.me/9647805808975?text=${encodeURIComponent(
+                  isAr
+                    ? "مرحباً إبراهيم، أريد أطلب موقع أو نظام ويب. ممكن تفاصيل؟"
+                    : "Hello Ibrahim, I want to order a website or web system. Can I get details?",
+                )}`}
+                target="_blank"
+                rel="noreferrer"
                 className="brand-button btn-glow inline-flex min-h-[52px] items-center justify-center gap-2.5 rounded-sm px-6 py-3 text-sm font-bold"
               >
-                <Play size={17} /> {t.hero.viewProjects}
-              </button>
+                <MessageCircle size={17} /> {t.hero.whatsapp}
+              </a>
               <button
                 onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
                 className="btn-ghost-dark inline-flex min-h-[52px] items-center justify-center gap-2.5 rounded-sm px-6 py-3 text-sm font-bold"
               >
                 {t.hero.hireMe} <ArrowRight size={17} />
               </button>
-              <a
-                href={`https://wa.me/9647805808975?text=${encodeURIComponent(
-                  isAr
-                    ? "مرحباً إبراهيم، أريد مناقشة مشروع ويب جديد."
-                    : "Hello Ibrahim, I want to discuss a new web project.",
-                )}`}
-                target="_blank"
-                rel="noreferrer"
+              <button
+                onClick={() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })}
                 className="btn-ghost-dark inline-flex min-h-[52px] items-center justify-center gap-2.5 rounded-sm px-6 py-3 text-sm font-bold"
               >
-                <MessageCircle size={17} /> {t.hero.whatsapp}
-              </a>
+                <Play size={17} /> {t.hero.viewProjects}
+              </button>
               <a
                 href="/ibrahim-ghaiyth-cv.pdf"
                 download="Ibrahim-Ghaiyth-CV.pdf"
