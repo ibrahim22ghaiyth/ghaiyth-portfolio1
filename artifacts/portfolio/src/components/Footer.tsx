@@ -66,36 +66,36 @@ export function Footer() {
       <div className="container relative z-10 mx-auto grid gap-10 px-4 py-16 sm:px-6 sm:grid-cols-2 lg:grid-cols-[1.2fr_0.7fr_0.9fr] lg:items-start">
         <div>
           <div className="glass mb-5 flex h-24 w-28 items-center justify-center rounded-xl">
-            <BrandLogo className="h-20 w-20 sm:h-24 sm:w-24" eager variant="dark" />
+            <BrandLogo className="h-20 w-20 sm:h-24 sm:w-24" eager />
           </div>
-          <p className="max-w-xs text-sm leading-6 text-white/35">{t.footer.summary}</p>
-          <div className="mt-6 h-px w-16 bg-gradient-to-r from-[#3B82F6]/40 to-transparent" />
+          <p className="max-w-xs text-sm leading-6 text-[var(--brand-text-2)]">{t.footer.summary}</p>
+          <div className="mt-6 h-px w-16 bg-gradient-to-r from-[var(--brand-blue)]/40 to-transparent" />
         </div>
 
         <div>
-          <h2 className="mb-5 text-[11px] font-semibold uppercase tracking-[0.16em] text-white/25">{t.footer.navigation}</h2>
+          <h2 className="mb-5 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--brand-muted)]">{t.footer.navigation}</h2>
           <nav className="grid gap-3.5">
             {links.map(([id, label]) => (
               <button
                 key={id}
                 onClick={() => scrollTo(id)}
-                className="group w-fit text-sm text-white/45 transition-all duration-300 hover:text-white"
+                className="group w-fit text-sm text-[var(--brand-text-2)] transition-all duration-300 hover:text-[var(--brand-heading)]"
               >
                 <span className="inline-flex items-center gap-2">
-                  <span className="h-px w-0 bg-[#3B82F6] transition-all duration-300 group-hover:w-3" />
+                  <span className="h-px w-0 bg-[var(--brand-blue)] transition-all duration-300 group-hover:w-3" />
                   {label}
                 </span>
               </button>
             ))}
-            <button onClick={() => goTo("/products")} className="group w-fit text-sm text-white/45 transition-all duration-300 hover:text-white">
+            <button onClick={() => goTo("/products")} className="group w-fit text-sm text-[var(--brand-text-2)] transition-all duration-300 hover:text-[var(--brand-heading)]">
               <span className="inline-flex items-center gap-2">
-                <span className="h-px w-0 bg-[#3B82F6] transition-all duration-300 group-hover:w-3" />
+                <span className="h-px w-0 bg-[var(--brand-blue)] transition-all duration-300 group-hover:w-3" />
                 {t.nav.products}
               </span>
             </button>
-            <button onClick={() => goTo("/blog")} className="group w-fit text-sm text-white/45 transition-all duration-300 hover:text-white">
+            <button onClick={() => goTo("/blog")} className="group w-fit text-sm text-[var(--brand-text-2)] transition-all duration-300 hover:text-[var(--brand-heading)]">
               <span className="inline-flex items-center gap-2">
-                <span className="h-px w-0 bg-[#3B82F6] transition-all duration-300 group-hover:w-3" />
+                <span className="h-px w-0 bg-[var(--brand-blue)] transition-all duration-300 group-hover:w-3" />
                 {t.nav.blog}
               </span>
             </button>
@@ -103,18 +103,18 @@ export function Footer() {
         </div>
 
         <div>
-          <h2 className="mb-5 text-[11px] font-semibold uppercase tracking-[0.16em] text-white/25">{t.footer.contact}</h2>
-          <div className="grid justify-items-start gap-3.5 text-sm text-white/45 rtl:justify-items-end">
-            <a href="mailto:info@ibrahimig.com" className="group inline-flex items-center gap-3 transition-colors hover:text-white">
-              <span dir="ltr">info@ibrahimig.com</span>
-              <Mail size={15} className="shrink-0 text-white/30 transition-colors group-hover:text-[#3B82F6]" />
+          <h2 className="mb-5 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--brand-muted)]">{t.footer.contact}</h2>
+          <div className="grid w-full max-w-[22rem] gap-3.5 text-sm text-[var(--brand-text-2)]">
+            <a href="mailto:info@ibrahimig.com" className="group grid grid-cols-[1.25rem_1fr] items-center gap-3 rounded-md border border-[var(--brand-line)] bg-[var(--brand-panel)] px-3 py-2.5 transition-colors hover:text-[var(--brand-heading)]">
+              <Mail size={15} className="shrink-0 text-[var(--brand-muted)] transition-colors group-hover:text-[var(--brand-blue)]" />
+              <span dir="ltr" className="text-start">info@ibrahimig.com</span>
             </a>
-            <a href="https://wa.me/9647805808975" target="_blank" rel="noreferrer" className="group inline-flex items-center gap-3 transition-colors hover:text-white">
-              <span dir="ltr">+964 7805808975</span>
-              <MessageCircle size={15} className="shrink-0 text-white/30 transition-colors group-hover:text-[#3B82F6]" />
+            <a href="https://wa.me/9647805808975" target="_blank" rel="noreferrer" className="group grid grid-cols-[1.25rem_1fr] items-center gap-3 rounded-md border border-[var(--brand-line)] bg-[var(--brand-panel)] px-3 py-2.5 transition-colors hover:text-[var(--brand-heading)]">
+              <MessageCircle size={15} className="shrink-0 text-[var(--brand-muted)] transition-colors group-hover:text-[var(--brand-blue)]" />
+              <span dir="ltr" className="text-start">+964 7805808975</span>
             </a>
           </div>
-          <h3 className="mb-4 mt-8 text-[11px] font-semibold uppercase tracking-[0.16em] text-white/25">{t.footer.social}</h3>
+          <h3 className="mb-4 mt-8 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--brand-muted)]">{t.footer.social}</h3>
           <div className="flex gap-3">
             {[
               { icon: Github, href: "https://github.com/ibrahim22ghaiyth", label: "GitHub" },
@@ -127,7 +127,7 @@ export function Footer() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label={label}
-                className="glass icon-magnetic grid h-11 w-11 place-items-center rounded-xl text-white/40 hover:border-white/25 hover:text-white hover:shadow-[0_0_16px_rgba(59,130,246,0.12)]"
+                className="glass icon-magnetic grid h-11 w-11 place-items-center rounded-xl text-[var(--brand-text-2)] hover:border-[var(--brand-blue)]/25 hover:text-[var(--brand-heading)] hover:shadow-[0_0_16px_rgba(34,211,238,0.12)]"
               >
                 <Icon size={17} />
               </a>
@@ -137,9 +137,9 @@ export function Footer() {
       </div>
 
       <div className="relative z-10 border-t border-white/8">
-        <div className="container mx-auto flex flex-col items-center justify-between gap-3 px-4 py-5 text-center text-xs text-white/25 sm:flex-row sm:px-6">
+        <div className="container mx-auto flex flex-col items-center justify-between gap-3 px-4 py-5 text-center text-xs text-[var(--brand-muted)] sm:flex-row sm:px-6">
           <p>&copy; {new Date().getFullYear()} Ibrahim Ghaiyth. {t.footer.rights}</p>
-          <button onClick={() => scrollTo("home")} className="group inline-flex items-center gap-2 transition-colors hover:text-white/60">
+          <button onClick={() => scrollTo("home")} className="group inline-flex items-center gap-2 transition-colors hover:text-[var(--brand-heading)]">
             {t.footer.backToTop}
             <ArrowUp size={14} className="transition-transform duration-300 group-hover:-translate-y-0.5" />
           </button>

@@ -63,7 +63,7 @@ export function Navigation() {
   return (
     <>
       <nav
-        className="fixed inset-x-0 top-0 z-50 border-b border-white/8 bg-[#0A0D14]/85 backdrop-blur-md"
+        className="fixed inset-x-0 top-0 z-50 border-b border-[var(--brand-line)] bg-[var(--brand-bg)]/85 backdrop-blur-md"
         dir={lang === "ar" ? "rtl" : "ltr"}
       >
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
@@ -72,7 +72,7 @@ export function Navigation() {
             aria-label={t.nav.home}
             className="grid h-10 w-14 shrink-0 place-items-center overflow-hidden rounded-md border border-white/12 bg-white/8 transition-colors"
           >
-            <BrandLogo className="h-9 w-12" eager variant="dark" />
+            <BrandLogo className="h-9 w-12" eager />
           </button>
 
           <div className="hidden xl:flex flex-1 items-center justify-center gap-0.5 px-2">
@@ -90,8 +90,8 @@ export function Navigation() {
                   className={cn(
                     "nav-link relative whitespace-nowrap px-3 py-2 text-sm transition-colors duration-200",
                     active
-                      ? "font-medium text-white after:absolute after:inset-x-3 after:-bottom-0.5 after:h-0.5 after:bg-[#3B82F6]"
-                      : "text-white/55 hover:text-white",
+                      ? "font-medium text-[var(--brand-heading)] after:absolute after:inset-x-3 after:-bottom-0.5 after:h-0.5 after:bg-[var(--brand-blue)]"
+                      : "text-[var(--brand-text-2)] hover:text-[var(--brand-heading)]",
                   )}
                 >
                   {link.label}
@@ -105,7 +105,7 @@ export function Navigation() {
               onClick={toggleTheme}
               title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
               aria-label={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
-              className="nav-icon-btn flex h-9 w-9 items-center justify-center rounded-md border border-white/12 bg-white/5 text-white/70 transition-colors hover:border-white/30 hover:text-white"
+            className="nav-icon-btn flex h-9 w-9 items-center justify-center rounded-md border border-[var(--brand-line)] bg-[var(--brand-panel)] text-[var(--brand-text-2)] transition-colors hover:border-[var(--brand-blue)] hover:text-[var(--brand-heading)]"
             >
               {theme === "dark" ? <Sun size={15} /> : <Moon size={15} />}
             </button>
@@ -117,7 +117,7 @@ export function Navigation() {
               }}
               title={lang === "en" ? "Switch to Arabic" : "Switch to English"}
               aria-label={lang === "en" ? "Switch to Arabic" : "Switch to English"}
-              className="nav-icon-btn flex items-center gap-1.5 rounded-md border border-white/12 bg-white/5 px-3 py-2 text-xs font-medium text-white/70 transition-colors hover:border-white/30 hover:text-white"
+              className="nav-icon-btn flex items-center gap-1.5 rounded-md border border-[var(--brand-line)] bg-[var(--brand-panel)] px-3 py-2 text-xs font-medium text-[var(--brand-text-2)] transition-colors hover:border-[var(--brand-blue)] hover:text-[var(--brand-heading)]"
             >
               <Languages size={14} />
               {lang === "en" ? "العربية" : "English"}
@@ -125,7 +125,7 @@ export function Navigation() {
           </div>
 
           <button
-            className="p-1 xl:hidden ms-1 text-white transition-colors"
+            className="p-1 xl:hidden ms-1 text-[var(--brand-heading)] transition-colors"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
             aria-expanded={mobileMenuOpen}
@@ -136,7 +136,7 @@ export function Navigation() {
       </nav>
 
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-40 bg-[#0A0D14] xl:hidden flex flex-col items-center justify-center gap-6">
+        <div className="fixed inset-0 z-40 bg-[var(--brand-bg)] xl:hidden flex flex-col items-center justify-center gap-6">
           {NAV_LINKS.map((link) => (
             <button
               key={link.id}
@@ -144,8 +144,8 @@ export function Navigation() {
               className={cn(
                 "text-2xl font-medium tracking-wide transition-all",
                 (link.type === "route" ? currentRouteKey === link.href : currentRouteKey === "/" && activeSection === link.id)
-                  ? "text-[#3B82F6]"
-                  : "text-white/50 hover:text-white",
+                  ? "text-[var(--brand-blue)]"
+                  : "text-[var(--brand-text-2)] hover:text-[var(--brand-heading)]",
               )}
             >
               {link.label}
@@ -155,7 +155,7 @@ export function Navigation() {
             <button
               onClick={toggleTheme}
               aria-label={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
-              className="flex h-10 w-10 items-center justify-center rounded-md border border-white/12 bg-white/5 text-white/70"
+              className="flex h-10 w-10 items-center justify-center rounded-md border border-[var(--brand-line)] bg-[var(--brand-panel)] text-[var(--brand-text-2)]"
             >
               {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
             </button>
@@ -166,7 +166,7 @@ export function Navigation() {
                 toggleLang();
                 setMobileMenuOpen(false);
               }}
-              className="flex items-center gap-2 rounded-md border border-white/12 bg-white/5 px-4 py-2 text-sm font-medium text-white/70"
+              className="flex items-center gap-2 rounded-md border border-[var(--brand-line)] bg-[var(--brand-panel)] px-4 py-2 text-sm font-medium text-[var(--brand-text-2)]"
             >
               <Languages size={16} />
               {lang === "en" ? "العربية" : "English"}

@@ -55,15 +55,6 @@ function ensureDefaultBlogPosts() {
           tags: [...post.tags],
           publishedAt: new Date(),
         });
-      } else {
-        await db
-          .update(blogPostsTable)
-          .set({
-            ...post,
-            tags: [...post.tags],
-            updatedAt: new Date(),
-          })
-          .where(eq(blogPostsTable.id, existing.id));
       }
     }
   })().catch((error) => {

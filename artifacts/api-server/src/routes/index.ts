@@ -64,212 +64,110 @@ if (databaseUrl) {
   router.use(productsRouter);
   router.use(testimonialsRouter);
 } else {
-  const previewServices = [
-    {
-      id: 1,
-      title: "Web Development",
-      description: "Responsive websites and dashboards built with React, Tailwind, Node.js, and clean API integrations.",
-      titleAr: "تطوير مواقع الويب",
-      descriptionAr: "مواقع ولوحات تحكم متجاوبة باستخدام React وTailwind وNode.js وربط API بشكل مرتب.",
-      icon: "Code2",
-      order: 1,
-      active: true,
-    },
-    {
-      id: 2,
-      title: "Backend Systems",
-      description: "Secure server APIs, authentication, database schemas, admin tools, and production-ready workflows.",
-      titleAr: "أنظمة الباكند",
-      descriptionAr: "واجهات API آمنة، تسجيل دخول، قواعد بيانات، أدوات إدارة، وتجهيزات مناسبة للإنتاج.",
-      icon: "Server",
-      order: 2,
-      active: true,
-    },
-    {
-      id: 3,
-      title: "Portfolio & Business Sites",
-      description: "Personal and business websites with contact flows, project showcases, multilingual content, and admin editing.",
-      titleAr: "مواقع شخصية وتجارية",
-      descriptionAr: "مواقع شخصية وتجارية مع نماذج تواصل، عرض مشاريع، دعم للغتين، وتعديل من لوحة الإدارة.",
-      icon: "Briefcase",
-      order: 3,
-      active: true,
-    },
-    {
-      id: 4,
-      title: "Maintenance & Fixes",
-      description: "Bug fixing, performance cleanup, deployment help, and long-term improvements for existing projects.",
-      titleAr: "صيانة وإصلاح مشاكل",
-      descriptionAr: "إصلاح أخطاء، تحسين أداء، مساعدة بالنشر، وتطوير مستمر للمشاريع الموجودة.",
-      icon: "Wrench",
-      order: 4,
-      active: true,
-    },
-  ];
+  const { loadState, saveState, nextId } = await import("../lib/file-store");
+  const state = loadState();
 
-  const previewSkills = [
-    { id: 1, name: "React / TypeScript", nameAr: "React / TypeScript", percentage: 92, category: "Frontend", order: 1, active: true },
-    { id: 2, name: "Node.js / Express", nameAr: "Node.js / Express", percentage: 88, category: "Backend", order: 2, active: true },
-    { id: 3, name: "PostgreSQL / Drizzle", nameAr: "PostgreSQL / Drizzle", percentage: 82, category: "Database", order: 3, active: true },
-    { id: 4, name: "Tailwind CSS", nameAr: "Tailwind CSS", percentage: 90, category: "Frontend", order: 4, active: true },
-    { id: 5, name: "Deployment", nameAr: "النشر والاستضافة", percentage: 78, category: "Ops", order: 5, active: true },
-  ];
+  if (state.services.length === 0) {
+    state.services = [
+      {
+        id: 1,
+        title: "Web Development",
+        description: "Responsive websites and dashboards built with React, Tailwind, Node.js, and clean API integrations.",
+        titleAr: "تطوير مواقع الويب",
+        descriptionAr: "مواقع ولوحات تحكم متجاوبة باستخدام React وTailwind وNode.js وربط API بشكل مرتب.",
+        icon: "Code2",
+        order: 1,
+        active: true,
+      },
+      {
+        id: 2,
+        title: "Backend Systems",
+        description: "Secure server APIs, authentication, database schemas, admin tools, and production-ready workflows.",
+        titleAr: "أنظمة الباكند",
+        descriptionAr: "واجهات API آمنة، تسجيل دخول، قواعد بيانات، أدوات إدارة، وتجهيزات مناسبة للإنتاج.",
+        icon: "Server",
+        order: 2,
+        active: true,
+      },
+      {
+        id: 3,
+        title: "Portfolio & Business Sites",
+        description: "Personal and business websites with contact flows, project showcases, multilingual content, and admin editing.",
+        titleAr: "مواقع شخصية وتجارية",
+        descriptionAr: "مواقع شخصية وتجارية مع نماذج تواصل، عرض مشاريع، دعم للغتين، وتعديل من لوحة الإدارة.",
+        icon: "Briefcase",
+        order: 3,
+        active: true,
+      },
+      {
+        id: 4,
+        title: "Maintenance & Fixes",
+        description: "Bug fixing, performance cleanup, deployment help, and long-term improvements for existing projects.",
+        titleAr: "صيانة وإصلاح مشاكل",
+        descriptionAr: "إصلاح أخطاء، تحسين أداء، مساعدة بالنشر، وتطوير مستمر للمشاريع الموجودة.",
+        icon: "Wrench",
+        order: 4,
+        active: true,
+      },
+    ];
+    state.nextIds.service = 5;
+  }
 
-  const previewProjects = projectArchive.map((project, index) => ({
-    id: index + 1,
-    ...project,
-  }));
+  if (state.skills.length === 0) {
+    state.skills = [
+      { id: 1, name: "React / TypeScript", nameAr: "React / TypeScript", percentage: 92, category: "Frontend", order: 1, active: true },
+      { id: 2, name: "Node.js / Express", nameAr: "Node.js / Express", percentage: 88, category: "Backend", order: 2, active: true },
+      { id: 3, name: "PostgreSQL / Drizzle", nameAr: "PostgreSQL / Drizzle", percentage: 82, category: "Database", order: 3, active: true },
+      { id: 4, name: "Tailwind CSS", nameAr: "Tailwind CSS", percentage: 90, category: "Frontend", order: 4, active: true },
+      { id: 5, name: "Deployment", nameAr: "النشر والاستضافة", percentage: 78, category: "Ops", order: 5, active: true },
+    ];
+    state.nextIds.skill = 6;
+  }
 
-  type PreviewProduct = {
-    id: number;
-    slug: string;
-    title: string;
-    description: string;
-    titleAr: string | null;
-    descriptionAr: string | null;
-    tags: string[];
-    priceLabel: string | null;
-    imageUrl: string | null;
-    requestUrl: string | null;
-    template: string;
-    purchaseLabel: string | null;
-    purchaseNote: string | null;
-    deliveryType: string;
-    featured: boolean;
-    order: number;
-    active: boolean;
-  };
+  if (state.projects.length === 0) {
+    state.projects = projectArchive.map((project, index) => ({
+      id: index + 1,
+      ...project,
+    }));
+    state.nextIds.project = projectArchive.length + 1;
+  }
 
-  let nextPreviewProductId = defaultProducts.length + 1;
-  const previewProducts: PreviewProduct[] = defaultProducts.map((product, index) => ({
-    id: index + 1,
-    ...product,
-    tags: [...product.tags],
-  }));
+  if (state.products.length === 0) {
+    state.products = defaultProducts.map((product, index) => ({
+      id: index + 1,
+      ...product,
+      tags: [...product.tags],
+    }));
+    state.nextIds.product = defaultProducts.length + 1;
+  }
 
-  const previewContent = [
-    { key: "preview_notice", value: "Running in local preview mode without DATABASE_URL.", type: "text" },
-  ];
+  if (state.content.length === 0) {
+    state.content = [
+      { key: "preview_notice", value: "Running in local preview mode without DATABASE_URL. Changes are saved to a local file.", type: "text" },
+    ];
+  }
 
-  type PreviewBlogPost = {
-    id: number;
-    title: string;
-    titleAr: string | null;
-    excerpt: string;
-    excerptAr: string | null;
-    content: string;
-    contentAr: string | null;
-    slug: string;
-    coverImageUrl: string | null;
-    tags: string[];
-    featured: boolean;
-    order: number;
-    active: boolean;
-    publishedAt: string;
-    createdAt: string;
-    updatedAt: string;
-  };
-
-  let nextPreviewBlogPostId = 3;
-  const previewBlogPosts: PreviewBlogPost[] = [
-    {
-      id: 1,
-      title: "Why persistent data matters in portfolio systems",
-      titleAr: "لماذا استمرارية البيانات مهمة في أنظمة البورتفوليو",
-      excerpt: "A short beta note about keeping messages, visitors, and admin content alive after every deployment.",
-      excerptAr: "ملاحظة بيتا عن الحفاظ على الرسائل والزوار ومحتوى الأدمن بعد كل تحديث.",
-      content: "Production websites should never rely on temporary memory storage for business data.",
-      contentAr: "المواقع الإنتاجية لا يجب أن تعتمد على الذاكرة المؤقتة لحفظ بيانات العمل.",
-      slug: "persistent-data-portfolio-systems",
-      coverImageUrl: "/project-covers/ig-portfolio-admin-system.svg",
-      tags: ["PostgreSQL", "Admin", "Deployment"],
-      featured: true,
-      order: 1,
-      active: true,
-      publishedAt: new Date().toISOString(),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 2,
-      title: "Building client-ready dashboards",
-      titleAr: "بناء لوحات تحكم جاهزة للعملاء",
-      excerpt: "A beta archive for notes about admin panels, analytics, content editing, and secure workflows.",
-      excerptAr: "أرشيف بيتا لملاحظات عن لوحات الإدارة والتحليلات وتحرير المحتوى ومسارات العمل الآمنة.",
-      content: "A dashboard is useful when it makes repeated work faster and safer.",
-      contentAr: "لوحة التحكم تكون مفيدة عندما تجعل العمل المتكرر أسرع وأكثر أماناً.",
-      slug: "client-ready-dashboards",
-      coverImageUrl: "/project-covers/analytics-admin-console.svg",
-      tags: ["Dashboards", "UX", "Systems"],
-      featured: false,
-      order: 2,
-      active: true,
-      publishedAt: new Date().toISOString(),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-  ];
-
-  type PreviewTestimonial = {
-    id: number;
-    clientName: string;
-    clientNameAr: string | null;
-    company: string;
-    companyAr: string | null;
-    feedback: string;
-    feedbackAr: string | null;
-    projectName: string | null;
-    projectNameAr: string | null;
-    rating: number;
-    order: number;
-    active: boolean;
-  };
-
-  let nextPreviewTestimonialId = 1;
-  const previewTestimonials: PreviewTestimonial[] = [];
-
-  type PreviewMessage = {
-    id: number;
-    name: string;
-    email: string;
-    subject: string;
-    message: string;
-    status: "unread" | "read" | "replied" | "archived";
-    createdAt: string;
-  };
-
-  let nextPreviewMessageId = 1;
-  const previewMessages: PreviewMessage[] = [
-    {
-      id: nextPreviewMessageId++,
-      name: "Preview Client",
-      email: "client@example.com",
-      subject: "Example contact request",
-      message: "This is a local preview message. New contact form submissions will appear here while the API server is running.",
-      status: "unread",
-      createdAt: new Date().toISOString(),
-    },
-  ];
+  saveState(state);
 
   router.get("/services", (_req, res) => {
-    res.json(previewServices);
+    res.json(state.services);
   });
 
   router.get("/skills", (_req, res) => {
-    res.json(previewSkills);
+    res.json(state.skills);
   });
 
   router.get("/projects", (_req, res) => {
-    res.json(previewProjects);
+    res.json(state.projects);
   });
 
   router.get("/products", (_req, res) => {
-    res.json([...previewProducts].sort((a, b) => a.order - b.order || a.id - b.id));
+    res.json([...state.products].sort((a, b) => a.order - b.order || a.id - b.id));
   });
 
   router.get("/products/:slugOrId", (req, res) => {
     const raw = String(req.params.slugOrId || "");
-    const product = previewProducts.find((item) => item.active && (item.slug === raw || String(item.id) === raw));
+    const product = state.products.find((item) => item.active && (item.slug === raw || String(item.id) === raw));
     if (!product) {
       res.status(404).json({ error: "Product not found" });
       return;
@@ -278,22 +176,21 @@ if (databaseUrl) {
   });
 
   router.get("/testimonials", (_req, res) => {
-    res.json(previewTestimonials.filter((item) => item.active).sort((a, b) => a.order - b.order || a.id - b.id));
+    res.json(state.testimonials.filter((item) => item.active).sort((a, b) => a.order - b.order || a.id - b.id));
   });
 
   router.get("/admin/testimonials", requireAdmin, (_req, res) => {
-    res.json([...previewTestimonials].sort((a, b) => a.order - b.order || a.id - b.id));
+    res.json([...state.testimonials].sort((a, b) => a.order - b.order || a.id - b.id));
   });
 
   router.post("/admin/testimonials", requireAdmin, (req, res) => {
-    const body = req.body as Partial<PreviewTestimonial>;
+    const body = req.body as any;
     if (!body.clientName || !body.company || !body.feedback) {
       res.status(400).json({ error: "clientName, company, and feedback are required" });
       return;
     }
-
-    const testimonial: PreviewTestimonial = {
-      id: nextPreviewTestimonialId++,
+    const testimonial = {
+      id: nextId(state, "testimonial"),
       clientName: body.clientName,
       clientNameAr: body.clientNameAr || null,
       company: body.company,
@@ -306,41 +203,41 @@ if (databaseUrl) {
       order: Number(body.order) || 0,
       active: body.active ?? true,
     };
-
-    previewTestimonials.push(testimonial);
+    state.testimonials.push(testimonial);
+    saveState(state);
     res.status(201).json(testimonial);
   });
 
   router.put("/admin/testimonials/:id", requireAdmin, (req, res) => {
     const id = Number(req.params.id);
-    const testimonial = previewTestimonials.find((item) => item.id === id);
+    const testimonial = state.testimonials.find((item) => item.id === id);
     if (!testimonial) {
       res.status(404).json({ error: "Testimonial not found" });
       return;
     }
-
     Object.assign(testimonial, req.body);
+    saveState(state);
     res.json(testimonial);
   });
 
   router.delete("/admin/testimonials/:id", requireAdmin, (req, res) => {
     const id = Number(req.params.id);
-    const index = previewTestimonials.findIndex((item) => item.id === id);
+    const index = state.testimonials.findIndex((item) => item.id === id);
     if (index >= 0) {
-      previewTestimonials.splice(index, 1);
+      state.testimonials.splice(index, 1);
     }
+    saveState(state);
     res.status(204).send();
   });
 
   router.post("/products", requireAdmin, (req, res) => {
-    const body = req.body as Partial<PreviewProduct>;
+    const body = req.body as any;
     if (!body.title || !body.description) {
       res.status(400).json({ error: "title and description are required" });
       return;
     }
-
-    const product: PreviewProduct = {
-      id: nextPreviewProductId++,
+    const product = {
+      id: nextId(state, "product"),
       slug: body.slug || String(body.title).toLowerCase().trim().replace(/[^\p{L}\p{N}]+/gu, "-").replace(/^-+|-+$/g, "") || `product-${Date.now()}`,
       title: body.title,
       description: body.description,
@@ -358,46 +255,44 @@ if (databaseUrl) {
       order: Number(body.order) || 0,
       active: body.active ?? true,
     };
-
-    previewProducts.push(product);
+    state.products.push(product);
+    saveState(state);
     res.status(201).json(product);
   });
 
   router.put("/products/:id", requireAdmin, (req, res) => {
     const id = Number(req.params.id);
-    const product = previewProducts.find((item) => item.id === id);
+    const product = state.products.find((item) => item.id === id);
     if (!product) {
       res.status(404).json({ error: "Product not found" });
       return;
     }
-
     Object.assign(product, {
       ...req.body,
       tags: Array.isArray(req.body.tags) ? req.body.tags : product.tags,
     });
+    saveState(state);
     res.json(product);
   });
 
   router.delete("/products/:id", requireAdmin, (req, res) => {
     const id = Number(req.params.id);
-    const index = previewProducts.findIndex((item) => item.id === id);
+    const index = state.products.findIndex((item) => item.id === id);
     if (index >= 0) {
-      previewProducts.splice(index, 1);
+      state.products.splice(index, 1);
     }
+    saveState(state);
     res.status(204).send();
   });
 
   router.post("/projects", requireAdmin, (req, res) => {
-    const { title, description, titleAr, descriptionAr, techStack, liveUrl, githubUrl, imageUrl, featured, order, active } =
-      req.body as any;
-
+    const { title, description, titleAr, descriptionAr, techStack, liveUrl, githubUrl, imageUrl, featured, order, active } = req.body as any;
     if (!title || !description) {
       res.status(400).json({ error: "title and description are required" });
       return;
     }
-
     const project = {
-      id: Math.max(0, ...previewProjects.map((item) => item.id)) + 1,
+      id: nextId(state, "project"),
       title,
       description,
       titleAr: titleAr || null,
@@ -410,24 +305,20 @@ if (databaseUrl) {
       order: Number(order) || 0,
       active: active ?? true,
     };
-
-    previewProjects.push(project);
-    previewProjects.sort((a, b) => a.order - b.order || a.id - b.id);
+    state.projects.push(project);
+    state.projects.sort((a, b) => a.order - b.order || a.id - b.id);
+    saveState(state);
     res.status(201).json(project);
   });
 
   router.put("/projects/:id", requireAdmin, (req, res) => {
     const id = parseInt(String(req.params.id), 10);
-    const project = previewProjects.find((item) => item.id === id);
-
+    const project = state.projects.find((item) => item.id === id);
     if (!project) {
       res.status(404).json({ error: "Project not found" });
       return;
     }
-
-    const { title, description, titleAr, descriptionAr, techStack, liveUrl, githubUrl, imageUrl, featured, order, active } =
-      req.body as any;
-
+    const { title, description, titleAr, descriptionAr, techStack, liveUrl, githubUrl, imageUrl, featured, order, active } = req.body as any;
     Object.assign(project, {
       title,
       description,
@@ -441,32 +332,31 @@ if (databaseUrl) {
       order: Number(order) || 0,
       active: active ?? true,
     });
-
-    previewProjects.sort((a, b) => a.order - b.order || a.id - b.id);
+    state.projects.sort((a, b) => a.order - b.order || a.id - b.id);
+    saveState(state);
     res.json(project);
   });
 
   router.delete("/projects/:id", requireAdmin, (req, res) => {
     const id = parseInt(String(req.params.id), 10);
-    const index = previewProjects.findIndex((item) => item.id === id);
-
+    const index = state.projects.findIndex((item) => item.id === id);
     if (index >= 0) {
-      previewProjects.splice(index, 1);
+      state.projects.splice(index, 1);
     }
-
+    saveState(state);
     res.status(204).send();
   });
 
   router.get("/content", (_req, res) => {
-    res.json(previewContent);
+    res.json(state.content);
   });
 
   router.get("/blog-posts", (_req, res) => {
-    res.json(previewBlogPosts.filter((post) => post.active).sort((a, b) => a.order - b.order || b.id - a.id));
+    res.json(state.blogPosts.filter((post) => post.active).sort((a, b) => a.order - b.order || b.id - a.id));
   });
 
   router.get("/blog-posts/:slug", (req, res) => {
-    const post = previewBlogPosts.find((item) => item.active && item.slug === String(req.params.slug));
+    const post = state.blogPosts.find((item) => item.active && item.slug === String(req.params.slug));
     if (!post) {
       res.status(404).json({ error: "Post not found" });
       return;
@@ -475,22 +365,20 @@ if (databaseUrl) {
   });
 
   router.get("/admin/blog-posts", requireAdmin, (_req, res) => {
-    res.json([...previewBlogPosts].sort((a, b) => a.order - b.order || b.id - a.id));
+    res.json([...state.blogPosts].sort((a, b) => a.order - b.order || b.id - a.id));
   });
 
   router.post("/admin/blog-posts", requireAdmin, (req, res) => {
-    const body = req.body as Partial<PreviewBlogPost>;
+    const body = req.body as any;
     const title = body.title || body.titleAr || "";
     const excerpt = body.excerpt || body.excerptAr || "";
-
     if (!title || !excerpt) {
       res.status(400).json({ error: "title and excerpt are required" });
       return;
     }
-
     const now = new Date().toISOString();
-    const post: PreviewBlogPost = {
-      id: nextPreviewBlogPostId++,
+    const post = {
+      id: nextId(state, "blogPost"),
       title,
       titleAr: body.titleAr || null,
       excerpt,
@@ -507,84 +395,78 @@ if (databaseUrl) {
       createdAt: now,
       updatedAt: now,
     };
-
-    previewBlogPosts.push(post);
+    state.blogPosts.push(post);
+    saveState(state);
     res.status(201).json(post);
   });
 
   router.put("/admin/blog-posts/:id", requireAdmin, (req, res) => {
     const id = Number(req.params.id);
-    const post = previewBlogPosts.find((item) => item.id === id);
-
+    const post = state.blogPosts.find((item) => item.id === id);
     if (!post) {
       res.status(404).json({ error: "Post not found" });
       return;
     }
-
     Object.assign(post, {
       ...req.body,
       tags: Array.isArray(req.body.tags) ? req.body.tags : post.tags,
       updatedAt: new Date().toISOString(),
     });
+    saveState(state);
     res.json(post);
   });
 
   router.delete("/admin/blog-posts/:id", requireAdmin, (req, res) => {
     const id = Number(req.params.id);
-    const index = previewBlogPosts.findIndex((item) => item.id === id);
+    const index = state.blogPosts.findIndex((item) => item.id === id);
     if (index >= 0) {
-      previewBlogPosts.splice(index, 1);
+      state.blogPosts.splice(index, 1);
     }
+    saveState(state);
     res.status(204).send();
   });
 
   router.get("/admin/messages", requireAdmin, (_req, res) => {
-    res.json([...previewMessages].sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt)));
+    res.json([...state.messages].sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt)));
   });
 
   router.get("/admin/messages/:id", requireAdmin, (req, res) => {
     const id = parseInt(String(req.params.id), 10);
-    const message = previewMessages.find((item) => item.id === id);
-
+    const message = state.messages.find((item) => item.id === id);
     if (!message) {
       res.status(404).json({ error: "Message not found" });
       return;
     }
-
     res.json(message);
   });
 
   router.patch("/admin/messages/:id", requireAdmin, (req, res) => {
     const id = parseInt(String(req.params.id), 10);
-    const message = previewMessages.find((item) => item.id === id);
-    const { status } = req.body as { status?: PreviewMessage["status"] };
+    const message = state.messages.find((item) => item.id === id);
+    const { status } = req.body as { status?: string };
     const validStatuses = ["unread", "read", "replied", "archived"];
-
     if (!message) {
       res.status(404).json({ error: "Message not found" });
       return;
     }
-
     if (status && !validStatuses.includes(status)) {
       res.status(400).json({ error: "Invalid status" });
       return;
     }
-
     if (status) {
       message.status = status;
     }
-
+    saveState(state);
     res.json(message);
   });
 
   router.delete("/admin/messages/:id", requireAdmin, (req, res) => {
     const id = parseInt(String(req.params.id), 10);
-    const index = previewMessages.findIndex((item) => item.id === id);
-
+    const index = state.messages.findIndex((item) => item.id === id);
     if (index >= 0) {
-      previewMessages.splice(index, 1);
+      state.messages.splice(index, 1);
     }
-
+    saveState(state);
     res.status(204).send();
   });
 
@@ -594,11 +476,9 @@ if (databaseUrl) {
       res.status(400).json({ error: parsed.error.issues[0]?.message || "Invalid message payload" });
       return;
     }
-
     const { name, email, subject, message } = parsed.data;
-
-    const previewMessage: PreviewMessage = {
-      id: nextPreviewMessageId++,
+    const previewMessage = {
+      id: nextId(state, "message"),
       name,
       email,
       subject,
@@ -606,8 +486,8 @@ if (databaseUrl) {
       status: "unread",
       createdAt: new Date().toISOString(),
     };
-
-    previewMessages.unshift(previewMessage);
+    state.messages.unshift(previewMessage);
+    saveState(state);
     res.status(201).json(previewMessage);
   });
 

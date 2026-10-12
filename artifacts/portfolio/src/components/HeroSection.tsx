@@ -1,147 +1,94 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Check, Download, MessageCircle } from "lucide-react";
+import { ArrowRight, Braces, Download, MessageCircle, Play, ShieldCheck, Terminal } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import {
-  SiCss,
-  SiHtml5,
+  SiDocker,
   SiJavascript,
-  SiMongodb,
   SiNextdotjs,
   SiNodedotjs,
   SiPostgresql,
   SiReact,
+  SiTailwindcss,
   SiTypescript,
 } from "react-icons/si";
 
-const techStack = [
-  { icon: SiHtml5, name: "HTML" },
-  { icon: SiCss, name: "CSS" },
-  { icon: SiJavascript, name: "JavaScript" },
-  { icon: SiTypescript, name: "TypeScript" },
+const stack = [
   { icon: SiReact, name: "React" },
-  { icon: SiNextdotjs, name: "Next.js" },
-  { icon: SiNodedotjs, name: "Node.js" },
-  { icon: SiPostgresql, name: "PostgreSQL" },
-  { icon: SiMongodb, name: "MongoDB" },
+  { icon: SiNextdotjs, name: "Next" },
+  { icon: SiTypescript, name: "TypeScript" },
+  { icon: SiNodedotjs, name: "Node" },
+  { icon: SiPostgresql, name: "Postgres" },
+  { icon: SiTailwindcss, name: "Tailwind" },
+  { icon: SiJavascript, name: "JS" },
+  { icon: SiDocker, name: "Docker" },
 ];
 
-const floatingShapes = [
-  { size: 180, x: "8%", y: "15%", delay: 0, type: "orb-blue" },
-  { size: 120, x: "75%", y: "10%", delay: 2, type: "orb-cyan" },
-  { size: 200, x: "60%", y: "70%", delay: 4, type: "orb-purple" },
-  { size: 100, x: "15%", y: "75%", delay: 1, type: "orb-blue" },
+const consoleLines = [
+  { prompt: "$", command: "pnpm create product --stack=full", result: "scaffolded secure web app" },
+  { prompt: ">", command: "connect(database, api, dashboard)", result: "latency checked, auth enabled" },
+  { prompt: "✓", command: "deploy --client-ready", result: "live preview shipped" },
 ];
 
-const particles = [
-  { x: "12%", y: "20%", delay: 0, duration: 3 },
-  { x: "25%", y: "60%", delay: 0.5, duration: 4 },
-  { x: "40%", y: "30%", delay: 1, duration: 3.5 },
-  { x: "55%", y: "80%", delay: 1.5, duration: 4.5 },
-  { x: "70%", y: "25%", delay: 2, duration: 3 },
-  { x: "85%", y: "55%", delay: 0.8, duration: 4 },
-  { x: "30%", y: "85%", delay: 2.5, duration: 3.5 },
-  { x: "65%", y: "45%", delay: 1.2, duration: 4.2 },
-  { x: "90%", y: "15%", delay: 0.3, duration: 3.8 },
-  { x: "5%", y: "50%", delay: 1.8, duration: 4.1 },
+const metrics = [
+  { label: "UI", value: "98", suffix: "%" },
+  { label: "API", value: "24", suffix: "ms" },
+  { label: "DX", value: "A", suffix: "+" },
 ];
 
 export function HeroSection() {
   const { t, lang } = useLanguage();
   const isAr = lang === "ar";
-
   const heroName = t.hero.name;
-  const [firstName, ...lastNameParts] = heroName.split(" ");
-  const lastName = lastNameParts.join(" ");
 
   return (
-    <section
-      id="home"
-      className="stage-dark noise relative min-h-[100svh] overflow-hidden pt-24 pb-16 sm:pt-28 md:pt-32 md:pb-24"
-    >
-      {/* Base mesh + grid */}
-      <div className="hero-mesh absolute inset-0 pointer-events-none" />
-      <div className="hero-grid absolute inset-0 pointer-events-none" />
-
-      {/* Floating orbs */}
-      {floatingShapes.map((shape, i) => (
-        <div
-          key={i}
-          className={`orb ${shape.type} animate-drift`}
-          style={{
-            width: shape.size,
-            height: shape.size,
-            left: shape.x,
-            top: shape.y,
-            animationDelay: `${shape.delay}s`,
-            animationDuration: `${12 + i * 2}s`,
-          }}
-        />
-      ))}
-
-      {/* Particle dots */}
-      {particles.map((p, i) => (
-        <div
-          key={`p-${i}`}
-          className="particle animate-pulse-glow"
-          style={{
-            left: p.x,
-            top: p.y,
-            animationDelay: `${p.delay}s`,
-            animationDuration: `${p.duration}s`,
-          }}
-        />
-      ))}
-
-      {/* Geometric shapes */}
-      <div className="absolute top-[20%] left-[5%] hidden h-16 w-16 rotate-45 rounded-lg border border-[#3B82F6]/10 animate-float-slow lg:block" />
-      <div className="absolute top-[60%] right-[8%] hidden h-10 w-10 rounded-full border border-[#3B82F6]/8 animate-float-delay-2 lg:block" />
-      <div className="absolute top-[35%] right-[15%] hidden h-8 w-8 rotate-12 rounded-sm bg-[#3B82F6]/5 animate-float-delay-1 lg:block" />
-      <div className="absolute bottom-[20%] left-[12%] hidden h-6 w-6 rounded-full bg-[#3B82F6]/8 animate-float-delay-3 lg:block" />
+    <section id="home" className="dev-hero relative min-h-[100svh] overflow-hidden pt-24 pb-12 sm:pt-28 md:pt-32">
+      <div className="dev-grid absolute inset-0 pointer-events-none" />
+      <div className="dev-scan absolute inset-0 pointer-events-none" />
+      <div className="dev-wire dev-wire-a" />
+      <div className="dev-wire dev-wire-b" />
 
       <div className="container relative z-10 mx-auto flex min-h-[calc(100svh-8rem)] items-center px-4 sm:px-6">
-        <div className="grid w-full items-center gap-12 md:grid-cols-[1.1fr_0.9fr] md:gap-16 lg:gap-20">
+        <div className="grid w-full items-center gap-10 lg:grid-cols-[1fr_0.9fr] lg:gap-14">
           <motion.div
-            initial={{ opacity: 0, y: 32 }}
+            initial={{ opacity: 0, y: 26 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="flex flex-col items-center gap-6 text-center md:items-start md:text-start"
+            transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+            className="max-w-3xl"
           >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="glass inline-flex items-center gap-2.5 rounded-full px-4 py-2"
-            >
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
-              </span>
-              <span className="text-xs font-medium tracking-wide text-white/60">{t.hero.availability}</span>
-            </motion.div>
+            <div className="mb-6 inline-flex items-center gap-3 rounded-sm border border-emerald-400/30 bg-emerald-400/8 px-3 py-2 font-mono text-[11px] text-emerald-300 shadow-[0_0_24px_rgba(52,211,153,0.08)]">
+              <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-300" />
+              {t.hero.availability}
+            </div>
 
-            <h1 className="max-w-2xl text-4xl font-bold leading-[1.08] tracking-tight text-white min-[390px]:text-5xl sm:text-6xl md:text-7xl lg:text-[4.75rem]">
-              {firstName}{" "}
-              <span className="text-gradient-animated">{lastName}</span>
+            <h1 className="max-w-4xl text-4xl font-black leading-[1.1] text-[var(--brand-heading)] sm:text-5xl md:text-6xl lg:text-[4.65rem]">
+              <span className="block">{isAr ? "مواقع وأنظمة ويب" : "Websites and systems"}</span>
+              <span className="dev-title block">{isAr ? "تحوّل الزوار" : "that turn visitors"}</span>
+              <span className="block">{isAr ? "إلى عملاء" : "into clients"}</span>
             </h1>
 
-            <p className="max-w-xl text-base font-medium text-white/50 sm:text-lg md:text-xl">
-              {t.hero.title}
-            </p>
+            <div className="mt-6 flex flex-wrap items-center gap-3">
+              <span className="rounded-sm border border-[var(--brand-line)] bg-[var(--brand-panel)] px-3 py-1.5 font-mono text-xs text-[var(--brand-text-2)]">
+                {heroName}
+              </span>
+              <span className="rounded-sm border border-cyan-300/25 bg-cyan-300/8 px-3 py-1.5 font-mono text-xs text-cyan-200">
+                {t.hero.title}
+              </span>
+            </div>
 
-            <p className="max-w-xl text-sm leading-7 text-white/40 sm:text-base sm:leading-8">
+            <p className="mt-6 max-w-2xl text-base leading-8 text-[var(--brand-text-2)] sm:text-lg">
               {t.hero.description}
             </p>
 
-            <div className="grid w-full max-w-lg grid-cols-1 gap-3 pt-2 min-[430px]:grid-cols-2 md:w-auto md:max-w-none md:pt-4">
+            <div className="mt-8 grid max-w-xl grid-cols-1 gap-3 min-[460px]:grid-cols-2">
               <button
                 onClick={() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })}
-                className="brand-button btn-glow inline-flex min-h-[52px] items-center justify-center gap-2.5 rounded-lg px-7 py-3.5 text-sm font-semibold"
+                className="brand-button btn-glow inline-flex min-h-[52px] items-center justify-center gap-2.5 rounded-sm px-6 py-3 text-sm font-bold"
               >
-                {t.hero.viewProjects} <ArrowRight size={17} />
+                <Play size={17} /> {t.hero.viewProjects}
               </button>
               <button
                 onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
-                className="btn-ghost-dark inline-flex min-h-[52px] items-center justify-center gap-2.5 rounded-lg px-7 py-3.5 text-sm font-semibold"
+                className="btn-ghost-dark inline-flex min-h-[52px] items-center justify-center gap-2.5 rounded-sm px-6 py-3 text-sm font-bold"
               >
                 {t.hero.hireMe} <ArrowRight size={17} />
               </button>
@@ -149,159 +96,150 @@ export function HeroSection() {
                 href={`https://wa.me/9647805808975?text=${encodeURIComponent(
                   isAr
                     ? "مرحباً إبراهيم، أريد مناقشة مشروع ويب جديد."
-                    : "Hello Ibrahim, I want to discuss a new web project."
+                    : "Hello Ibrahim, I want to discuss a new web project.",
                 )}`}
                 target="_blank"
                 rel="noreferrer"
-                className="btn-ghost-dark inline-flex min-h-[52px] items-center justify-center gap-2.5 rounded-lg px-7 py-3.5 text-sm font-semibold"
+                className="btn-ghost-dark inline-flex min-h-[52px] items-center justify-center gap-2.5 rounded-sm px-6 py-3 text-sm font-bold"
               >
-                {t.hero.whatsapp} <MessageCircle size={17} />
+                <MessageCircle size={17} /> {t.hero.whatsapp}
               </a>
               <a
                 href="/ibrahim-ghaiyth-cv.pdf"
                 download="Ibrahim-Ghaiyth-CV.pdf"
-                className="btn-ghost-dark inline-flex min-h-[52px] items-center justify-center gap-2.5 rounded-lg px-7 py-3.5 text-sm font-semibold"
+                className="btn-ghost-dark inline-flex min-h-[52px] items-center justify-center gap-2.5 rounded-sm px-6 py-3 text-sm font-bold"
               >
-                {t.hero.downloadCv} <Download size={17} />
+                <Download size={17} /> {t.hero.downloadCv}
               </a>
             </div>
 
-            <ul className="grid w-full max-w-lg gap-2.5 pt-2 sm:grid-cols-3 md:max-w-none md:pt-3">
-              {[t.hero.benefit1, t.hero.benefit2, t.hero.benefit3].map((item, i) => (
-                <motion.li
-                  key={item}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.4, delay: 0.5 + i * 0.1 }}
-                  className="flex items-center gap-2 text-[13px] text-white/45"
-                >
-                  <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#3B82F6]/15">
-                    <Check size={10} className="text-[#3B82F6]" />
-                  </span>
-                  <span>{item}</span>
-                </motion.li>
+            <div className="mt-8 flex flex-wrap gap-2">
+              {[t.hero.benefit1, t.hero.benefit2, t.hero.benefit3].map((item) => (
+                <span key={item} className="inline-flex items-center gap-2 rounded-sm border border-[var(--brand-line)] bg-[var(--brand-panel)] px-3 py-2 text-xs text-[var(--brand-text-2)]">
+                  <ShieldCheck size={14} className="text-emerald-300" />
+                  {item}
+                </span>
               ))}
-            </ul>
-
-            <div className="w-full max-w-lg pt-4 md:max-w-none">
-              <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/25">
-                {t.hero.techArsenal}
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {techStack.map((tech, i) => (
-                  <motion.div
-                    key={tech.name}
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: 0.6 + i * 0.05 }}
-                    className="glass flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-white/40 transition-all duration-300 hover:border-[#3B82F6]/40 hover:text-[#3B82F6] hover:shadow-[0_0_12px_rgba(59,130,246,0.15)]"
-                  >
-                    <tech.icon className="h-3.5 w-3.5" />
-                    <span className="font-mono text-[11px]">{tech.name}</span>
-                  </motion.div>
-                ))}
-              </div>
             </div>
           </motion.div>
 
-          {/* Code card */}
           <motion.div
-            initial={{ opacity: 0, y: 32 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
-            className="relative mx-auto hidden w-full max-w-[340px] md:block lg:max-w-[400px]"
+            initial={{ opacity: 0, y: 28, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.7, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+            className="relative"
           >
-            {/* Orbit rings behind card */}
-            <div className="orbit-ring hidden lg:block" />
-            <div className="orbit-ring-2 hidden lg:block" />
+            <div className="mb-4 grid gap-4 sm:grid-cols-[0.75fr_1fr]">
+              <div className="profile-panel relative flex min-h-[18rem] items-center justify-center overflow-hidden rounded-sm border border-[var(--brand-line)] bg-gradient-to-br from-[var(--brand-panel-2)] to-[var(--brand-panel)]">
+                {/* Decorative orbit rings */}
+                <div className="absolute h-48 w-48 rounded-full border border-dashed border-[var(--brand-blue)]/15 animate-spin-slow" />
+                <div className="absolute h-60 w-60 rounded-full border border-dashed border-[var(--brand-accent)]/10 animate-spin-slow" style={{ animationDirection: "reverse", animationDuration: "40s" }} />
 
-            {/* Floating tech badges around card */}
-            <motion.div
-              className="glass absolute -top-4 -left-6 z-20 hidden items-center gap-1.5 rounded-lg px-3 py-2 lg:flex animate-float"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.8 }}
-            >
-              <SiReact className="h-4 w-4 text-[#61DAFB]" />
-              <span className="font-mono text-[11px] text-white/50">React</span>
-            </motion.div>
-            <motion.div
-              className="glass absolute -right-6 top-1/4 z-20 hidden items-center gap-1.5 rounded-lg px-3 py-2 lg:flex animate-float-delay-1"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 1 }}
-            >
-              <SiTypescript className="h-4 w-4 text-[#3178C6]" />
-              <span className="font-mono text-[11px] text-white/50">TS</span>
-            </motion.div>
-            <motion.div
-              className="glass absolute -bottom-4 -left-4 z-20 hidden items-center gap-1.5 rounded-lg px-3 py-2 lg:flex animate-float-delay-2"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 1.2 }}
-            >
-              <SiNextdotjs className="h-4 w-4 text-white" />
-              <span className="font-mono text-[11px] text-white/50">Next</span>
-            </motion.div>
-            <motion.div
-              className="glass absolute -right-4 bottom-1/3 z-20 hidden items-center gap-1.5 rounded-lg px-3 py-2 lg:flex animate-float-delay-3"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 1.4 }}
-            >
-              <SiNodedotjs className="h-4 w-4 text-[#5FA04E]" />
-              <span className="font-mono text-[11px] text-white/50">Node</span>
-            </motion.div>
-
-            <div className="glass-strong relative aspect-[4/5] w-full overflow-hidden rounded-2xl">
-              <div className="absolute inset-0 bg-gradient-to-br from-[#3B82F6]/10 via-transparent to-[#3B82F6]/5" />
-
-              {/* Window chrome */}
-              <div className="absolute inset-x-0 top-0 z-10 flex items-center justify-between border-b border-white/8 px-5 py-4">
-                <div className="flex items-center gap-2">
-                  <div className="flex gap-1.5">
-                    <div className="h-2.5 w-2.5 rounded-full bg-white/10" />
-                    <div className="h-2.5 w-2.5 rounded-full bg-white/10" />
-                    <div className="h-2.5 w-2.5 rounded-full bg-white/10" />
+                {/* Circular portrait with gradient ring */}
+                <div className="relative">
+                  <div className="absolute -inset-1 rounded-full bg-gradient-to-tr from-[var(--brand-blue)] via-[var(--brand-accent)] to-[var(--brand-blue)] opacity-60 blur-[2px]" />
+                  <div className="relative h-36 w-36 overflow-hidden rounded-full border-2 border-[var(--brand-panel)] sm:h-40 sm:w-40">
+                    <img
+                      src="/profile-cutout.png"
+                      alt="Ibrahim Ghaiyth"
+                      className="h-full w-full scale-110 object-cover object-[50%_22%] translate-x-[6%]"
+                      loading="eager"
+                      decoding="async"
+                      fetchPriority="high"
+                    />
                   </div>
-                  <span className="ms-3 font-mono text-xs font-medium text-white/30">ibrahimig.com</span>
+                  {/* Online dot */}
+                  <span className="absolute bottom-2 right-2 h-4 w-4 rounded-full border-2 border-[var(--brand-panel)] bg-emerald-400" />
                 </div>
-                <span className="font-mono text-xs text-[#3B82F6]">{"{"}</span>
-              </div>
 
-              {/* Portrait */}
-              <div className="absolute inset-0 flex items-center justify-center pt-8 pb-16">
-                <div className="glow-ring neon-glow relative h-48 w-48 overflow-hidden rounded-full border border-white/15 lg:h-56 lg:w-56">
-                  <img
-                    src="/profile-cutout.png"
-                    alt="Ibrahim Ghaiyth"
-                    className="h-full w-full scale-110 object-cover object-[50%_22%] translate-x-[6%]"
-                    loading="eager"
-                    decoding="async"
-                    fetchPriority="high"
-                  />
-                  <div className="absolute inset-0 rounded-full ring-1 ring-inset ring-white/10" />
+                {/* Name badge */}
+                <div className="absolute inset-x-4 bottom-4 rounded-sm border border-[var(--brand-line)] bg-[var(--brand-panel)]/80 px-3 py-2 backdrop-blur-md">
+                  <p className="font-mono text-[11px] text-[var(--brand-blue)]">Full-stack Developer</p>
+                  <p className="text-xs text-[var(--brand-text-2)]">Ibrahim Ghaiyth</p>
                 </div>
               </div>
 
-              {/* Code footer */}
-              <div className="absolute inset-x-0 bottom-0 z-10 border-t border-white/8 px-5 py-4">
-                <p className="font-mono text-[11px] text-white/25">
-                  <span className="text-[#3B82F6]">const</span> profile = {"{"}
-                </p>
-                <p className="ps-4 font-mono text-[11px] text-white/35">
-                  role: <span className="text-[#3B82F6]">"Full-Stack Developer"</span>
-                  <span className="typing-cursor" />
-                </p>
-                <p className="font-mono text-[11px] text-white/25">{"}"}</p>
+              <div className="grid content-stretch gap-3">
+                {metrics.map((metric) => (
+                  <div key={metric.label} className="rounded-sm border border-[var(--brand-line)] bg-[var(--brand-panel)] p-4">
+                    <p className="font-mono text-[11px] text-[var(--brand-muted)]">{metric.label}</p>
+                    <p className="mt-2 font-mono text-3xl font-black text-[var(--brand-heading)]">
+                      {metric.value}<span className="text-base text-[var(--brand-blue)]">{metric.suffix}</span>
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="dev-console relative overflow-hidden rounded-sm border border-[var(--brand-line)] bg-[var(--brand-panel)] shadow-2xl">
+              <div className="flex items-center justify-between border-b border-[var(--brand-line)] bg-[var(--brand-panel-2)] px-4 py-3">
+                <div className="flex items-center gap-2">
+                  <span className="h-2.5 w-2.5 rounded-full bg-red-400/80" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-amber-300/80" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-emerald-300/80" />
+                  <span className="ms-3 font-mono text-xs text-[var(--brand-muted)]">ig://workspace/portfolio</span>
+                </div>
+                <Terminal size={16} className="text-cyan-200/80" />
+              </div>
+
+              <div className="space-y-5 p-5 sm:p-6">
+                {consoleLines.map((line, index) => (
+                  <motion.div
+                    key={line.command}
+                    initial={{ opacity: 0, x: isAr ? 16 : -16 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.35 + index * 0.14, duration: 0.42 }}
+                    className="font-mono"
+                  >
+                    <p className="text-sm text-[var(--brand-text)]">
+                      <span className="me-2 text-cyan-300">{line.prompt}</span>
+                      <span>{line.command}</span>
+                    </p>
+                    <p className="mt-1 ps-5 text-xs text-emerald-300/70">{line.result}</p>
+                  </motion.div>
+                ))}
+
+                <div className="relative overflow-hidden rounded-sm border border-cyan-300/15 bg-cyan-300/[0.035] p-4">
+                  <div className="mb-3 flex items-center justify-between font-mono text-[11px] text-[var(--brand-muted)]">
+                    <span>runtime.pipeline</span>
+                    <span>online</span>
+                  </div>
+                  <div className="h-2 overflow-hidden rounded-full bg-white/8">
+                    <motion.div
+                      initial={{ width: "12%" }}
+                      animate={{ width: "92%" }}
+                      transition={{ duration: 1.5, delay: 0.7, ease: "easeOut" }}
+                      className="h-full rounded-full bg-gradient-to-r from-emerald-300 via-cyan-300 to-violet-300"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <p className="mb-3 flex items-center gap-2 font-mono text-[11px] uppercase text-[var(--brand-muted)]">
+                    <Braces size={13} /> {t.hero.techArsenal}
+                  </p>
+                  <div className="grid grid-cols-4 gap-2">
+                    {stack.map((tech, index) => (
+                      <motion.div
+                        key={tech.name}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.75 + index * 0.04, duration: 0.32 }}
+                        className="group grid min-h-16 place-items-center rounded-sm border border-[var(--brand-line)] bg-[var(--brand-panel-2)] text-[var(--brand-text-2)] transition hover:border-cyan-300/35 hover:bg-cyan-300/8 hover:text-cyan-500"
+                        title={tech.name}
+                      >
+                        <tech.icon className="h-6 w-6" />
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           </motion.div>
         </div>
       </div>
 
-      {/* Bottom gradient fade */}
-      <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#0A0D14] to-transparent pointer-events-none" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[var(--brand-bg)] to-transparent" />
     </section>
   );
 }

@@ -143,4 +143,41 @@ export const caseStudies: CaseStudy[] = [
       outcome: "In active development — the core works; the public link will be added when it is ready to ship.",
     },
   },
+  {
+    id: "ism27-platform",
+    status: "live",
+    image: {
+      src: "/project-covers/ism27.png",
+      width: 1440,
+      height: 900,
+      alt: {
+        ar: "واجهة منصة ISM27 التعليمية",
+        en: "ISM27 educational platform interface",
+      },
+    },
+    stack: ["React", "Vite", "PWA", "Offline-first", "Tailwind CSS", "Cloudflare Pages"],
+    links: {
+      live: "https://ism27.pages.dev/",
+    },
+    ar: {
+      name: "ISM27",
+      summary: "منصة تعليمية ذكية لطلبة كلية المعلومات وتقنية الاتصال — تنظيم المذاكرة والمحاضرات والمذكرات في مكان واحد.",
+      audience: "طلبة جامعة بغداد — كلية المعلومات وتقنية الاتصال (قسم إدارة المعلومات).",
+      role: "تصميم وتطوير المنصة بالكامل: الواجهة، نظام التنظيم، وضع عدم الاتصال، ونظام الاختبارات والمحاضرات.",
+      problem: "الطلبة يوزعون ملفات المحاضرات والمذكرات والاختبارات في أماكن متفرقة، مما يصعب المراجعة والوصول السريع خاصة بدون إنترنت.",
+      solution: "بنيت منصة PWA تعمل بدون إنترنت، تنظم المحاضرات والمذكرات والاختبارات، مع عرض تقدم المذاكرة وإشعارات بالمواعيد.",
+      stack: "React, Vite, Progressive Web App, offline storage, Tailwind CSS, deployed on Cloudflare Pages.",
+      outcome: "المنصة منشورة وتعمل — تخدم طلبة القسم مع دعم الوصول بدون إنترنت وتنظيم كامل للمحتوى التعليمي.",
+    },
+    en: {
+      name: "ISM27",
+      summary: "A smart educational platform for ICT college students — organizing lectures, notes, exams, and study progress in one place.",
+      audience: "University of Baghdad students — College of Information and Communication Technology (Management Information Systems).",
+      role: "Full design and development: interface, content organization, offline mode, and exam/lecture tracking system.",
+      problem: "Students scatter lecture files, notes, and exam materials across different places, making review and quick access difficult, especially without internet.",
+      solution: "I built a PWA that works offline, organizes lectures, notes, and exams, with study progress tracking and schedule notifications.",
+      stack: "React, Vite, Progressive Web App, offline storage, Tailwind CSS, deployed on Cloudflare Pages.",
+      outcome: "Published and live — serving department students with offline access and full educational content organization.",
+    },
+  },
 ];
