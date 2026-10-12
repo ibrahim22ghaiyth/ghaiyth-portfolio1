@@ -61,9 +61,9 @@ export function HeroSection() {
             </div>
 
             <h1 className="max-w-4xl text-4xl font-black leading-[1.1] text-[var(--brand-heading)] sm:text-5xl md:text-6xl lg:text-[4.65rem]">
-              <span className="block">{isAr ? "حوّل زوار موقعك" : "Turn your visitors"}</span>
-              <span className="dev-title block">{isAr ? "إلى عملاء" : "into paying"}</span>
-              <span className="block">{isAr ? "يشترون منك" : "customers"}</span>
+              <span className="block">{isAr ? "أبني مواقع" : "I build"}</span>
+              <span className="dev-title block">{isAr ? "تحوّل زوارك" : "websites that"}</span>
+              <span className="block">{isAr ? "إلى عملاء" : "convert"}</span>
             </h1>
 
             <div className="mt-6 flex flex-wrap items-center gap-3">

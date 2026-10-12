@@ -10,6 +10,7 @@ import NotFound from "@/pages/not-found";
 
 import { Navigation } from "@/components/Navigation";
 import { HeroSection } from "@/components/HeroSection";
+import { TransformationDemo } from "@/components/TransformationDemo";
 import { ServicesSection } from "@/components/ServicesSection";
 import { ProjectsSection } from "@/components/ProjectsSection";
 import { ProductsSection } from "@/components/ProductsSection";
@@ -53,6 +54,7 @@ function Home() {
       <Navigation />
       <main>
         <HeroSection />
+        <TransformationDemo />
         <ServicesSection />
         <ProjectsSection />
         <ProductsSection />

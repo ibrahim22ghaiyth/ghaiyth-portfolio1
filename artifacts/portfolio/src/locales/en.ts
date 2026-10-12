@@ -1,6 +1,7 @@
 ﻿export const en = {
   nav: {
     home: "Home",
+    demo: "Demo",
     services: "Services",
     projects: "Projects",
     products: "Products",
@@ -10,7 +11,7 @@
   },
   hero: {
     name: "Ibrahim Ghaiyth",
-    title: "Turn your website visitors into paying customers",
+    title: "I build websites that turn visitors into customers",
     description: "I design and build commercial websites and web systems that increase your sales: a convincing landing page, a fast experience that keeps visitors from leaving, an order form that goes straight to your WhatsApp, and a dashboard so you manage everything without a developer.",
     hireMe: "Book a free consultation",
     viewProjects: "See my results",
