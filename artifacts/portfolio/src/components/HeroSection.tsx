@@ -30,9 +30,9 @@ const consoleLines = [
 ];
 
 const metrics = [
-  { label: "UI", value: "98", suffix: "%" },
-  { label: "API", value: "24", suffix: "ms" },
-  { label: "DX", value: "A", suffix: "+" },
+  { label: "UI", value: "98", suffix: "%", desc: { ar: "جودة الواجهة", en: "UI quality" } },
+  { label: "API", value: "24", suffix: "ms", desc: { ar: "سرعة الاستجابة", en: "API speed" } },
+  { label: "DX", value: "A", suffix: "+", desc: { ar: "تجربة المطوّر", en: "Developer experience" } },
 ];
 
 export function HeroSection() {
@@ -159,13 +159,18 @@ export function HeroSection() {
                 </div>
               </div>
 
-              <div className="grid content-stretch gap-3">
+              <div className="grid content-stretch gap-3.5">
                 {metrics.map((metric) => (
-                  <div key={metric.label} className="rounded-sm border border-[var(--brand-line)] bg-[var(--brand-panel)] p-4">
-                    <p className="font-mono text-[11px] text-[var(--brand-muted)]">{metric.label}</p>
-                    <p className="mt-2 font-mono text-3xl font-black text-[var(--brand-heading)]">
-                      {metric.value}<span className="text-base text-[var(--brand-blue)]">{metric.suffix}</span>
-                    </p>
+                  <div key={metric.label} className="rounded-sm border border-[var(--brand-line)] bg-[var(--brand-panel)] px-4 py-3.5 transition-colors duration-300 hover:border-[var(--brand-blue)]/40">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-mono text-[11px] uppercase tracking-wider text-[var(--brand-muted)]">{metric.label}</p>
+                        <p className="mt-0.5 text-[11px] text-[var(--brand-text-2)]">{isAr ? metric.desc.ar : metric.desc.en}</p>
+                      </div>
+                      <p className="font-mono text-2xl font-black text-[var(--brand-heading)]">
+                        {metric.value}<span className="text-sm text-[var(--brand-blue)]">{metric.suffix}</span>
+                      </p>
+                    </div>
                   </div>
                 ))}
               </div>
