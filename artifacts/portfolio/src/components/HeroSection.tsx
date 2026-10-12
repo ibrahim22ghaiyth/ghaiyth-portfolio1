@@ -55,18 +55,18 @@ export function HeroSection() {
             transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
             className="max-w-3xl"
           >
-            <div className="mb-6 inline-flex items-center gap-3 rounded-sm border border-emerald-400/30 bg-emerald-400/8 px-3 py-2 font-mono text-[11px] text-emerald-300 shadow-[0_0_24px_rgba(52,211,153,0.08)]">
+            <div className="mb-7 inline-flex items-center gap-3 rounded-sm border border-emerald-400/30 bg-emerald-400/8 px-3 py-2 font-mono text-[11px] text-emerald-300 shadow-[0_0_24px_rgba(52,211,153,0.08)]">
               <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-300" />
               {t.hero.availability}
             </div>
 
-            <h1 className="max-w-4xl text-4xl font-black leading-[1.1] text-[var(--brand-heading)] sm:text-5xl md:text-6xl lg:text-[4.65rem]">
-              <span className="block">{isAr ? "أبني مواقع" : "I build"}</span>
-              <span className="dev-title block">{isAr ? "تحوّل زوارك" : "websites that"}</span>
-              <span className="block">{isAr ? "إلى عملاء" : "convert"}</span>
+            <h1 className="max-w-4xl text-4xl font-black leading-[1.25] tracking-normal text-[var(--brand-heading)] sm:text-5xl md:text-6xl lg:text-[4.5rem] lg:leading-[1.2]">
+              <span className="block pb-1">{isAr ? "نبني تجارب رقمية" : "We build digital"}</span>
+              <span className="dev-title block pb-1">{isAr ? "تُحوّل الزيارات" : "experiences that"}</span>
+              <span className="block">{isAr ? "إلى نتائج" : "convert visitors"}</span>
             </h1>
 
-            <div className="mt-6 flex flex-wrap items-center gap-3">
+            <div className="mt-7 flex flex-wrap items-center gap-3">
               <span className="rounded-sm border border-[var(--brand-line)] bg-[var(--brand-panel)] px-3 py-1.5 font-mono text-xs text-[var(--brand-text-2)]">
                 {heroName}
               </span>
@@ -75,11 +75,11 @@ export function HeroSection() {
               </span>
             </div>
 
-            <p className="mt-6 max-w-2xl text-base leading-8 text-[var(--brand-text-2)] sm:text-lg">
+            <p className="mt-7 max-w-2xl text-base leading-9 text-[var(--brand-text-2)] sm:text-lg">
               {t.hero.description}
             </p>
 
-            <div className="mt-8 grid max-w-xl grid-cols-1 gap-3 min-[460px]:grid-cols-2">
+            <div className="mt-9 grid max-w-xl grid-cols-1 gap-3.5 min-[460px]:grid-cols-2">
               <a
                 href={`https://wa.me/9647805808975?text=${encodeURIComponent(
                   isAr
@@ -113,7 +113,7 @@ export function HeroSection() {
               </a>
             </div>
 
-            <div className="mt-8 flex flex-wrap gap-2">
+            <div className="mt-9 flex flex-wrap gap-2.5">
               {[t.hero.benefit1, t.hero.benefit2, t.hero.benefit3].map((item) => (
                 <span key={item} className="inline-flex items-center gap-2 rounded-sm border border-[var(--brand-line)] bg-[var(--brand-panel)] px-3 py-2 text-xs text-[var(--brand-text-2)]">
                   <ShieldCheck size={14} className="text-emerald-300" />

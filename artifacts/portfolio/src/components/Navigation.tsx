@@ -21,7 +21,6 @@ export function Navigation() {
 
   const NAV_LINKS = [
     { id: "home", label: t.nav.home, type: "section" as const },
-    { id: "demo", label: t.nav.demo, type: "section" as const },
     { id: "services", label: t.nav.services, type: "section" as const },
     { id: "projects", label: t.nav.projects, type: "section" as const },
     { id: "products", label: t.nav.products, type: "route" as const, href: "/products" },

@@ -332,7 +332,15 @@ html[lang="ar"] {
 }
 
 html[lang="ar"] body {
-  line-height: 1.85;
+  line-height: 1.9;
+  word-spacing: 0.05em;
+}
+
+html[lang="ar"] h1,
+html[lang="ar"] h2,
+html[lang="ar"] h3 {
+  line-height: 1.45;
+  word-spacing: 0.08em;
 }
 
 html[lang="ar"] .font-mono {
