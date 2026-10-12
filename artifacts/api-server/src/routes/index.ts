@@ -130,6 +130,17 @@ if (databaseUrl) {
       ...project,
     }));
     state.nextIds.project = projectArchive.length + 1;
+  } else {
+    const existingTitles = new Set(state.projects.map((p: { title: string }) => p.title));
+    const missing = projectArchive.filter((p) => !existingTitles.has(p.title));
+    if (missing.length) {
+      let nextId = state.nextIds.project || state.projects.length + 1;
+      for (const project of missing) {
+        state.projects.push({ id: nextId++, ...project });
+      }
+      state.nextIds.project = nextId;
+      state.projects.sort((a: { order: number; id: number }, b: { order: number; id: number }) => a.order - b.order || a.id - b.id);
+    }
   }
 
   if (state.products.length === 0) {

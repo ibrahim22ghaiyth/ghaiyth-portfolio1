@@ -146,6 +146,27 @@ export const projectArchive: ArchiveProject[] = [
     "featured": true,
     "order": 6,
     "active": true
+  },
+  {
+    "title": "ISM27",
+    "description": "A smart educational PWA for ICT college students — organizing lectures, notes, exams, and study progress offline-first, deployed on Cloudflare Pages.",
+    "titleAr": "ISM27",
+    "descriptionAr": "منصة تعليمية ذكية لطلبة كلية المعلومات وتقنية الاتصال — تنظيم المحاضرات والمذكرات والاختبارات وتقدم المذاكرة، تعمل بدون إنترنت.",
+    "techStack": [
+      "2026",
+      "React",
+      "Vite",
+      "PWA",
+      "Offline-first",
+      "Tailwind CSS",
+      "Cloudflare Pages"
+    ],
+    "liveUrl": "https://ism27.pages.dev/",
+    "githubUrl": "",
+    "imageUrl": "/project-covers/ism27.png",
+    "featured": true,
+    "order": 7,
+    "active": true
   }
 ];
 
