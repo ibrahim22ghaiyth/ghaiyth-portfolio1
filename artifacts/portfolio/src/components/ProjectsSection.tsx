@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ExternalLink, Github } from "lucide-react";
 import { useState } from "react";
-import { caseStudies } from "@/data/caseStudies";
+import { useListProjects } from "@workspace/api-client-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const statusStyles = {
@@ -12,8 +12,11 @@ const statusStyles = {
 
 export function ProjectsSection() {
   const { t, lang } = useLanguage();
+  const { data: projects } = useListProjects();
   const [openId, setOpenId] = useState("");
   const isArabic = lang === "ar";
+
+  const activeProjects = (projects || []).filter((p) => p.active);
 
   const labels = {
     heading: t.projects.title,
@@ -23,7 +26,6 @@ export function ProjectsSection() {
     stack: isArabic ? "التقنيات" : "The stack",
     outcome: isArabic ? "الحالة والنتيجة" : "Status and outcome",
     details: t.projects.openDetails,
-    status: t.projects.status,
     builtFor: isArabic ? "مصمم لـ" : "Built for",
     myRole: isArabic ? "دورتي" : "My role",
     statusLabel: {
@@ -35,7 +37,6 @@ export function ProjectsSection() {
 
   return (
     <section id="projects" className="brand-section relative overflow-hidden py-24 sm:py-28 md:py-32">
-      {/* Background decoration */}
       <div className="absolute top-1/3 left-0 h-52 w-52 rounded-full bg-[var(--brand-blue)]/[0.02] blur-[70px] pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 h-40 w-40 rounded-full bg-[var(--brand-blue)]/[0.03] blur-[60px] pointer-events-none" />
 
@@ -56,10 +57,19 @@ export function ProjectsSection() {
         </motion.div>
 
         <div className="grid gap-8 lg:grid-cols-3 lg:gap-6">
-          {caseStudies.map((project, index) => {
-            const content = isArabic ? project.ar : project.en;
-            const imageAlt = isArabic ? project.image.alt.ar : project.image.alt.en;
-            const isOpen = openId === project.id;
+          {activeProjects.map((project, index) => {
+            const title = isArabic && project.titleAr ? project.titleAr : project.title;
+            const summary = isArabic && project.descriptionAr ? project.descriptionAr : project.description;
+            const imageAlt = isArabic && project.imageAltAr ? project.imageAltAr : (project.imageAltEn || project.title);
+            const status = (project.status || "live") as keyof typeof statusStyles;
+            const isOpen = openId === String(project.id);
+
+            const audience = isArabic ? project.audienceAr : project.audienceEn;
+            const role = isArabic ? project.roleAr : project.roleEn;
+            const problem = isArabic ? project.problemAr : project.problemEn;
+            const solution = isArabic ? project.solutionAr : project.solutionEn;
+            const stackDesc = isArabic ? project.stackDescAr : project.stackDescEn;
+            const outcome = isArabic ? project.outcomeAr : project.outcomeEn;
 
             return (
               <motion.article
@@ -71,31 +81,30 @@ export function ProjectsSection() {
                 className="gradient-border card-sweep group flex flex-col overflow-hidden rounded-xl"
               >
                 <div className="relative aspect-[16/10] overflow-hidden">
-                  <img
-                    src={project.image.src}
-                    alt={imageAlt}
-                    width={project.image.width}
-                    height={project.image.height}
-                    loading="lazy"
-                    decoding="async"
-                    className="img-zoom h-full w-full object-cover object-top"
-                  />
-                  {/* Multi-layer gradient overlay */}
+                  {project.imageUrl ? (
+                    <img
+                      src={project.imageUrl}
+                      alt={imageAlt}
+                      loading="lazy"
+                      decoding="async"
+                      className="img-zoom h-full w-full object-cover object-top"
+                    />
+                  ) : (
+                    <div className="h-full w-full bg-gradient-to-br from-[var(--brand-panel-2)] to-[var(--brand-panel)]" />
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
                   <div className="absolute inset-0 bg-gradient-to-br from-[#3B82F6]/5 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
-                  {/* Status badge */}
                   <div className="absolute top-4 start-4">
-                    <span className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] font-semibold backdrop-blur-md ${statusStyles[project.status]}`}>
+                    <span className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] font-semibold backdrop-blur-md ${statusStyles[status] || statusStyles.live}`}>
                       <span className="relative flex h-1.5 w-1.5">
                         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-current opacity-60" />
                         <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-current" />
                       </span>
-                      {labels.statusLabel[project.status]}
+                      {labels.statusLabel[status] || labels.statusLabel.live}
                     </span>
                   </div>
 
-                  {/* Hover reveal arrow */}
                   <div className="absolute bottom-4 end-4 flex h-9 w-9 items-center justify-center rounded-full bg-white/10 backdrop-blur-md opacity-0 translate-y-2 transition-all duration-400 group-hover:opacity-100 group-hover:translate-y-0">
                     <ExternalLink size={15} className="text-white" />
                   </div>
@@ -103,13 +112,13 @@ export function ProjectsSection() {
 
                 <div className="flex flex-1 flex-col p-6 sm:p-7">
                   <h3 className="brand-heading mb-3 text-xl font-bold leading-snug transition-colors duration-300 group-hover:text-[var(--brand-blue)] sm:text-2xl">
-                    {content.name}
+                    {title}
                   </h3>
 
-                  <p className="brand-copy mb-5 text-sm leading-7">{content.summary}</p>
+                  <p className="brand-copy mb-5 text-sm leading-7">{summary}</p>
 
                   <div className="mb-6 flex flex-wrap gap-1.5">
-                    {project.stack.map((tech) => (
+                    {(project.techStack || []).map((tech) => (
                       <span
                         key={tech}
                         className="rounded-md border border-[var(--brand-line)] bg-[var(--brand-panel-2)] px-2.5 py-1 font-mono text-[11px] text-[var(--brand-text-2)] transition-colors duration-300 group-hover:border-[var(--brand-blue)]/20"
@@ -120,11 +129,11 @@ export function ProjectsSection() {
                   </div>
 
                   <div className="mt-auto space-y-2.5">
-                    {project.links?.live || project.links?.github ? (
+                    {project.liveUrl || project.githubUrl ? (
                       <div className="flex gap-2.5">
-                        {project.links?.live ? (
+                        {project.liveUrl ? (
                           <a
-                            href={project.links.live}
+                            href={project.liveUrl}
                             target="_blank"
                             rel="noreferrer"
                             className="brand-button btn-glow inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg px-4 text-sm font-semibold"
@@ -132,12 +141,12 @@ export function ProjectsSection() {
                             {t.projects.liveDemo} <ExternalLink size={15} />
                           </a>
                         ) : null}
-                        {project.links?.github ? (
+                        {project.githubUrl ? (
                           <a
-                            href={project.links.github}
+                            href={project.githubUrl}
                             target="_blank"
                             rel="noreferrer"
-                            aria-label={`${content.name} GitHub`}
+                            aria-label={`${title} GitHub`}
                             className="btn-outline icon-magnetic inline-flex min-h-11 w-12 items-center justify-center rounded-lg"
                           >
                             <Github size={17} />
@@ -146,15 +155,17 @@ export function ProjectsSection() {
                       </div>
                     ) : null}
 
-                    <button
-                      type="button"
-                      onClick={() => setOpenId(isOpen ? "" : project.id)}
-                      aria-expanded={isOpen}
-                      className="btn-outline inline-flex min-h-11 w-full items-center justify-between rounded-lg px-4 py-2 text-sm font-semibold"
-                    >
-                      {labels.details}
-                      <ChevronDown size={16} className={isOpen ? "rotate-180 transition-transform duration-300" : "transition-transform duration-300"} />
-                    </button>
+                    {audience || role || problem || solution || stackDesc || outcome ? (
+                      <button
+                        type="button"
+                        onClick={() => setOpenId(isOpen ? "" : String(project.id))}
+                        aria-expanded={isOpen}
+                        className="btn-outline inline-flex min-h-11 w-full items-center justify-between rounded-lg px-4 py-2 text-sm font-semibold"
+                      >
+                        {labels.details}
+                        <ChevronDown size={16} className={isOpen ? "rotate-180 transition-transform duration-300" : "transition-transform duration-300"} />
+                      </button>
+                    ) : null}
                   </div>
 
                   <AnimatePresence>
@@ -168,14 +179,14 @@ export function ProjectsSection() {
                       >
                         <div className="mt-4 grid gap-4 rounded-lg border border-[var(--brand-line-soft)] bg-[var(--brand-panel-2)] p-5 text-sm leading-7 text-[var(--brand-text-2)]">
                           {[
-                            [labels.builtFor, content.audience],
-                            [labels.myRole, content.role],
-                            [labels.problem, content.problem],
-                            [labels.solution, content.solution],
-                            [labels.stack, content.stack],
-                            [labels.outcome, content.outcome],
-                          ].map(([label, body]) => (
-                            <section key={label}>
+                            audience ? [labels.builtFor, audience] : null,
+                            role ? [labels.myRole, role] : null,
+                            problem ? [labels.problem, problem] : null,
+                            solution ? [labels.solution, solution] : null,
+                            stackDesc ? [labels.stack, stackDesc] : null,
+                            outcome ? [labels.outcome, outcome] : null,
+                          ].filter(Boolean).map(([label, body]) => (
+                            <section key={label as string}>
                               <h4 className="brand-eyebrow mb-1.5">{label}</h4>
                               <p className="brand-copy">{body}</p>
                             </section>

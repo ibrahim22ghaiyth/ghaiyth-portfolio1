@@ -66,7 +66,7 @@ export function Footer() {
       <div className="container relative z-10 mx-auto grid gap-10 px-4 py-16 sm:px-6 sm:grid-cols-2 lg:grid-cols-[1.2fr_0.7fr_0.9fr] lg:items-start">
         <div>
           <div className="glass mb-5 flex h-24 w-28 items-center justify-center rounded-xl">
-            <BrandLogo className="h-20 w-20 sm:h-24 sm:w-24" eager />
+            <BrandLogo className="h-20 w-20 sm:h-24 sm:w-24" eager variant="dark" />
           </div>
           <p className="max-w-xs text-sm leading-6 text-[var(--brand-text-2)]">{t.footer.summary}</p>
           <div className="mt-6 h-px w-16 bg-gradient-to-r from-[var(--brand-blue)]/40 to-transparent" />

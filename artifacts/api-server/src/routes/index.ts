@@ -297,7 +297,8 @@ if (databaseUrl) {
   });
 
   router.post("/projects", requireAdmin, (req, res) => {
-    const { title, description, titleAr, descriptionAr, techStack, liveUrl, githubUrl, imageUrl, featured, order, active } = req.body as any;
+    const body = req.body as any;
+    const { title, description, titleAr, descriptionAr, techStack, liveUrl, githubUrl, imageUrl, featured, order, active } = body;
     if (!title || !description) {
       res.status(400).json({ error: "title and description are required" });
       return;
@@ -315,6 +316,21 @@ if (databaseUrl) {
       featured: Boolean(featured),
       order: Number(order) || 0,
       active: active ?? true,
+      status: body.status || "live",
+      imageAltEn: body.imageAltEn || null,
+      imageAltAr: body.imageAltAr || null,
+      audienceEn: body.audienceEn || null,
+      audienceAr: body.audienceAr || null,
+      roleEn: body.roleEn || null,
+      roleAr: body.roleAr || null,
+      problemEn: body.problemEn || null,
+      problemAr: body.problemAr || null,
+      solutionEn: body.solutionEn || null,
+      solutionAr: body.solutionAr || null,
+      stackDescEn: body.stackDescEn || null,
+      stackDescAr: body.stackDescAr || null,
+      outcomeEn: body.outcomeEn || null,
+      outcomeAr: body.outcomeAr || null,
     };
     state.projects.push(project);
     state.projects.sort((a, b) => a.order - b.order || a.id - b.id);
@@ -329,19 +345,34 @@ if (databaseUrl) {
       res.status(404).json({ error: "Project not found" });
       return;
     }
-    const { title, description, titleAr, descriptionAr, techStack, liveUrl, githubUrl, imageUrl, featured, order, active } = req.body as any;
+    const body = req.body as any;
     Object.assign(project, {
-      title,
-      description,
-      titleAr: titleAr || null,
-      descriptionAr: descriptionAr || null,
-      techStack: Array.isArray(techStack) ? techStack : [],
-      liveUrl: liveUrl || null,
-      githubUrl: githubUrl || null,
-      imageUrl: imageUrl || null,
-      featured: Boolean(featured),
-      order: Number(order) || 0,
-      active: active ?? true,
+      title: body.title,
+      description: body.description,
+      titleAr: body.titleAr || null,
+      descriptionAr: body.descriptionAr || null,
+      techStack: Array.isArray(body.techStack) ? body.techStack : [],
+      liveUrl: body.liveUrl || null,
+      githubUrl: body.githubUrl || null,
+      imageUrl: body.imageUrl || null,
+      featured: Boolean(body.featured),
+      order: Number(body.order) || 0,
+      active: body.active ?? true,
+      status: body.status || "live",
+      imageAltEn: body.imageAltEn || null,
+      imageAltAr: body.imageAltAr || null,
+      audienceEn: body.audienceEn || null,
+      audienceAr: body.audienceAr || null,
+      roleEn: body.roleEn || null,
+      roleAr: body.roleAr || null,
+      problemEn: body.problemEn || null,
+      problemAr: body.problemAr || null,
+      solutionEn: body.solutionEn || null,
+      solutionAr: body.solutionAr || null,
+      stackDescEn: body.stackDescEn || null,
+      stackDescAr: body.stackDescAr || null,
+      outcomeEn: body.outcomeEn || null,
+      outcomeAr: body.outcomeAr || null,
     });
     state.projects.sort((a, b) => a.order - b.order || a.id - b.id);
     saveState(state);

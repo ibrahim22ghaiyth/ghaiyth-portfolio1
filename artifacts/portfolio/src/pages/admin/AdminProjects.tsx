@@ -35,6 +35,21 @@ export function AdminProjects() {
     featured: false,
     order: 0,
     active: true,
+    status: "live",
+    imageAltEn: "",
+    imageAltAr: "",
+    audienceEn: "",
+    audienceAr: "",
+    roleEn: "",
+    roleAr: "",
+    problemEn: "",
+    problemAr: "",
+    solutionEn: "",
+    solutionAr: "",
+    stackDescEn: "",
+    stackDescAr: "",
+    outcomeEn: "",
+    outcomeAr: "",
   });
 
   if (isLoading) return <div>{t.common.loading}</div>;
@@ -55,11 +70,26 @@ export function AdminProjects() {
         featured: project.featured,
         order: project.order,
         active: project.active,
+        status: project.status || "live",
+        imageAltEn: project.imageAltEn || "",
+        imageAltAr: project.imageAltAr || "",
+        audienceEn: project.audienceEn || "",
+        audienceAr: project.audienceAr || "",
+        roleEn: project.roleEn || "",
+        roleAr: project.roleAr || "",
+        problemEn: project.problemEn || "",
+        problemAr: project.problemAr || "",
+        solutionEn: project.solutionEn || "",
+        solutionAr: project.solutionAr || "",
+        stackDescEn: project.stackDescEn || "",
+        stackDescAr: project.stackDescAr || "",
+        outcomeEn: project.outcomeEn || "",
+        outcomeAr: project.outcomeAr || "",
       });
     } else {
       setEditingId(null);
       setTechStackInput("");
-      setFormData({ title: "", description: "", titleAr: "", descriptionAr: "", techStack: [], liveUrl: "", githubUrl: "", imageUrl: "", featured: false, order: 0, active: true });
+      setFormData({ title: "", description: "", titleAr: "", descriptionAr: "", techStack: [], liveUrl: "", githubUrl: "", imageUrl: "", featured: false, order: 0, active: true, status: "live", imageAltEn: "", imageAltAr: "", audienceEn: "", audienceAr: "", roleEn: "", roleAr: "", problemEn: "", problemAr: "", solutionEn: "", solutionAr: "", stackDescEn: "", stackDescAr: "", outcomeEn: "", outcomeAr: "" });
     }
     setIsDialogOpen(true);
   };
@@ -252,6 +282,89 @@ export function AdminProjects() {
               <div className="space-y-2">
                 <label className="text-xs font-mono text-muted-foreground uppercase block">{t.common.active}</label>
                 <Switch checked={formData.active} onCheckedChange={checked => setFormData({ ...formData, active: checked })} />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <label className="text-xs font-mono text-muted-foreground uppercase">الحالة / Status</label>
+              <select value={formData.status} onChange={e => setFormData({ ...formData, status: e.target.value })} className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm">
+                <option value="live">منشور / Live</option>
+                <option value="prototype">نموذج أولي / Prototype</option>
+                <option value="development">قيد التطوير / Development</option>
+              </select>
+            </div>
+            <div className="border-t border-border pt-4">
+              <p className="mb-3 text-sm font-semibold text-foreground">تفاصيل دراسة الحالة / Case Study Details</p>
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-xs font-mono text-muted-foreground uppercase">وصف الصورة (إنكليزي)</label>
+                    <Input value={formData.imageAltEn} onChange={e => setFormData({ ...formData, imageAltEn: e.target.value })} className="bg-background border-border" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-mono text-muted-foreground uppercase">وصف الصورة (عربي)</label>
+                    <Input value={formData.imageAltAr} onChange={e => setFormData({ ...formData, imageAltAr: e.target.value })} className="bg-background border-border text-right" dir="rtl" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-xs font-mono text-muted-foreground uppercase">الفئة المستهدفة (إنكليزي)</label>
+                    <Textarea value={formData.audienceEn} onChange={e => setFormData({ ...formData, audienceEn: e.target.value })} className="bg-background border-border h-20" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-mono text-muted-foreground uppercase">الفئة المستهدفة (عربي)</label>
+                    <Textarea value={formData.audienceAr} onChange={e => setFormData({ ...formData, audienceAr: e.target.value })} className="bg-background border-border h-20 text-right" dir="rtl" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-xs font-mono text-muted-foreground uppercase">الدور (إنكليزي)</label>
+                    <Textarea value={formData.roleEn} onChange={e => setFormData({ ...formData, roleEn: e.target.value })} className="bg-background border-border h-20" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-mono text-muted-foreground uppercase">الدور (عربي)</label>
+                    <Textarea value={formData.roleAr} onChange={e => setFormData({ ...formData, roleAr: e.target.value })} className="bg-background border-border h-20 text-right" dir="rtl" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-xs font-mono text-muted-foreground uppercase">المشكلة (إنكليزي)</label>
+                    <Textarea value={formData.problemEn} onChange={e => setFormData({ ...formData, problemEn: e.target.value })} className="bg-background border-border h-20" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-mono text-muted-foreground uppercase">المشكلة (عربي)</label>
+                    <Textarea value={formData.problemAr} onChange={e => setFormData({ ...formData, problemAr: e.target.value })} className="bg-background border-border h-20 text-right" dir="rtl" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-xs font-mono text-muted-foreground uppercase">الحل (إنكليزي)</label>
+                    <Textarea value={formData.solutionEn} onChange={e => setFormData({ ...formData, solutionEn: e.target.value })} className="bg-background border-border h-20" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-mono text-muted-foreground uppercase">الحل (عربي)</label>
+                    <Textarea value={formData.solutionAr} onChange={e => setFormData({ ...formData, solutionAr: e.target.value })} className="bg-background border-border h-20 text-right" dir="rtl" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-xs font-mono text-muted-foreground uppercase">التقنيات - وصف (إنكليزي)</label>
+                    <Textarea value={formData.stackDescEn} onChange={e => setFormData({ ...formData, stackDescEn: e.target.value })} className="bg-background border-border h-16" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-mono text-muted-foreground uppercase">التقنيات - وصف (عربي)</label>
+                    <Textarea value={formData.stackDescAr} onChange={e => setFormData({ ...formData, stackDescAr: e.target.value })} className="bg-background border-border h-16 text-right" dir="rtl" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-xs font-mono text-muted-foreground uppercase">النتيجة (إنكليزي)</label>
+                    <Textarea value={formData.outcomeEn} onChange={e => setFormData({ ...formData, outcomeEn: e.target.value })} className="bg-background border-border h-20" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-mono text-muted-foreground uppercase">النتيجة (عربي)</label>
+                    <Textarea value={formData.outcomeAr} onChange={e => setFormData({ ...formData, outcomeAr: e.target.value })} className="bg-background border-border h-20 text-right" dir="rtl" />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
