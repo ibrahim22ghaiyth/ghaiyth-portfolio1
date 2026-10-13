@@ -6,20 +6,14 @@ import { requireAdmin } from "../middlewares/auth";
 import { getDatabaseUrl } from "@workspace/db/connection-string";
 import { projectArchive } from "../data/projectArchive";
 import { defaultProducts } from "../data/defaultProducts";
+import { defaultBlogPosts } from "../data/defaultBlogPosts";
 import { messageInputSchema } from "./schemas";
 
 const router: IRouter = Router();
 const databaseUrl = getDatabaseUrl();
-const isProductionRuntime = process.env.NODE_ENV === "production" || Boolean(
-  process.env.RAILWAY_ENVIRONMENT_NAME ||
-  process.env.RAILWAY_ENVIRONMENT ||
-  process.env.RAILWAY_PROJECT_ID
-);
 
-if (!databaseUrl && isProductionRuntime) {
-  throw new Error(
-    "Persistent DATABASE_URL is required in production. Connect the Railway PostgreSQL service to the website service before deploying.",
-  );
+if (!databaseUrl) {
+  console.warn("[api-server] DATABASE_URL not set — using file-store mode. Data will NOT survive production deploys.");
 }
 
 router.use(healthRouter);
@@ -150,6 +144,15 @@ if (databaseUrl) {
       tags: [...product.tags],
     }));
     state.nextIds.product = defaultProducts.length + 1;
+  }
+
+  if (state.blogPosts.length === 0) {
+    state.blogPosts = defaultBlogPosts.map((post, index) => ({
+      id: index + 1,
+      ...post,
+      tags: [...post.tags],
+    }));
+    state.nextIds.blogPost = defaultBlogPosts.length + 1;
   }
 
   if (state.content.length === 0) {

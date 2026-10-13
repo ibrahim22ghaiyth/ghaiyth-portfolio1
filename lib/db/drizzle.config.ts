@@ -1,6 +1,8 @@
 import { defineConfig } from "drizzle-kit";
-import path from "path";
+import { config } from "dotenv";
 import { getDatabaseUrl } from "./src/connection-string";
+
+config();
 
 const databaseUrl = getDatabaseUrl();
 
@@ -9,8 +11,9 @@ if (!databaseUrl) {
 }
 
 export default defineConfig({
-  schema: path.join(__dirname, "./src/schema/index.ts"),
+  schema: "./src/schema/index.ts",
   dialect: "postgresql",
+  out: "./drizzle",
   dbCredentials: {
     url: databaseUrl,
   },
