@@ -1,16 +1,24 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
-const isProductionRuntime = process.env.NODE_ENV === "production" || Boolean(
-  process.env.RAILWAY_ENVIRONMENT_NAME ||
-  process.env.RAILWAY_ENVIRONMENT ||
-  process.env.RAILWAY_PROJECT_ID,
-);
+function isProductionRuntime(): boolean {
+  return (
+    process.env.NODE_ENV === "production" ||
+    Boolean(
+      process.env.RAILWAY_ENVIRONMENT_NAME ||
+        process.env.RAILWAY_ENVIRONMENT ||
+        process.env.RAILWAY_PROJECT_ID ||
+        globalThis.navigator?.userAgent?.includes("Cloudflare-Workers"),
+    )
+  );
+}
 
-const JWT_SECRET = process.env.JWT_SECRET || process.env.SESSION_SECRET || "";
-
-if (isProductionRuntime && JWT_SECRET.length < 32) {
-  throw new Error("JWT_SECRET must be set to at least 32 characters in production.");
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET || process.env.SESSION_SECRET || "";
+  if (isProductionRuntime() && secret.length < 32) {
+    throw new Error("JWT_SECRET must be set to at least 32 characters in production.");
+  }
+  return secret || "local-development-secret-only";
 }
 
 export interface AdminPayload {
@@ -25,7 +33,7 @@ export function requireAdmin(req: Request, res: Response, next: NextFunction): v
   }
   const token = authHeader.slice(7);
   try {
-    const payload = jwt.verify(token, JWT_SECRET || "local-development-secret-only", {
+    const payload = jwt.verify(token, getJwtSecret(), {
       algorithms: ["HS256"],
       issuer: "ibrahimig-admin",
       audience: "ibrahimig-dashboard",
@@ -38,7 +46,7 @@ export function requireAdmin(req: Request, res: Response, next: NextFunction): v
 }
 
 export function signAdminToken(username: string): string {
-  return jwt.sign({ username }, JWT_SECRET || "local-development-secret-only", {
+  return jwt.sign({ username }, getJwtSecret(), {
     expiresIn: "2h",
     issuer: "ibrahimig-admin",
     audience: "ibrahimig-dashboard",

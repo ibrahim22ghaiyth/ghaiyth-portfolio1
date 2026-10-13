@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { db, testimonialsTable } from "@workspace/db";
-import { asc, eq, sql } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 import { z } from "zod/v4";
 import { requireAdmin } from "../middlewares/auth";
 
@@ -38,24 +38,8 @@ let tableReady: Promise<void> | null = null;
 
 function ensureTestimonialsTable() {
   tableReady ??= (async () => {
-    await db.execute(sql`
-      CREATE TABLE IF NOT EXISTS testimonials (
-        id serial PRIMARY KEY,
-        client_name text NOT NULL,
-        client_name_ar text,
-        company text NOT NULL,
-        company_ar text,
-        feedback text NOT NULL,
-        feedback_ar text,
-        project_name text,
-        project_name_ar text,
-        rating integer NOT NULL DEFAULT 5,
-        "order" integer NOT NULL DEFAULT 0,
-        active boolean NOT NULL DEFAULT true,
-        created_at timestamptz NOT NULL DEFAULT now(),
-        updated_at timestamptz NOT NULL DEFAULT now()
-      )
-    `);
+    // Table is created by migrations/0001_init.sql (SQLite-compatible).
+    // Do not CREATE TABLE here — Postgres serial/timestamptz syntax breaks D1.
   })();
   return tableReady;
 }

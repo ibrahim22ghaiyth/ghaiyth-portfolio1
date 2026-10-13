@@ -18,6 +18,12 @@ function cleanSlug(value: string) {
   return slug || `post-${Date.now()}`;
 }
 
+function isUniqueViolation(error: any): boolean {
+  if (error?.code === "23505") return true;
+  const message = String(error?.message || error?.cause?.message || "");
+  return /UNIQUE constraint failed|SQLITE_CONSTRAINT|duplicate key value/i.test(message);
+}
+
 function mapPayload(body: any) {
   const title = String(body.title || body.titleAr || "").trim();
   const excerpt = String(body.excerpt || body.excerptAr || "").trim();
@@ -117,7 +123,7 @@ router.post("/admin/blog-posts", requireAdmin, async (req, res) => {
     res.status(201).json(post);
   } catch (error: any) {
     logger.error({ err: error }, "Unable to save blog post");
-    if (error?.code === "23505") {
+    if (isUniqueViolation(error)) {
       res.status(409).json({ error: "A blog post with this slug already exists" });
       return;
     }
@@ -147,7 +153,7 @@ router.put("/admin/blog-posts/:id", requireAdmin, async (req, res) => {
       .returning();
   } catch (error: any) {
     logger.error({ err: error }, "Unable to save blog post");
-    if (error?.code === "23505") {
+    if (isUniqueViolation(error)) {
       res.status(409).json({ error: "A blog post with this slug already exists" });
       return;
     }

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import type { Request } from "express";
-import { desc, sql } from "drizzle-orm";
+import { and, desc, eq, gte, sql } from "drizzle-orm";
 import { requireAdmin } from "../middlewares/auth";
 import { getDatabaseUrl } from "@workspace/db/connection-string";
 
@@ -63,7 +63,7 @@ router.post("/analytics/visit", async (req, res) => {
       const [recentVisit] = await db
         .select({ id: visitsTable.id })
         .from(visitsTable)
-        .where(sql`${visitsTable.visitorKey} = ${payload.visitorKey} and ${visitsTable.createdAt} >= ${windowStart}`)
+        .where(and(eq(visitsTable.visitorKey, payload.visitorKey), gte(visitsTable.createdAt, windowStart)))
         .limit(1);
 
       if (!recentVisit) {
@@ -104,11 +104,11 @@ router.get("/admin/analytics", requireAdmin, async (req, res) => {
 
     if (dbModule) {
       const { db, visitsTable } = dbModule;
-      const [total] = await db.select({ count: sql<number>`count(*)::int` }).from(visitsTable);
+      const [total] = await db.select({ count: sql<number>`count(*)` }).from(visitsTable);
       const countryRows = await db
         .select({
           country: visitsTable.country,
-          count: sql<number>`count(*)::int`,
+          count: sql<number>`count(*)`,
         })
         .from(visitsTable)
         .groupBy(visitsTable.country)
@@ -125,9 +125,9 @@ router.get("/admin/analytics", requireAdmin, async (req, res) => {
 
       res.json({
         storageMode,
-        totalVisits: total?.count || 0,
+        totalVisits: Number(total?.count || 0),
         uniqueCountries: countryRows.length,
-        countries: countryRows,
+        countries: countryRows.map((row) => ({ country: row.country, count: Number(row.count) })),
         recentVisits: recentVisits.map((visit) => ({
           country: visit.country,
           path: visit.path,

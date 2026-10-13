@@ -4,17 +4,28 @@ import { requireAdmin, signAdminToken } from "../middlewares/auth";
 
 const router = Router();
 
-const isProductionRuntime = process.env.NODE_ENV === "production" || Boolean(
-  process.env.RAILWAY_ENVIRONMENT_NAME ||
-  process.env.RAILWAY_ENVIRONMENT ||
-  process.env.RAILWAY_PROJECT_ID,
-);
+function isProductionRuntime(): boolean {
+  return (
+    process.env.NODE_ENV === "production" ||
+    Boolean(
+      process.env.RAILWAY_ENVIRONMENT_NAME ||
+        process.env.RAILWAY_ENVIRONMENT ||
+        process.env.RAILWAY_PROJECT_ID ||
+        globalThis.navigator?.userAgent?.includes("Cloudflare-Workers"),
+    )
+  );
+}
 
-const ADMIN_USERNAME = process.env.ADMIN_USERNAME || (isProductionRuntime ? "" : "admin");
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || (isProductionRuntime ? "" : "Admin@2024");
+function getAdminCredentials(): { username: string; password: string } {
+  const production = isProductionRuntime();
+  const username = process.env.ADMIN_USERNAME || (production ? "" : "admin");
+  const password = process.env.ADMIN_PASSWORD || (production ? "" : "Admin@2024");
 
-if (isProductionRuntime && (!ADMIN_USERNAME || ADMIN_PASSWORD.length < 10)) {
-  throw new Error("ADMIN_USERNAME and a strong ADMIN_PASSWORD must be set in production.");
+  if (production && (!username || password.length < 10)) {
+    throw new Error("ADMIN_USERNAME and a strong ADMIN_PASSWORD must be set in production.");
+  }
+
+  return { username, password };
 }
 
 function safeCompare(value: string, expected: string): boolean {
@@ -24,6 +35,7 @@ function safeCompare(value: string, expected: string): boolean {
 }
 
 router.post("/auth/login", (req, res) => {
+  const { username: ADMIN_USERNAME, password: ADMIN_PASSWORD } = getAdminCredentials();
   const { username, password } = req.body as { username?: string; password?: string };
   const normalizedUsername = username?.trim().toLowerCase();
   const normalizedAdminUsername = ADMIN_USERNAME.trim().toLowerCase();

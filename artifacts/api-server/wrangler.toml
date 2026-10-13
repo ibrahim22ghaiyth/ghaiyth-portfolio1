@@ -1,0 +1,28 @@
+name = "ibrahimig"
+main = "dist/worker.mjs"
+compatibility_date = "2026-10-01"
+compatibility_flags = ["nodejs_compat"]
+
+[assets]
+directory = "../portfolio/dist/public"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
+run_worker_first = [
+  "/api/*",
+  "/sitemap.xml",
+  "/rss.xml",
+  "/en/rss.xml",
+  "/blog/*",
+  "/en/blog/*",
+  "/products",
+  "/en/products",
+  "/projects",
+  "/en/projects",
+  "/en",
+  "/",
+]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "ibrahimig"
+database_id = "ff8c8a1a-70fa-41bd-b9b3-5a8e756883e3"

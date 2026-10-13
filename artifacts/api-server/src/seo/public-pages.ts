@@ -37,6 +37,7 @@ export type SeoBlogPost = {
 
 const origin = "https://www.ibrahimig.com";
 const lastModified = "2026-07-11";
+export const indexNowKey = "3b56f74b2f2a4f14b799e1b6c9b0e6d7";
 
 function slugify(value: string) {
   return value
@@ -487,14 +488,12 @@ function renderHead(page: SeoPage) {
 
 const templateCache = new Map<string, { template: string; assetTags: string }>();
 
-function readTemplate(templatePath: string) {
+export function readTemplate(templatePath: string) {
   const cached = templateCache.get(templatePath);
   if (cached) return cached;
 
   const template = readFileSync(templatePath, "utf8");
-  const assetTags = (template.match(/<(?:script|link)[^>]+(?:><\/script>|\/?>)/g) || [])
-    .filter((tag) => tag.includes("/assets/"))
-    .join("\n");
+  const assetTags = extractAssetTags(template);
 
   const entry = { template, assetTags };
   templateCache.set(templatePath, entry);
@@ -503,11 +502,20 @@ function readTemplate(templatePath: string) {
 
 export function renderPublicPage(templatePath: string, page: SeoPage) {
   const { template, assetTags } = readTemplate(templatePath);
+  return renderPublicPageWithTemplate(template, assetTags, page);
+}
 
+export function renderPublicPageWithTemplate(template: string, assetTags: string, page: SeoPage) {
   return template
     .replace(/<html[^>]*>/, `<html lang="${page.locale}" dir="${page.locale === "ar" ? "rtl" : "ltr"}">`)
     .replace(/<head>[\s\S]*?<\/head>/, `<head>${renderHead(page)}\n${assetTags}</head>`)
     .replace('<div id="root"></div>', `<div id="root"></div><noscript>${renderStaticBody(page)}</noscript>`);
+}
+
+export function extractAssetTags(template: string) {
+  return (template.match(/<(?:script|link)[^>]+(?:><\/script>|\/?>)/g) || [])
+    .filter((tag) => tag.includes("/assets/"))
+    .join("\n");
 }
 
 export function publicSitemapXml(posts: SeoBlogPost[] = []) {

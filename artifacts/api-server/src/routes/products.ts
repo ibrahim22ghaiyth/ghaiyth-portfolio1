@@ -86,18 +86,32 @@ function parseId(raw: unknown): number | null {
   return Number.isInteger(id) && id > 0 ? id : null;
 }
 
+function isUniqueViolation(error: any): boolean {
+  if (error?.code === "23505") return true;
+  const message = String(error?.message || error?.cause?.message || "");
+  return /UNIQUE constraint failed|SQLITE_CONSTRAINT|duplicate key value/i.test(message);
+}
+
 let productSchemaReady: Promise<void> | null = null;
 
 function ensureProductSchema() {
   productSchemaReady ??= (async () => {
-    await db.execute(sql`ALTER TABLE products ADD COLUMN IF NOT EXISTS slug text`);
-    await db.execute(sql`ALTER TABLE products ADD COLUMN IF NOT EXISTS template text NOT NULL DEFAULT 'standard'`);
-    await db.execute(sql`ALTER TABLE products ADD COLUMN IF NOT EXISTS purchase_label text`);
-    await db.execute(sql`ALTER TABLE products ADD COLUMN IF NOT EXISTS purchase_note text`);
-    await db.execute(sql`ALTER TABLE products ADD COLUMN IF NOT EXISTS delivery_type text NOT NULL DEFAULT 'digital'`);
-    await db.execute(sql`CREATE UNIQUE INDEX IF NOT EXISTS products_slug_unique ON products (slug) WHERE slug IS NOT NULL`);
-    await db.execute(sql`UPDATE products SET purchase_label = 'Buy via WhatsApp' WHERE purchase_label ILIKE 'pay by card'`);
-    await db.execute(sql`UPDATE products SET request_url = 'https://wa.me/9647805808975' WHERE request_url IS NULL OR request_url = ''`);
+    // SQLite does not support ADD COLUMN IF NOT EXISTS. Columns already exist
+    // in migrations/0001_init.sql; only fix data + seed defaults.
+    const migrations: Array<() => Promise<unknown>> = [
+      () => db.execute(sql`UPDATE products SET purchase_label = 'Buy via WhatsApp' WHERE LOWER(purchase_label) LIKE 'pay by card'`),
+      () => db.execute(sql`UPDATE products SET request_url = 'https://wa.me/9647805808975' WHERE request_url IS NULL OR request_url = ''`),
+    ];
+
+    for (const migrate of migrations) {
+      try {
+        await migrate();
+      } catch (error: any) {
+        const message = String(error?.message || error?.cause?.message || "");
+        if (/duplicate column|already exists|no such column|syntax error/i.test(message)) continue;
+        logger.error({ err: error }, "Product schema migration failed");
+      }
+    }
 
     for (const product of defaultProducts) {
       const [existing] = await db
@@ -164,7 +178,7 @@ router.post("/products", requireAdmin, async (req, res) => {
     res.status(201).json(product);
   } catch (error: any) {
     logger.error({ err: error }, "Unable to save product");
-    if (error?.code === "23505") {
+    if (isUniqueViolation(error)) {
       res.status(409).json({ error: "A product with this slug already exists" });
       return;
     }
@@ -195,7 +209,7 @@ router.put("/products/:id", requireAdmin, async (req, res) => {
       .returning();
   } catch (error: any) {
     logger.error({ err: error }, "Unable to save product");
-    if (error?.code === "23505") {
+    if (isUniqueViolation(error)) {
       res.status(409).json({ error: "A product with this slug already exists" });
       return;
     }

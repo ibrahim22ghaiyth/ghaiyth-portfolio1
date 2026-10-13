@@ -69,7 +69,7 @@ async function callGemini(prompt: string, apiKey: string): Promise<string> {
       });
 
       if (response.ok) {
-        const data = await response.json();
+        const data = (await response.json()) as { candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }> };
         const translated = data?.candidates?.[0]?.content?.parts?.[0]?.text;
         if (!translated) {
           throw new Error("Empty translation response");
@@ -130,7 +130,7 @@ async function callOpenAI(prompt: string, apiKey: string): Promise<string> {
       });
 
       if (response.ok) {
-        const data = await response.json();
+        const data = (await response.json()) as { choices?: Array<{ message?: { content?: string } }> };
         const translated = data?.choices?.[0]?.message?.content;
         if (!translated) {
           throw new Error("Empty translation response");

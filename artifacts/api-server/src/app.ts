@@ -13,144 +13,26 @@ import {
   buildBlogPostSeoPage,
   clientTemplatePath,
   getPublicSeoPage,
+  indexNowKey,
   publicOrigin,
   publicSitemapXml,
+  readTemplate,
   redirectArPath,
   renderPublicPage,
+  renderPublicPageWithTemplate,
 } from "./seo/public-pages";
 import { getSeoBlogPost, getSeoBlogPosts } from "./seo/blog-source";
 
-const app: Express = express();
 const isProduction = process.env.NODE_ENV === "production";
-const indexNowKey = "3b56f74b2f2a4f14b799e1b6c9b0e6d7";
 
-app.use(
-  pinoHttp({
-    logger,
-    serializers: {
-      req(req) {
-        return {
-          id: req.id,
-          method: req.method,
-          url: req.url?.split("?")[0],
-        };
-      },
-      res(res) {
-        return {
-          statusCode: res.statusCode,
-        };
-      },
-    },
-  }),
-);
-app.set("trust proxy", 1);
-app.use((req, res, next) => {
-  if (!isProduction) {
-    next();
-    return;
-  }
+export type SeoTemplateBundle = { template: string; assetTags: string };
 
-  const host = req.hostname;
-  const proto = req.get("x-forwarded-proto") || req.protocol;
-  const isCustomDomain = host === "ibrahimig.com" || host === "www.ibrahimig.com";
-  const needsWww = host === "ibrahimig.com";
-  const needsHttps = proto !== "https";
+export type CreateAppOptions = {
+  serveStatic?: boolean;
+  seoTemplate?: SeoTemplateBundle;
+};
 
-  if (isCustomDomain && (needsWww || needsHttps)) {
-    res.redirect(301, `https://www.ibrahimig.com${req.originalUrl}`);
-    return;
-  }
-
-  next();
-});
-app.use(
-  helmet({
-    contentSecurityPolicy: {
-      useDefaults: true,
-      directives: {
-        "default-src": ["'self'"],
-        "script-src": ["'self'"],
-        "style-src": ["'self'", "'unsafe-inline'"],
-        "img-src": ["'self'", "data:", "blob:", "https:"],
-        "font-src": ["'self'", "data:"],
-        "connect-src": ["'self'", "https://wa.me", "https://api.github.com"],
-        "frame-ancestors": ["'none'"],
-        "base-uri": ["'self'"],
-        "form-action": ["'self'"],
-      },
-    },
-    crossOriginEmbedderPolicy: false,
-    referrerPolicy: { policy: "strict-origin-when-cross-origin" },
-    hsts: isProduction
-      ? {
-          maxAge: 15552000,
-          includeSubDomains: true,
-          preload: false,
-        }
-      : false,
-  }),
-);
-app.use((_req, res, next) => {
-  res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=(self)");
-  next();
-});
-app.use(
-  cors({
-    origin: isProduction ? [/^https:\/\/([a-z0-9-]+\.)?ibrahimig\.com$/i] : true,
-    credentials: false,
-  }),
-);
-app.use(express.json({ limit: "10mb" }));
-app.use(express.urlencoded({ extended: true, limit: "10mb" }));
-app.use(
-  "/api",
-  rateLimit({
-    windowMs: 15 * 60 * 1000,
-    limit: 300,
-    standardHeaders: true,
-    legacyHeaders: false,
-  }),
-);
-app.use(
-  "/api/admin",
-  rateLimit({
-    windowMs: 5 * 60 * 1000,
-    limit: 120,
-    standardHeaders: true,
-    legacyHeaders: false,
-  }),
-);
-app.use(
-  "/api/auth/login",
-  rateLimit({
-    windowMs: 15 * 60 * 1000,
-    limit: 10,
-    standardHeaders: true,
-    legacyHeaders: false,
-  }),
-);
-app.use(
-  "/api/messages",
-  rateLimit({
-    windowMs: 15 * 60 * 1000,
-    limit: 20,
-    standardHeaders: true,
-    legacyHeaders: false,
-  }),
-);
-
-app.use("/api", router);
-
-app.use("/api", (_req, res) => {
-  res.status(404).json({ error: "Not found" });
-});
-
-const moduleDir = path.dirname(fileURLToPath(import.meta.url));
-const clientDistPath = path.resolve(moduleDir, "../../portfolio/dist/public");
-
-if (existsSync(clientDistPath)) {
-  const templatePath = clientTemplatePath(clientDistPath);
-
+function applySeoRoutes(app: Express, resolveTemplate: (req: Request) => SeoTemplateBundle | null) {
   app.get("/sitemap.xml", async (_req, res) => {
     const posts = await getSeoBlogPosts();
     res.type("application/xml").send(publicSitemapXml(posts));
@@ -177,85 +59,246 @@ if (existsSync(clientDistPath)) {
 
   app.get(["/", "/products", "/blog", "/projects", "/en", "/en/products", "/en/blog", "/en/projects"], (req, res) => {
     const page = getPublicSeoPage(req.path);
-    if (page) {
-      res.type("html").send(renderPublicPage(templatePath, page));
+    const bundle = resolveTemplate(req);
+    if (page && bundle) {
+      res.type("html").send(renderPublicPageWithTemplate(bundle.template, bundle.assetTags, page));
       return;
     }
 
-    res.sendFile(path.join(clientDistPath, "index.html"));
+    if (bundle) {
+      res.type("html").send(bundle.template);
+      return;
+    }
+
+    res.status(404).json({ error: "Not found" });
   });
 
   app.get(/^\/en\/.+$/, async (req, res) => {
+    const bundle = resolveTemplate(req);
+
     if (req.path.startsWith("/en/blog/")) {
       const slug = decodeURIComponent(req.path.slice("/en/blog/".length));
       const post = await getSeoBlogPost(slug);
-      if (post) {
-        res.type("html").send(renderPublicPage(templatePath, buildBlogPostSeoPage(post, "en")));
+      if (post && bundle) {
+        res.type("html").send(renderPublicPageWithTemplate(bundle.template, bundle.assetTags, buildBlogPostSeoPage(post, "en")));
         return;
       }
     }
 
     const page = getPublicSeoPage(req.path);
-    if (page) {
-      res.type("html").send(renderPublicPage(templatePath, page));
+    if (page && bundle) {
+      res.type("html").send(renderPublicPageWithTemplate(bundle.template, bundle.assetTags, page));
       return;
     }
 
-    res.sendFile(path.join(clientDistPath, "index.html"));
+    if (bundle) {
+      res.type("html").send(bundle.template);
+      return;
+    }
+
+    res.status(404).json({ error: "Not found" });
   });
 
   app.get(/^\/blog\/.+$/, async (req, res) => {
+    const bundle = resolveTemplate(req);
     const slug = decodeURIComponent(req.path.slice("/blog/".length));
     const post = await getSeoBlogPost(slug);
-    if (post) {
-      res.type("html").send(renderPublicPage(templatePath, buildBlogPostSeoPage(post, "ar")));
+    if (post && bundle) {
+      res.type("html").send(renderPublicPageWithTemplate(bundle.template, bundle.assetTags, buildBlogPostSeoPage(post, "ar")));
       return;
     }
 
     const page = getPublicSeoPage(req.path);
-    if (page) {
-      res.type("html").send(renderPublicPage(templatePath, page));
+    if (page && bundle) {
+      res.type("html").send(renderPublicPageWithTemplate(bundle.template, bundle.assetTags, page));
       return;
     }
 
-    res.sendFile(path.join(clientDistPath, "index.html"));
-  });
+    if (bundle) {
+      res.type("html").send(bundle.template);
+      return;
+    }
 
-  app.use(
-    "/assets",
-    express.static(path.join(clientDistPath, "assets"), {
-      immutable: true,
-      maxAge: "1y",
-    }),
-  );
-  app.use(
-    express.static(clientDistPath, {
-      index: false,
-      setHeaders(res, filePath) {
-        if (/\.(?:png|jpe?g|webp|gif|svg|ico|woff2?|ttf|pdf)$/i.test(filePath)) {
-          res.setHeader("Cache-Control", "public, max-age=604800");
-        }
-      },
-    }),
-  );
-  app.get(/^(?!\/api).*/, (_req, res) => {
-    res.sendFile(path.join(clientDistPath, "index.html"));
+    res.status(404).json({ error: "Not found" });
   });
 }
 
-app.use((err: unknown, _req: Request, res: Response, next: NextFunction) => {
-  if (res.headersSent) {
-    next(err);
-    return;
+export function createApp(options: CreateAppOptions = {}): Express {
+  const serveStatic = options.serveStatic ?? true;
+  const app: Express = express();
+
+  app.use(
+    pinoHttp({
+      logger,
+      serializers: {
+        req(req) {
+          return {
+            id: req.id,
+            method: req.method,
+            url: req.url?.split("?")[0],
+          };
+        },
+        res(res) {
+          return {
+            statusCode: res.statusCode,
+          };
+        },
+      },
+    }),
+  );
+  app.set("trust proxy", 1);
+  app.use((req, res, next) => {
+    if (!isProduction) {
+      next();
+      return;
+    }
+
+    const host = req.hostname;
+    const proto = req.get("x-forwarded-proto") || req.protocol;
+    const isCustomDomain = host === "ibrahimig.com" || host === "www.ibrahimig.com";
+    const needsWww = host === "ibrahimig.com";
+    const needsHttps = proto !== "https";
+
+    if (isCustomDomain && (needsWww || needsHttps)) {
+      res.redirect(301, `https://www.ibrahimig.com${req.originalUrl}`);
+      return;
+    }
+
+    next();
+  });
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        useDefaults: true,
+        directives: {
+          "default-src": ["'self'"],
+          "script-src": ["'self'"],
+          "style-src": ["'self'", "'unsafe-inline'"],
+          "img-src": ["'self'", "data:", "blob:", "https:"],
+          "font-src": ["'self'", "data:"],
+          "connect-src": ["'self'", "https://wa.me", "https://api.github.com"],
+          "frame-ancestors": ["'none'"],
+          "base-uri": ["'self'"],
+          "form-action": ["'self'"],
+        },
+      },
+      crossOriginEmbedderPolicy: false,
+      referrerPolicy: { policy: "strict-origin-when-cross-origin" },
+      hsts: isProduction
+        ? {
+            maxAge: 15552000,
+            includeSubDomains: true,
+            preload: false,
+          }
+        : false,
+    }),
+  );
+  app.use((_req, res, next) => {
+    res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=(self)");
+    next();
+  });
+  app.use(
+    cors({
+      origin: isProduction ? [/^https:\/\/([a-z0-9-]+\.)?ibrahimig\.com$/i, /^https:\/\/([a-z0-9-]+\.)?ibrahimig\.pages\.dev$/i, /^https:\/\/([a-z0-9-]+\.)?ibrahimig\.workers\.dev$/i] : true,
+      credentials: false,
+    }),
+  );
+  app.use(express.json({ limit: "10mb" }));
+  app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+  app.use(
+    "/api",
+    rateLimit({
+      windowMs: 15 * 60 * 1000,
+      limit: 300,
+      standardHeaders: true,
+      legacyHeaders: false,
+    }),
+  );
+  app.use(
+    "/api/admin",
+    rateLimit({
+      windowMs: 5 * 60 * 1000,
+      limit: 120,
+      standardHeaders: true,
+      legacyHeaders: false,
+    }),
+  );
+  app.use(
+    "/api/auth/login",
+    rateLimit({
+      windowMs: 15 * 60 * 1000,
+      limit: 10,
+      standardHeaders: true,
+      legacyHeaders: false,
+    }),
+  );
+  app.use(
+    "/api/messages",
+    rateLimit({
+      windowMs: 15 * 60 * 1000,
+      limit: 20,
+      standardHeaders: true,
+      legacyHeaders: false,
+    }),
+  );
+
+  app.use("/api", router);
+
+  app.use("/api", (_req, res) => {
+    res.status(404).json({ error: "Not found" });
+  });
+
+  if (options.seoTemplate) {
+    const bundle = options.seoTemplate;
+    applySeoRoutes(app, () => bundle);
+  } else if (serveStatic) {
+    const moduleDir = path.dirname(fileURLToPath(import.meta.url));
+    const clientDistPath = path.resolve(moduleDir, "../../portfolio/dist/public");
+
+    if (existsSync(clientDistPath)) {
+      const templatePath = clientTemplatePath(clientDistPath);
+
+      applySeoRoutes(app, () => readTemplate(templatePath));
+
+      app.use(
+        "/assets",
+        express.static(path.join(clientDistPath, "assets"), {
+          immutable: true,
+          maxAge: "1y",
+        }),
+      );
+      app.use(
+        express.static(clientDistPath, {
+          index: false,
+          setHeaders(res, filePath) {
+            if (/\.(?:png|jpe?g|webp|gif|svg|ico|woff2?|ttf|pdf)$/i.test(filePath)) {
+              res.setHeader("Cache-Control", "public, max-age=604800");
+            }
+          },
+        }),
+      );
+      app.get(/^(?!\/api).*/, (_req, res) => {
+        res.sendFile(path.join(clientDistPath, "index.html"));
+      });
+    }
   }
 
-  logger.error({ err }, "Unhandled request error");
+  app.use((err: unknown, _req: Request, res: Response, next: NextFunction) => {
+    if (res.headersSent) {
+      next(err);
+      return;
+    }
 
-  const rawStatus =
-    typeof err === "object" && err !== null && "status" in err ? Number((err as { status?: unknown }).status) : NaN;
-  const status = Number.isInteger(rawStatus) && rawStatus >= 400 && rawStatus < 600 ? rawStatus : 500;
+    logger.error({ err }, "Unhandled request error");
 
-  res.status(status).json({ error: status >= 500 ? "Internal server error" : "Bad request" });
-});
+    const rawStatus =
+      typeof err === "object" && err !== null && "status" in err ? Number((err as { status?: unknown }).status) : NaN;
+    const status = Number.isInteger(rawStatus) && rawStatus >= 400 && rawStatus < 600 ? rawStatus : 500;
 
-export default app;
+    res.status(status).json({ error: status >= 500 ? "Internal server error" : "Bad request" });
+  });
+
+  return app;
+}
+
+export { renderPublicPage };
