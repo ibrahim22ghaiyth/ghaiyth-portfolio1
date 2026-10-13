@@ -133,7 +133,7 @@ if (databaseUrl) {
         state.projects.push({ id: nextId++, ...project });
       }
       state.nextIds.project = nextId;
-      state.projects.sort((a: { order: number; id: number }, b: { order: number; id: number }) => a.order - b.order || a.id - b.id);
+      state.projects.sort((a: { id: number }, b: { id: number }) => b.id - a.id);
     }
   }
 
@@ -336,7 +336,7 @@ if (databaseUrl) {
       outcomeAr: body.outcomeAr || null,
     };
     state.projects.push(project);
-    state.projects.sort((a, b) => a.order - b.order || a.id - b.id);
+    state.projects.sort((a, b) => b.id - a.id);
     saveState(state);
     res.status(201).json(project);
   });
@@ -377,7 +377,7 @@ if (databaseUrl) {
       outcomeEn: body.outcomeEn || null,
       outcomeAr: body.outcomeAr || null,
     });
-    state.projects.sort((a, b) => a.order - b.order || a.id - b.id);
+    state.projects.sort((a, b) => b.id - a.id);
     saveState(state);
     res.json(project);
   });

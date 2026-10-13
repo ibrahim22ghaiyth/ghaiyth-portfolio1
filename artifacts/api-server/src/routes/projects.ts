@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { db, projectsTable } from "@workspace/db";
-import { asc, eq, inArray } from "drizzle-orm";
+import { desc, eq, inArray } from "drizzle-orm";
 import { requireAdmin } from "../middlewares/auth";
 import { projectArchive } from "../data/projectArchive";
 
@@ -26,7 +26,7 @@ router.get("/projects", async (req, res) => {
   const projects = await db
     .select()
     .from(projectsTable)
-    .orderBy(asc(projectsTable.order), asc(projectsTable.id));
+    .orderBy(desc(projectsTable.id));
   res.json(projects);
 });
 
