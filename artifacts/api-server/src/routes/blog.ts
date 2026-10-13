@@ -3,6 +3,7 @@ import { asc, desc, eq } from "drizzle-orm";
 import { db, blogPostsTable } from "@workspace/db";
 import { requireAdmin } from "../middlewares/auth";
 import { defaultBlogPosts } from "../data/defaultBlogPosts";
+import { translateText } from "../lib/gemini";
 import { logger } from "../lib/logger";
 
 const router = Router();
@@ -30,6 +31,9 @@ function mapPayload(body: any) {
     content: body.content ? String(body.content) : "",
     contentAr: body.contentAr ? String(body.contentAr) : null,
     slug,
+    category: body.category ? String(body.category) : null,
+    categoryAr: body.categoryAr ? String(body.categoryAr) : null,
+    readingMinutes: Number.isFinite(Number(body.readingMinutes)) ? Number(body.readingMinutes) : null,
     coverImageUrl: body.coverImageUrl ? String(body.coverImageUrl) : null,
     tags: Array.isArray(body.tags) ? body.tags.map(String).filter(Boolean) : [],
     featured: Boolean(body.featured),
@@ -168,6 +172,51 @@ router.delete("/admin/blog-posts/:id", requireAdmin, async (req, res) => {
 
   await db.delete(blogPostsTable).where(eq(blogPostsTable.id, id));
   res.status(204).send();
+});
+
+router.post("/admin/blog-posts/translate-missing", requireAdmin, async (req, res) => {
+  const batchSize = Math.min(Math.max(Number(req.body?.batchSize) || 4, 1), 8);
+
+  const posts = await db
+    .select()
+    .from(blogPostsTable)
+    .where(eq(blogPostsTable.active, true))
+    .orderBy(asc(blogPostsTable.order), asc(blogPostsTable.id));
+
+  const needsTranslation = posts.filter(
+    (post) =>
+      (post.contentAr && !post.content?.trim()) ||
+      (post.titleAr && !post.title?.trim()) ||
+      (post.excerptAr && !post.excerpt?.trim()),
+  );
+
+  const batch = needsTranslation.slice(0, batchSize);
+  const translated: Array<{ id: number; slug: string }> = [];
+  const errors: Array<{ id: number; slug: string; error: string }> = [];
+
+  for (const post of batch) {
+    try {
+      const title = post.title?.trim() ? post.title : await translateText(post.titleAr || "", "ar", "en");
+      const excerpt = post.excerpt?.trim() ? post.excerpt : await translateText(post.excerptAr || "", "ar", "en");
+      const content = post.content?.trim()
+        ? post.content
+        : await translateText(post.contentAr || "", "ar", "en");
+
+      await db
+        .update(blogPostsTable)
+        .set({ title, excerpt, content, updatedAt: new Date() })
+        .where(eq(blogPostsTable.id, post.id));
+
+      translated.push({ id: post.id, slug: post.slug });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Translation failed";
+      logger.error({ err, slug: post.slug }, "Bulk translation failed for post");
+      errors.push({ id: post.id, slug: post.slug, error: message });
+    }
+  }
+
+  const remaining = Math.max(needsTranslation.length - translated.length, 0);
+  res.json({ translated, errors, remaining, totalNeedingTranslation: needsTranslation.length });
 });
 
 export default router;

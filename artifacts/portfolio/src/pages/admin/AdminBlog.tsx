@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ImagePlus, Newspaper, Star, Upload } from "lucide-react";
+import { ImagePlus, Languages, Newspaper, Star, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -20,6 +20,9 @@ type BlogPost = {
   content: string;
   contentAr?: string | null;
   slug: string;
+  category?: string | null;
+  categoryAr?: string | null;
+  readingMinutes?: number | null;
   coverImageUrl?: string | null;
   tags: string[];
   featured: boolean;
@@ -36,6 +39,9 @@ const blankForm = {
   content: "",
   contentAr: "",
   slug: "",
+  category: "",
+  categoryAr: "",
+  readingMinutes: 5,
   coverImageUrl: "",
   tags: "",
   featured: false,
@@ -99,6 +105,9 @@ export function AdminBlog() {
         titleAr: formData.titleAr || null,
         excerptAr: formData.excerptAr || null,
         contentAr: formData.contentAr || null,
+        category: formData.category || null,
+        categoryAr: formData.categoryAr || null,
+        readingMinutes: Number(formData.readingMinutes) || 5,
         coverImageUrl: formData.coverImageUrl || null,
         tags: formData.tags.split(",").map((tag) => tag.trim()).filter(Boolean),
       };
@@ -144,6 +153,45 @@ export function AdminBlog() {
     },
   });
 
+  const translateMissing = useMutation({
+    mutationFn: async () => {
+      const response = await fetch("/api/admin/blog-posts/translate-missing", {
+        method: "POST",
+        headers: authHeaders(),
+        body: JSON.stringify({ batchSize: 4 }),
+      });
+      if (!response.ok) {
+        const errorBody = await response.json().catch(() => null);
+        throw new Error(errorBody?.error || "Unable to translate posts");
+      }
+      return response.json() as Promise<{ translated: unknown[]; errors: Array<{ slug: string; error: string }>; remaining: number }>;
+    },
+    onSuccess: (result) => {
+      queryClient.invalidateQueries({ queryKey: ["admin-blog-posts"] });
+      queryClient.invalidateQueries({ queryKey: ["blog-posts"] });
+      const done = result.translated.length;
+      if (result.remaining > 0) {
+        toast({
+          title: `تمت ترجمة ${done} مقالة`,
+          description: `باقي ${result.remaining} مقالة — اضغط الزر مرة أخرى للمتابعة`,
+        });
+      } else {
+        toast({ title: `تمت ترجمة ${done} مقالة` });
+      }
+    },
+    onError: (error) => {
+      toast({
+        title: t.admin.blogSaveFailed,
+        description: error instanceof Error ? error.message : t.admin.apiConnectionError,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const missingEnglishCount = posts.filter(
+    (post) => post.contentAr && !post.content?.trim(),
+  ).length;
+
   const openDialog = (post?: BlogPost) => {
     if (post) {
       setEditingId(post.id);
@@ -155,6 +203,9 @@ export function AdminBlog() {
         content: post.content || "",
         contentAr: post.contentAr || "",
         slug: post.slug,
+        category: post.category || "",
+        categoryAr: post.categoryAr || "",
+        readingMinutes: post.readingMinutes || 5,
         coverImageUrl: post.coverImageUrl || "",
         tags: post.tags?.join(", ") || "",
         featured: post.featured,
@@ -195,7 +246,20 @@ export function AdminBlog() {
           <h1 className="mb-2 text-3xl font-bold text-foreground">{t.admin.blog}</h1>
           <p className="text-sm text-muted-foreground font-mono">{t.admin.manageBlog}</p>
         </div>
-        <Button onClick={() => openDialog()}>{t.admin.addBlogPost}</Button>
+        <div className="flex flex-wrap items-center gap-2">
+          {missingEnglishCount > 0 ? (
+            <Button
+              variant="outline"
+              onClick={() => translateMissing.mutate()}
+              disabled={translateMissing.isPending}
+              className="gap-2"
+            >
+              <Languages size={15} />
+              {translateMissing.isPending ? "..." : `ترجمة المقالات الإنجليزية (${missingEnglishCount})`}
+            </Button>
+          ) : null}
+          <Button onClick={() => openDialog()}>{t.admin.addBlogPost}</Button>
+        </div>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
@@ -221,9 +285,13 @@ export function AdminBlog() {
               ) : null}
             </div>
             <div className="space-y-3 p-5">
-              <div className="flex items-center gap-2 text-xs text-primary">
+              <div className="flex flex-wrap items-center gap-2 text-xs text-primary">
                 <Newspaper size={14} />
                 <span>{post.slug}</span>
+                {post.category ? <span className="rounded bg-muted px-1.5 py-0.5 text-[10px]">{post.category}</span> : null}
+                {post.contentAr && !post.content?.trim() ? (
+                  <span className="rounded bg-amber-500/15 px-1.5 py-0.5 text-[10px] font-semibold text-amber-500">EN ناقص</span>
+                ) : null}
               </div>
               <h2 className="text-xl font-bold text-foreground">{post.title}</h2>
               {post.titleAr ? <p className="text-sm text-primary/75" dir="rtl">{post.titleAr}</p> : null}
@@ -273,6 +341,22 @@ export function AdminBlog() {
             <div className="space-y-2">
               <label className="text-xs font-mono uppercase text-muted-foreground">{t.admin.slug}</label>
               <Input value={formData.slug} onChange={(event) => setFormData({ ...formData, slug: event.target.value })} placeholder={toSlug(formData.title) || "post-slug"} />
+            </div>
+            <div className="grid gap-4 sm:grid-cols-3">
+              <div className="space-y-2">
+                <label className="text-xs font-mono uppercase text-muted-foreground">{t.admin.categoryEn}</label>
+                <Input value={formData.category} onChange={(event) => setFormData({ ...formData, category: event.target.value })} />
+                <div className="flex justify-end"><TranslateButton onClick={() => trEnToAr("category", "categoryAr")} disabled={isTranslating || !formData.category.trim()} label={isTranslating ? "..." : "→ عربي"} /></div>
+              </div>
+              <div className="space-y-2">
+                <label className="text-xs font-mono uppercase text-muted-foreground">{t.admin.categoryAr}</label>
+                <Input value={formData.categoryAr} onChange={(event) => setFormData({ ...formData, categoryAr: event.target.value })} dir="rtl" className="text-right" />
+                <div className="flex justify-end"><TranslateButton onClick={() => trArToEn("categoryAr", "category")} disabled={isTranslating || !formData.categoryAr.trim()} label={isTranslating ? "..." : "→ EN"} /></div>
+              </div>
+              <div className="space-y-2">
+                <label className="text-xs font-mono uppercase text-muted-foreground">{t.admin.readingMinutes}</label>
+                <Input type="number" min={1} max={120} value={formData.readingMinutes} onChange={(event) => setFormData({ ...formData, readingMinutes: Number(event.target.value) || 5 })} />
+              </div>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">

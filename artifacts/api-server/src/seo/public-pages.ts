@@ -1,9 +1,8 @@
 import { readFileSync } from "node:fs";
-import { defaultBlogPosts } from "../data/defaultBlogPosts";
 import { legacyArchiveTitles, projectArchive } from "../data/projectArchive";
 
 type Locale = "ar" | "en";
-type PageKind = "home" | "products" | "blog" | "blogPost";
+type PageKind = "home" | "products" | "blog" | "projects" | "blogPost";
 
 type SeoPage = {
   kind: PageKind;
@@ -15,6 +14,25 @@ type SeoPage = {
   heading: string;
   lead: string;
   sections: Array<{ title: string; body: string; items?: string[] }>;
+  image?: string;
+  publishedAt?: string;
+  category?: string;
+  tags?: string[];
+};
+
+export type SeoBlogPost = {
+  slug: string;
+  title: string;
+  titleAr?: string | null;
+  excerpt: string;
+  excerptAr?: string | null;
+  contentAr?: string | null;
+  category?: string | null;
+  categoryAr?: string | null;
+  tags?: string[] | null;
+  coverImageUrl?: string | null;
+  readingMinutes?: number | null;
+  publishedAt: string | Date;
 };
 
 const origin = "https://www.ibrahimig.com";
@@ -161,57 +179,116 @@ const pages: SeoPage[] = [
       },
     ],
   },
+  {
+    kind: "projects",
+    locale: "ar",
+    path: "/projects",
+    title: "مشاريع ويب من إبراهيم غيث: دراسات حالة وتنفيذ حقيقي | Ibrahim Ghaiyth",
+    description:
+      "أرشيف مشاريع إبراهيم غيث: لوحات تحكم، مواقع ويب، أنظمة API، ومنتجات رقمية مع دراسات حالة تقنية تشرح المشكلة والحل والنتيجة.",
+    keywords:
+      "مشاريع مطور ويب العراق, أعمال إبراهيم غيث, دراسات حالة برمجية, لوحات تحكم, أنظمة ويب, React Node.js, مشاريع ويب بغداد, إبراهيم غيث, ابراهيم غيث",
+    heading: "مشاريع ويب حقيقية",
+    lead: "دراسات حالة تقنية تشرح المشكلة والحل والنتيجة في أنظمة ويب فعلية.",
+    sections: [
+      {
+        title: "أرشيف المشاريع",
+        body: "كل مشروع يوثّق التقنيات المستخدمة والقرارات المعمارية ونتائج التنفيذ.",
+        items: ["لوحات تحكم", "أنظمة API", "مواقع ثنائية اللغة", "منتجات رقمية"],
+      },
+    ],
+  },
+  {
+    kind: "projects",
+    locale: "en",
+    path: "/en/projects",
+    title: "Web Projects by Ibrahim Ghaiyth: Case Studies and Real Builds",
+    description:
+      "Ibrahim Ghaiyth's project archive: admin dashboards, web platforms, API systems, and digital products with technical case studies.",
+    keywords:
+      "Ibrahim Ghaiyth projects, web developer Iraq portfolio, admin dashboards, case studies, React Node.js projects, Baghdad developer",
+    heading: "Real web projects",
+    lead: "Technical case studies covering the problem, the solution, and the outcome of real web systems.",
+    sections: [
+      {
+        title: "Project Archive",
+        body: "Each project documents the stack, the architectural decisions, and the delivery results.",
+        items: ["Admin dashboards", "API systems", "Bilingual websites", "Digital products"],
+      },
+    ],
+  },
 ];
 
 const arabicBlogKeywords =
   "SEO عربي, تحسين محركات البحث العربية, مقالات تقنية عربية, تطوير ويب عربي, مطور ويب في العراق, مبرمج مواقع العراق, برمجة مواقع في العراق, تصميم مواقع العراق, فهرسة المواقع العربية, لوحات تحكم, React, Node.js, PostgreSQL, إبراهيم غيث, ابراهيم غيث";
 
-const blogPostPages: SeoPage[] = defaultBlogPosts.flatMap((post) => [
-  {
-    kind: "blogPost",
-    locale: "ar",
-    path: `/blog/${post.slug}`,
-    title: `${post.titleAr} | مدونة إبراهيم غيث`,
-    description: post.excerptAr,
-    keywords: [...post.tags, arabicBlogKeywords].join(", "),
-    heading: post.titleAr,
-    lead: post.excerptAr,
-    sections: [
-      {
-        title: "مقال تقني عربي",
-        body: post.contentAr.split("\n").find(Boolean) || post.excerptAr,
-        items: ["SEO عربي", "تطوير ويب", "برمجة مواقع", "هندسة تطبيقات", "فهرسة المواقع"],
-      },
-    ],
-  },
-  {
-    kind: "blogPost",
-    locale: "en",
-    path: `/en/blog/${post.slug}`,
-    title: `${post.title} | Ibrahim Ghaiyth Blog`,
-    description: post.excerpt,
-    keywords: [...post.tags, "Arabic SEO", "Iraq web developer", "technical SEO", "web development"].join(", "),
-    heading: post.title,
-    lead: post.excerpt,
-    sections: [
-      {
-        title: "Technical Article",
-        body: post.content.split("\n").find(Boolean) || post.excerpt,
-        items: ["Technical SEO", "Web development", "Architecture", "Crawlability"],
-      },
-    ],
-  },
-]);
-
-const allPages = [...pages, ...blogPostPages];
-const byPath = new Map(allPages.map((page) => [page.path, page]));
-
 export function normalizePublicPath(rawPath: string) {
   return rawPath.split("?")[0].replace(/\/+$/, "") || "/";
 }
 
+const byPath = new Map(pages.map((page) => [page.path, page]));
+
 export function getPublicSeoPage(rawPath: string) {
   return byPath.get(normalizePublicPath(rawPath)) || null;
+}
+
+function stripMarkdown(markdown: string) {
+  return markdown
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, " ")
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
+    .replace(/^#{1,6}\s+/gm, "")
+    .replace(/[*_`>|-]{1,3}/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function postOgImage(post: SeoBlogPost) {
+  const cover = post.coverImageUrl?.trim();
+  if (!cover || cover.startsWith("data:")) return `${origin}/opengraph.jpg`;
+  if (/^https?:\/\//.test(cover)) return cover;
+  const path = cover.startsWith("/") ? cover : `/${cover}`;
+  if (path.endsWith(".svg")) return `${origin}${path.replace(/\.svg$/, ".png")}`;
+  return `${origin}${path}`;
+}
+
+export function buildBlogPostSeoPage(post: SeoBlogPost, locale: Locale): SeoPage {
+  const isArabic = locale === "ar";
+  const title = (isArabic ? post.titleAr || post.title : post.title || post.titleAr) || post.slug;
+  const excerpt = (isArabic ? post.excerptAr || post.excerpt : post.excerpt || post.excerptAr) || "";
+  const category = (isArabic ? post.categoryAr || post.category : post.category || post.categoryAr) || "";
+  const tags = post.tags || [];
+  const leadBody = stripMarkdown(isArabic ? post.contentAr || "" : "").slice(0, 320);
+
+  return {
+    kind: "blogPost",
+    locale,
+    path: isArabic ? `/blog/${post.slug}` : `/en/blog/${post.slug}`,
+    title: isArabic ? `${title} | مدونة إبراهيم غيث` : `${title} | Ibrahim Ghaiyth Blog`,
+    description: excerpt,
+    keywords: [category, ...tags, isArabic ? arabicBlogKeywords : "Ibrahim Ghaiyth blog, web development Iraq, technical articles, Arabic SEO"].filter(Boolean).join(", "),
+    heading: title,
+    lead: excerpt,
+    image: postOgImage(post),
+    publishedAt: new Date(post.publishedAt).toISOString(),
+    category,
+    tags,
+    sections: [
+      {
+        title: isArabic ? "مقال تقني عربي" : "Technical Article",
+        body: leadBody || excerpt,
+        items: [category, ...tags.slice(0, 4)].filter(Boolean),
+      },
+    ],
+  };
+}
+
+export function blogPostSeoPaths(slugs: string[]) {
+  return slugs.flatMap((slug) => [`/blog/${slug}`, `/en/blog/${slug}`]);
+}
+
+export function hasPublicSeoPage(rawPath: string) {
+  return byPath.has(normalizePublicPath(rawPath));
 }
 
 export function redirectArPath(rawPath: string) {
@@ -245,7 +322,7 @@ function alternates(page: SeoPage) {
 
   const suffix = page.kind === "home" ? "" : `/${page.kind}`;
   return {
-    ar: `${origin}/${suffix.replace(/^\//, "")}`.replace(/\/$/, "/"),
+    ar: `${origin}${suffix}`,
     en: `${origin}/en${suffix}`,
     xDefault: `${origin}/`,
   };
@@ -257,7 +334,37 @@ function canonical(page: SeoPage) {
 
 function jsonLd(page: SeoPage) {
   const isArabic = page.locale === "ar";
-  const pageType = page.kind === "blogPost" ? "Article" : "WebPage";
+  const isPost = page.kind === "blogPost";
+  const pageType = isPost ? "Article" : "WebPage";
+  const ogImage = page.image || `${origin}/opengraph.jpg`;
+
+  const pageEntity = {
+    "@context": "https://schema.org",
+    "@type": pageType,
+    name: page.title,
+    headline: page.title,
+    description: page.description,
+    url: canonical(page),
+    image: ogImage,
+    isPartOf: { "@id": `${origin}/#website` },
+    about: { "@id": `${origin}/#ibrahim-ghaiyth` },
+    author: { "@id": `${origin}/#ibrahim-ghaiyth` },
+    publisher: { "@id": `${origin}/#website` },
+    inLanguage: page.locale,
+    ...(isPost
+      ? {
+          datePublished: page.publishedAt,
+          dateModified: page.publishedAt,
+          articleSection: page.category || undefined,
+          keywords: (page.tags || []).join(", "),
+          mainEntityOfPage: {
+            "@type": "WebPage",
+            "@id": canonical(page),
+          },
+        }
+      : {}),
+  };
+
   return JSON.stringify([
     {
       "@context": "https://schema.org",
@@ -301,19 +408,7 @@ function jsonLd(page: SeoPage) {
       serviceType: ["Web development", "Admin dashboards", "CMS platforms", "Secure APIs", "Digital products", "Arabic SEO"],
       founder: { "@id": `${origin}/#ibrahim-ghaiyth` },
     },
-    {
-      "@context": "https://schema.org",
-      "@type": pageType,
-      name: page.title,
-      headline: page.title,
-      description: page.description,
-      url: canonical(page),
-      isPartOf: { "@id": `${origin}/#website` },
-      about: { "@id": `${origin}/#ibrahim-ghaiyth` },
-      author: { "@id": `${origin}/#ibrahim-ghaiyth` },
-      publisher: { "@id": `${origin}/#website` },
-      inLanguage: page.locale,
-    },
+    pageEntity,
   ]);
 }
 
@@ -342,6 +437,15 @@ function renderHead(page: SeoPage) {
   const locale = page.locale === "ar" ? "ar_IQ" : "en_US";
   const alternateLocale = page.locale === "ar" ? "en_US" : "ar_IQ";
   const ogType = page.kind === "blogPost" ? "article" : "website";
+  const ogImage = page.image || `${origin}/opengraph.jpg`;
+  const articleMeta =
+    page.kind === "blogPost" && page.publishedAt
+      ? `
+    <meta property="article:published_time" content="${escapeHtml(page.publishedAt)}" />
+    <meta property="article:author" content="Ibrahim Ghaiyth" />
+    ${page.category ? `<meta property="article:section" content="${escapeHtml(page.category)}" />` : ""}
+    ${(page.tags || []).map((tag) => `<meta property="article:tag" content="${escapeHtml(tag)}" />`).join("\n    ")}`
+      : "";
 
   return `
     <meta charset="UTF-8" />
@@ -365,13 +469,13 @@ function renderHead(page: SeoPage) {
     <meta property="og:type" content="${ogType}" />
     <meta property="og:url" content="${pageCanonical}" />
     <meta property="og:site_name" content="Ibrahim Ghaiyth" />
-    <meta property="og:image" content="${origin}/opengraph.jpg" />
+    <meta property="og:image" content="${escapeHtml(ogImage)}" />${articleMeta}
     <meta property="og:locale" content="${locale}" />
     <meta property="og:locale:alternate" content="${alternateLocale}" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="${escapeHtml(page.title)}" />
     <meta name="twitter:description" content="${escapeHtml(page.description)}" />
-    <meta name="twitter:image" content="${origin}/opengraph.jpg" />
+    <meta name="twitter:image" content="${escapeHtml(ogImage)}" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -406,8 +510,8 @@ export function renderPublicPage(templatePath: string, page: SeoPage) {
     .replace('<div id="root"></div>', `<div id="root"></div><noscript>${renderStaticBody(page)}</noscript>`);
 }
 
-export function publicSitemapXml() {
-  const urls = allPages
+export function publicSitemapXml(posts: SeoBlogPost[] = []) {
+  const staticUrls = pages
     .map((page) => {
       const alt = alternates(page);
       return `  <url>
@@ -417,8 +521,34 @@ export function publicSitemapXml() {
     <xhtml:link rel="alternate" hreflang="en" href="${alt.en}" />
     <xhtml:link rel="alternate" hreflang="x-default" href="${alt.xDefault}" />
     <lastmod>${lastModified}</lastmod>
-    <changefreq>${page.kind === "blogPost" ? "monthly" : "weekly"}</changefreq>
-    <priority>${page.kind === "home" ? "1.0" : page.kind === "blogPost" ? "0.7" : "0.8"}</priority>
+    <changefreq>weekly</changefreq>
+    <priority>${page.kind === "home" ? "1.0" : "0.8"}</priority>
+  </url>`;
+    })
+    .join("\n");
+
+  const postUrls = posts
+    .map((post) => {
+      const lastmod = new Date(post.publishedAt).toISOString().slice(0, 10);
+      return `  <url>
+    <loc>${origin}/blog/${post.slug}</loc>
+    <xhtml:link rel="alternate" hreflang="ar-IQ" href="${origin}/blog/${post.slug}" />
+    <xhtml:link rel="alternate" hreflang="ar" href="${origin}/blog/${post.slug}" />
+    <xhtml:link rel="alternate" hreflang="en" href="${origin}/en/blog/${post.slug}" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="${origin}/blog/${post.slug}" />
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>${origin}/en/blog/${post.slug}</loc>
+    <xhtml:link rel="alternate" hreflang="ar-IQ" href="${origin}/blog/${post.slug}" />
+    <xhtml:link rel="alternate" hreflang="ar" href="${origin}/blog/${post.slug}" />
+    <xhtml:link rel="alternate" hreflang="en" href="${origin}/en/blog/${post.slug}" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="${origin}/blog/${post.slug}" />
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>`;
     })
     .join("\n");
@@ -436,7 +566,52 @@ export function publicSitemapXml() {
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
-${urls}
+${staticUrls}
+${postUrls}
 ${showcaseUrls}
 </urlset>`;
+}
+
+function escapeXml(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+export function blogRssXml(locale: "ar" | "en", posts: SeoBlogPost[]) {
+  const siteTitle =
+    locale === "ar" ? "مدونة إبراهيم غيث — تقنية وتطوير ويب" : "Ibrahim Ghaiyth Blog — Engineering & Web Development";
+  const siteLink = locale === "ar" ? `${origin}/blog` : `${origin}/en/blog`;
+  const feedLink = locale === "ar" ? `${origin}/rss.xml` : `${origin}/en/rss.xml`;
+
+  const items = posts
+    .slice(0, 30)
+    .map((post) => {
+      const title = (locale === "ar" ? post.titleAr || post.title : post.title || post.titleAr) || post.slug;
+      const excerpt = locale === "ar" ? post.excerptAr || post.excerpt : post.excerpt || post.excerptAr;
+      const link = locale === "ar" ? `${origin}/blog/${post.slug}` : `${origin}/en/blog/${post.slug}`;
+      return `    <item>
+      <title>${escapeXml(title)}</title>
+      <link>${escapeXml(link)}</link>
+      <guid isPermaLink="true">${escapeXml(link)}</guid>
+      <description>${escapeXml(excerpt || "")}</description>
+      <pubDate>${new Date(post.publishedAt).toUTCString()}</pubDate>
+    </item>`;
+    })
+    .join("\n");
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>${escapeXml(siteTitle)}</title>
+    <link>${escapeXml(siteLink)}</link>
+    <atom:link href="${escapeXml(feedLink)}" rel="self" type="application/rss+xml"/>
+    <description>${escapeXml(locale === "ar" ? "مقالات تقنية عملية بالعربية عن تطوير الويب والأنظمة والإنتاج." : "Practical technical articles about web development, systems, and production engineering.")}</description>
+    <language>${locale === "ar" ? "ar" : "en"}</language>
+    <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
+${items}
+  </channel>
+</rss>`;
 }

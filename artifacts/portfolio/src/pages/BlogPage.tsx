@@ -22,7 +22,7 @@ export function BlogPage() {
             </div>
           </div>
         </section>
-        <BlogSection />
+        <BlogSection showFilters />
         <Footer />
       </main>
     </div>

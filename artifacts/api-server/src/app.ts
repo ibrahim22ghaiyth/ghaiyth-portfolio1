@@ -8,7 +8,17 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import router from "./routes";
 import { logger } from "./lib/logger";
-import { clientTemplatePath, getPublicSeoPage, publicOrigin, publicSitemapXml, redirectArPath, renderPublicPage } from "./seo/public-pages";
+import {
+  blogRssXml,
+  buildBlogPostSeoPage,
+  clientTemplatePath,
+  getPublicSeoPage,
+  publicOrigin,
+  publicSitemapXml,
+  redirectArPath,
+  renderPublicPage,
+} from "./seo/public-pages";
+import { getSeoBlogPost, getSeoBlogPosts } from "./seo/blog-source";
 
 const app: Express = express();
 const isProduction = process.env.NODE_ENV === "production";
@@ -141,8 +151,19 @@ const clientDistPath = path.resolve(moduleDir, "../../portfolio/dist/public");
 if (existsSync(clientDistPath)) {
   const templatePath = clientTemplatePath(clientDistPath);
 
-  app.get("/sitemap.xml", (_req, res) => {
-    res.type("application/xml").send(publicSitemapXml());
+  app.get("/sitemap.xml", async (_req, res) => {
+    const posts = await getSeoBlogPosts();
+    res.type("application/xml").send(publicSitemapXml(posts));
+  });
+
+  app.get("/rss.xml", async (_req, res) => {
+    const posts = await getSeoBlogPosts();
+    res.type("application/rss+xml").send(blogRssXml("ar", posts));
+  });
+
+  app.get("/en/rss.xml", async (_req, res) => {
+    const posts = await getSeoBlogPosts();
+    res.type("application/rss+xml").send(blogRssXml("en", posts));
   });
 
   app.get(`/${indexNowKey}.txt`, (_req, res) => {
@@ -154,7 +175,7 @@ if (existsSync(clientDistPath)) {
     res.redirect(301, `${publicOrigin()}${target === "/" ? "/" : target}`);
   });
 
-  app.get(["/", "/products", "/blog", "/en", "/en/products", "/en/blog"], (req, res) => {
+  app.get(["/", "/products", "/blog", "/projects", "/en", "/en/products", "/en/blog", "/en/projects"], (req, res) => {
     const page = getPublicSeoPage(req.path);
     if (page) {
       res.type("html").send(renderPublicPage(templatePath, page));
@@ -164,7 +185,16 @@ if (existsSync(clientDistPath)) {
     res.sendFile(path.join(clientDistPath, "index.html"));
   });
 
-  app.get(/^\/en\/.+$/, (req, res) => {
+  app.get(/^\/en\/.+$/, async (req, res) => {
+    if (req.path.startsWith("/en/blog/")) {
+      const slug = decodeURIComponent(req.path.slice("/en/blog/".length));
+      const post = await getSeoBlogPost(slug);
+      if (post) {
+        res.type("html").send(renderPublicPage(templatePath, buildBlogPostSeoPage(post, "en")));
+        return;
+      }
+    }
+
     const page = getPublicSeoPage(req.path);
     if (page) {
       res.type("html").send(renderPublicPage(templatePath, page));
@@ -174,7 +204,14 @@ if (existsSync(clientDistPath)) {
     res.sendFile(path.join(clientDistPath, "index.html"));
   });
 
-  app.get(/^\/blog\/.+$/, (req, res) => {
+  app.get(/^\/blog\/.+$/, async (req, res) => {
+    const slug = decodeURIComponent(req.path.slice("/blog/".length));
+    const post = await getSeoBlogPost(slug);
+    if (post) {
+      res.type("html").send(renderPublicPage(templatePath, buildBlogPostSeoPage(post, "ar")));
+      return;
+    }
+
     const page = getPublicSeoPage(req.path);
     if (page) {
       res.type("html").send(renderPublicPage(templatePath, page));

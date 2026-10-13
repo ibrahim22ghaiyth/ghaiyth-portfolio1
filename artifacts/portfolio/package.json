@@ -71,5 +71,9 @@
     "vaul": "^1.1.2",
     "vite": "catalog:",
     "wouter": "^3.3.5"
+  },
+  "dependencies": {
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1"
   }
 }
