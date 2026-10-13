@@ -1,10 +1,12 @@
 import { useListContent, useUpdateContent, getListContentQueryKey } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { PageHeader, LoadingState, EmptyState, FormField } from "@/components/admin/shared";
 
 export function AdminContent() {
   const { t } = useLanguage();
@@ -12,15 +14,13 @@ export function AdminContent() {
   const updateContent = useUpdateContent();
   const queryClient = useQueryClient();
   const { toast } = useToast();
-
   const [editingValues, setEditingValues] = useState<Record<string, string>>({});
 
-  if (isLoading) return <div>{t.common.loading}</div>;
+  if (isLoading) return <LoadingState label={t.common.loading} />;
 
   const handleSave = (key: string) => {
     const value = editingValues[key];
     if (value === undefined) return;
-
     updateContent.mutate(
       { key, data: { value } },
       {
@@ -33,30 +33,35 @@ export function AdminContent() {
   };
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold text-foreground mb-2">{t.admin.contentManagement}</h1>
-        <p className="text-muted-foreground font-mono text-sm">{t.admin.updateContent}</p>
-      </div>
+    <div>
+      <PageHeader title={t.admin.contentManagement} subtitle={t.admin.updateContent} />
 
-      <div className="space-y-6">
-        {contentItems?.map((item) => (
-          <div key={item.key} className="p-6 rounded-2xl bg-card border border-border space-y-4">
-            <label className="text-sm font-mono text-primary uppercase tracking-wider">{item.key}</label>
-            <Textarea
-              className="bg-background border-border text-foreground min-h-[100px]"
-              value={editingValues[item.key] ?? item.value}
-              onChange={(e) => setEditingValues({ ...editingValues, [item.key]: e.target.value })}
-            />
-            <Button
-              onClick={() => handleSave(item.key)}
-              disabled={editingValues[item.key] === undefined || editingValues[item.key] === item.value}
-            >
-              {t.admin.saveChanges}
-            </Button>
-          </div>
-        ))}
-      </div>
+      {!contentItems?.length ? (
+        <EmptyState icon={<FileText size={20} />} title={t.admin.contentManagement} description={t.admin.updateContent} />
+      ) : (
+        <div className="space-y-4">
+          {contentItems.map((item) => (
+            <div key={item.key} className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+              <FormField label={item.key}>
+                <Textarea
+                  value={editingValues[item.key] ?? item.value}
+                  onChange={(e) => setEditingValues({ ...editingValues, [item.key]: e.target.value })}
+                  rows={4}
+                />
+              </FormField>
+              <div className="mt-3 flex justify-end">
+                <Button
+                  size="sm"
+                  onClick={() => handleSave(item.key)}
+                  disabled={editingValues[item.key] === undefined || editingValues[item.key] === item.value}
+                >
+                  {t.admin.saveChanges}
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

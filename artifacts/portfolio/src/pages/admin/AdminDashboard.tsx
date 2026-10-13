@@ -2,10 +2,10 @@ import { useListServices, useListSkills, useListProjects, useListMessages } from
 import { useQuery } from "@tanstack/react-query";
 import { Briefcase, Code, FolderGit2, Mail, Globe2, MapPin, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { PageHeader, LoadingState } from "@/components/admin/shared";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 type AnalyticsSummary = {
-  storageMode?: "database" | "memory";
   totalVisits: number;
   uniqueCountries: number;
   countries: { country: string; count: number }[];
@@ -38,7 +38,7 @@ export function AdminDashboard() {
     retry: 1,
   });
 
-  const unreadMessages = messages?.filter(m => m.status === "unread").length || 0;
+  const unreadMessages = messages?.filter((m) => m.status === "unread").length || 0;
 
   const stats = [
     { label: t.admin.totalServices, value: services?.length || 0, icon: Briefcase },
@@ -50,70 +50,68 @@ export function AdminDashboard() {
   ];
 
   return (
-    <div className="space-y-8">
-      <div>
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">{t.admin.dashboard}</h1>
-            <p className="text-muted-foreground font-mono text-sm">{t.admin.welcome}</p>
-          </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => refetchAnalytics()}
-            className="w-full sm:w-auto"
-          >
-            <RefreshCw size={16} />
+    <div>
+      <PageHeader
+        title={t.admin.dashboard}
+        subtitle={t.admin.welcome}
+        action={
+          <Button variant="outline" size="sm" onClick={() => refetchAnalytics()}>
+            <RefreshCw size={14} />
             {t.admin.refreshVisitors}
           </Button>
-        </div>
-      </div>
+        }
+      />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-3">
         {stats.map((stat, i) => (
-          <div key={i} className="p-6 rounded-2xl bg-card border border-border flex flex-col">
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-muted-foreground font-mono text-sm uppercase">{stat.label}</span>
-              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                <stat.icon size={18} />
+          <div key={i} className="rounded-2xl border border-border bg-card p-4 sm:p-5">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-medium text-muted-foreground">{stat.label}</span>
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <stat.icon size={15} />
               </div>
             </div>
-            <div className="text-4xl font-bold text-foreground mt-auto">{stat.value}</div>
+            <div className="mt-3 text-2xl font-bold text-foreground sm:text-3xl">{stat.value}</div>
           </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="p-6 rounded-2xl bg-card border border-border">
-          <h2 className="text-lg font-bold text-foreground mb-4">{t.admin.visitorCountries}</h2>
-          <div className="space-y-3">
+      <div className="mt-6 grid gap-6 lg:grid-cols-2">
+        <div className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+          <h2 className="mb-4 text-sm font-semibold text-foreground">{t.admin.visitorCountries}</h2>
+          <div className="space-y-2.5">
             {analyticsLoading ? (
-              <p className="text-sm text-muted-foreground">{t.admin.loadingVisitors}</p>
+              <LoadingState />
             ) : analyticsError ? (
-              <p className="text-sm text-red-400">{t.admin.visitorLoadError}</p>
-            ) : analytics?.countries.length ? analytics.countries.map((item) => (
-              <div key={item.country} className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">{item.country}</span>
-                <span className="font-mono text-primary">{item.count}</span>
-              </div>
-            )) : (
+              <p className="text-sm text-muted-foreground">{t.admin.visitorLoadError}</p>
+            ) : analytics?.countries.length ? (
+              analytics.countries.map((item) => (
+                <div key={item.country} className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">{item.country}</span>
+                  <span className="font-medium text-primary">{item.count}</span>
+                </div>
+              ))
+            ) : (
               <p className="text-sm text-muted-foreground">{t.admin.noVisits}</p>
             )}
           </div>
         </div>
-        <div className="p-6 rounded-2xl bg-card border border-border">
-          <h2 className="text-lg font-bold text-foreground mb-4">{t.admin.recentVisits}</h2>
-          <div className="space-y-3">
+
+        <div className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+          <h2 className="mb-4 text-sm font-semibold text-foreground">{t.admin.recentVisits}</h2>
+          <div className="space-y-2.5">
             {analyticsLoading ? (
-              <p className="text-sm text-muted-foreground">{t.admin.loadingRecentVisits}</p>
+              <LoadingState />
             ) : analyticsError ? (
-              <p className="text-sm text-red-400">{t.admin.recentVisitsError}</p>
-            ) : analytics?.recentVisits.length ? analytics.recentVisits.slice(0, 6).map((visit, index) => (
-              <div key={`${visit.createdAt}-${index}`} className="flex items-center justify-between gap-4 text-sm">
-                <span className="truncate text-muted-foreground">{visit.path}</span>
-                <span className="shrink-0 font-mono text-primary">{visit.country}</span>
-              </div>
-            )) : (
+              <p className="text-sm text-muted-foreground">{t.admin.recentVisitsError}</p>
+            ) : analytics?.recentVisits.length ? (
+              analytics.recentVisits.slice(0, 6).map((visit, index) => (
+                <div key={`${visit.createdAt}-${index}`} className="flex items-center justify-between gap-4 text-sm">
+                  <span className="truncate text-muted-foreground">{visit.path}</span>
+                  <span className="shrink-0 font-medium text-primary">{visit.country}</span>
+                </div>
+              ))
+            ) : (
               <p className="text-sm text-muted-foreground">{t.admin.recentVisitsEmpty}</p>
             )}
           </div>

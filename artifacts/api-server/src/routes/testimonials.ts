@@ -62,6 +62,7 @@ function ensureTestimonialsTable() {
 
 async function ensureSeedTestimonials() {
   await ensureTestimonialsTable();
+  if (seedTestimonials.length === 0) return;
   const existing = await db.select({ id: testimonialsTable.id }).from(testimonialsTable).limit(1);
   if (existing.length === 0) {
     await db.insert(testimonialsTable).values(seedTestimonials);

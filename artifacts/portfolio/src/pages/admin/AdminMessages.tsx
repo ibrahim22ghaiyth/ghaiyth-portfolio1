@@ -1,20 +1,12 @@
 import { useState } from "react";
 import { useListMessages, useUpdateMessage, useDeleteMessage, getListMessagesQueryKey } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { format } from "date-fns";
-import { Trash2 } from "lucide-react";
+import { Trash2, Mail, MailOpen } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useLanguage } from "@/contexts/LanguageContext";
-
-const statusKeys = {
-  unread: "unread",
-  read: "read",
-  replied: "replied",
-  archived: "archived",
-} as const;
+import { PageHeader, LoadingState, EmptyState, StatusPill, DialogShell, FormField } from "@/components/admin/shared";
 
 export function AdminMessages() {
   const { t } = useLanguage();
@@ -25,22 +17,22 @@ export function AdminMessages() {
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const selectedMessage = messages?.find((message) => message.id === selectedId);
 
-  if (isLoading) return <div>{t.common.loading}</div>;
+  if (isLoading) return <LoadingState label={t.common.loading} />;
 
-  const statusLabel = (status: keyof typeof statusKeys | string) => {
-    if (status === "unread") return t.admin.unread;
-    if (status === "read") return t.admin.read;
-    if (status === "replied") return t.admin.replied;
-    if (status === "archived") return t.admin.archived;
-    return status;
+  const statusLabel = (status: string) => {
+    switch (status) {
+      case "unread": return t.admin.unread;
+      case "read": return t.admin.read;
+      case "replied": return t.admin.replied;
+      case "archived": return t.admin.archived;
+      default: return status;
+    }
   };
 
-  const handleStatusChange = (id: number, status: "unread" | "read" | "replied" | "archived") => {
+  const handleStatusChange = (id: number, status: string) => {
     updateMessage.mutate(
-      { id, data: { status } },
-      {
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: getListMessagesQueryKey() })
-      }
+      { id, data: { status } as any },
+      { onSuccess: () => queryClient.invalidateQueries({ queryKey: getListMessagesQueryKey() }) }
     );
   };
 
@@ -60,110 +52,91 @@ export function AdminMessages() {
 
   const openMessage = (id: number, status: string) => {
     setSelectedId(id);
-    if (status === "unread") {
-      handleStatusChange(id, "read");
-    }
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "unread": return "bg-primary text-primary-foreground";
-      case "read": return "bg-secondary text-secondary-foreground";
-      case "replied": return "bg-green-500 text-foreground";
-      case "archived": return "bg-muted text-muted-foreground";
-      default: return "bg-secondary";
-    }
+    if (status === "unread") handleStatusChange(id, "read");
   };
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold text-foreground mb-2">{t.admin.messages}</h1>
-        <p className="text-muted-foreground font-mono text-sm">{t.admin.manageMessages}</p>
-      </div>
+    <div>
+      <PageHeader title={t.admin.messages} subtitle={t.admin.manageMessages} />
 
-      <div className="bg-card border border-border rounded-2xl overflow-hidden">
-        <div className="hidden md:grid grid-cols-12 gap-4 p-4 border-b border-border text-xs font-mono text-muted-foreground uppercase">
-          <div className="col-span-3">{t.admin.sender}</div>
-          <div className="col-span-4">{t.admin.subject}</div>
-          <div className="col-span-2">{t.admin.date}</div>
-          <div className="col-span-2">{t.common.status}</div>
-          <div className="col-span-1" />
-        </div>
-        <div className="divide-y divide-border">
-          {messages?.map(msg => (
-            <div key={msg.id} className="p-4 hover:bg-muted/40 transition-colors cursor-pointer" onClick={() => openMessage(msg.id, msg.status)}>
-              <div className="grid gap-4 md:grid-cols-12 md:items-center">
-                <div className="md:col-span-3">
-                  <div className="flex items-center gap-2">
-                    <div className="font-medium text-foreground">{msg.name}</div>
-                    <Badge className={`md:hidden ${getStatusColor(msg.status)}`}>{statusLabel(msg.status)}</Badge>
-                  </div>
-                  <div className="text-xs text-muted-foreground truncate">{msg.email}</div>
+      {!messages?.length ? (
+        <EmptyState icon={<Mail size={20} />} title={t.admin.messages} description={t.admin.manageMessages} />
+      ) : (
+        <div className="space-y-2">
+          {messages.map((msg) => (
+            <div
+              key={msg.id}
+              className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 transition-colors hover:bg-muted/40 sm:flex-row sm:items-center sm:gap-4"
+              onClick={() => openMessage(msg.id, msg.status)}
+            >
+              <div className="min-w-0 flex-1 cursor-pointer">
+                <div className="flex flex-wrap items-center gap-2">
+                  {msg.status === "unread" ? (
+                    <MailOpen size={14} className="shrink-0 text-primary" />
+                  ) : null}
+                  <span className="text-sm font-semibold text-foreground">{msg.name}</span>
+                  <StatusPill
+                    status={msg.status === "unread" ? "unread" : msg.status === "archived" ? "inactive" : "read"}
+                    label={statusLabel(msg.status)}
+                  />
                 </div>
-                <div className="text-sm text-foreground/80 md:col-span-4 md:truncate">{msg.subject}</div>
-                <div className="text-xs text-muted-foreground md:col-span-2">
+                <p className="mt-0.5 truncate text-xs text-muted-foreground">{msg.email}</p>
+                <p className="mt-1 line-clamp-1 text-sm text-foreground/80">{msg.subject}</p>
+                <p className="mt-0.5 text-[11px] text-muted-foreground/70">
                   {format(new Date(msg.createdAt), "MMM d, yyyy")}
-                </div>
-                <div className="md:col-span-2" onClick={event => event.stopPropagation()}>
-                  <Select value={msg.status} onValueChange={(value: any) => handleStatusChange(msg.id, value)}>
-                    <SelectTrigger className="h-9 w-full text-xs border-border">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="unread">{t.admin.unread}</SelectItem>
-                      <SelectItem value="read">{t.admin.read}</SelectItem>
-                      <SelectItem value="replied">{t.admin.replied}</SelectItem>
-                      <SelectItem value="archived">{t.admin.archived}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="flex justify-end md:col-span-1" onClick={event => event.stopPropagation()}>
-                  <Button variant="destructive" size="sm" className="h-9 w-9 p-0" onClick={() => handleDelete(msg.id)} aria-label={t.common.delete}>
-                    <Trash2 size={15} />
-                  </Button>
-                </div>
+                </p>
+              </div>
+              <div className="flex shrink-0 items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                <Select value={msg.status} onValueChange={(value: any) => handleStatusChange(msg.id, value)}>
+                  <SelectTrigger className="h-8 w-32 text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="unread">{t.admin.unread}</SelectItem>
+                    <SelectItem value="read">{t.admin.read}</SelectItem>
+                    <SelectItem value="replied">{t.admin.replied}</SelectItem>
+                    <SelectItem value="archived">{t.admin.archived}</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button variant="destructive" size="sm" className="h-8 w-8 p-0" onClick={() => handleDelete(msg.id)}>
+                  <Trash2 size={14} />
+                </Button>
               </div>
             </div>
           ))}
         </div>
-      </div>
+      )}
 
-      <Dialog open={!!selectedId} onOpenChange={(open) => !open && setSelectedId(null)}>
-        <DialogContent className="sm:max-w-[600px] border-border bg-card text-foreground shadow-2xl">
-          <DialogHeader>
-            <DialogTitle className="text-foreground">{t.admin.messageDetails}</DialogTitle>
-          </DialogHeader>
-          {selectedMessage ? (
-            <div className="space-y-6 pt-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <div className="text-xs font-mono text-muted-foreground uppercase mb-1">{t.admin.from}</div>
-                  <div className="text-sm text-foreground">{selectedMessage.name} ({selectedMessage.email})</div>
-                </div>
-                <div>
-                  <div className="text-xs font-mono text-muted-foreground uppercase mb-1">{t.admin.date}</div>
-                  <div className="text-sm text-foreground">{format(new Date(selectedMessage.createdAt), "PPP p")}</div>
-                </div>
-              </div>
-              <div>
-                <div className="text-xs font-mono text-muted-foreground uppercase mb-1">{t.admin.subject}</div>
-                <div className="text-sm font-medium text-foreground">{selectedMessage.subject}</div>
-              </div>
-              <div>
-                <div className="text-xs font-mono text-muted-foreground uppercase mb-1">{t.admin.message}</div>
-                <div className="text-sm text-foreground/90 whitespace-pre-wrap bg-background p-4 rounded-lg border border-border">
-                  {selectedMessage.message}
-                </div>
-              </div>
+      <DialogShell
+        open={!!selectedId}
+        onOpenChange={(open) => !open && setSelectedId(null)}
+        title={t.admin.messageDetails}
+        maxWidth="max-w-xl"
+      >
+        {selectedMessage ? (
+          <div className="space-y-4">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <FormField label={t.admin.from}>
+                <p className="text-sm text-foreground">{selectedMessage.name}</p>
+                <p className="text-xs text-muted-foreground">{selectedMessage.email}</p>
+              </FormField>
+              <FormField label={t.admin.date}>
+                <p className="text-sm text-foreground">{format(new Date(selectedMessage.createdAt), "PPP p")}</p>
+              </FormField>
             </div>
-          ) : (
-            <div className="py-8 text-sm text-foreground/60">
-              {t.admin.messageNotFound}
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
+            <FormField label={t.admin.subject}>
+              <p className="text-sm font-medium text-foreground">{selectedMessage.subject}</p>
+            </FormField>
+            <FormField label={t.admin.message}>
+              <div className="whitespace-pre-wrap rounded-lg border border-border bg-background p-4 text-sm leading-6 text-foreground/90">
+                {selectedMessage.message}
+              </div>
+            </FormField>
+          </div>
+        ) : (
+          <p className="py-4 text-sm text-muted-foreground">{t.admin.messageNotFound}</p>
+        )}
+      </DialogShell>
     </div>
   );
 }
