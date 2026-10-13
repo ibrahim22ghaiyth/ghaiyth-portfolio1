@@ -16,6 +16,8 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
+import { TranslateButton } from "@/components/admin/shared";
+import { useTranslate } from "@/hooks/use-translate";
 
 const emptyForm = {
   slug: "",
@@ -63,10 +65,24 @@ export function AdminProducts() {
   const deleteProduct = useDeleteProduct();
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const { translate, isTranslating } = useTranslate();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [formData, setFormData] = useState(emptyForm);
+
+  const trEnToAr = async (enField: string, arField: string) => {
+    const val = (formData as any)[enField];
+    if (!val?.trim()) return;
+    const r = await translate(val, "en", "ar");
+    if (r) setFormData((f: any) => ({ ...f, [arField]: r }));
+  };
+  const trArToEn = async (arField: string, enField: string) => {
+    const val = (formData as any)[arField];
+    if (!val?.trim()) return;
+    const r = await translate(val, "ar", "en");
+    if (r) setFormData((f: any) => ({ ...f, [enField]: r }));
+  };
 
   const openProductsPage = () => {
     window.open("/products", "_blank", "noopener,noreferrer");
@@ -305,10 +321,12 @@ export function AdminProducts() {
               <div className="space-y-2">
                 <label className="text-xs font-mono uppercase text-muted-foreground">{t.admin.titleEn}</label>
                 <Input value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} />
+                <div className="flex justify-end"><TranslateButton onClick={() => trEnToAr("title", "titleAr")} disabled={isTranslating || !formData.title.trim()} label={isTranslating ? "..." : "→ عربي"} /></div>
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-mono uppercase text-muted-foreground">{t.admin.titleAr} ({t.common.optional})</label>
                 <Input value={formData.titleAr} onChange={(e) => setFormData({ ...formData, titleAr: e.target.value })} dir="rtl" className="text-right" />
+                <div className="flex justify-end"><TranslateButton onClick={() => trArToEn("titleAr", "title")} disabled={isTranslating || !formData.titleAr.trim()} label={isTranslating ? "..." : "→ EN"} /></div>
               </div>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
@@ -325,10 +343,12 @@ export function AdminProducts() {
               <div className="space-y-2">
                 <label className="text-xs font-mono uppercase text-muted-foreground">{t.admin.descEn}</label>
                 <Textarea value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} className="min-h-28" />
+                <div className="flex justify-end"><TranslateButton onClick={() => trEnToAr("description", "descriptionAr")} disabled={isTranslating || !formData.description.trim()} label={isTranslating ? "..." : "→ عربي"} /></div>
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-mono uppercase text-muted-foreground">{t.admin.descAr} ({t.common.optional})</label>
                 <Textarea value={formData.descriptionAr} onChange={(e) => setFormData({ ...formData, descriptionAr: e.target.value })} dir="rtl" className="min-h-28 text-right" />
+                <div className="flex justify-end"><TranslateButton onClick={() => trArToEn("descriptionAr", "description")} disabled={isTranslating || !formData.descriptionAr.trim()} label={isTranslating ? "..." : "→ EN"} /></div>
               </div>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">

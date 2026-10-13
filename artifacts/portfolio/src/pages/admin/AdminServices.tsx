@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { PageHeader, LoadingState, EmptyState, StatusPill, FormField, DialogShell } from "@/components/admin/shared";
+import { PageHeader, LoadingState, EmptyState, StatusPill, FormField, DialogShell, BilingualFields } from "@/components/admin/shared";
 
 export function AdminServices() {
   const { t } = useLanguage();
@@ -112,22 +112,28 @@ export function AdminServices() {
           </>
         }
       >
-        <div className="grid gap-4 sm:grid-cols-2">
-          <FormField label={t.admin.titleEn}>
-            <Input value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} placeholder={t.admin.serviceTitlePlaceholder} />
-          </FormField>
-          <FormField label={t.admin.titleAr} optional={t.common.optional}>
-            <Input value={formData.titleAr} onChange={e => setFormData({ ...formData, titleAr: e.target.value })} className="text-right" dir="rtl" placeholder={t.admin.serviceTitleArPlaceholder} />
-          </FormField>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <FormField label={t.admin.descEn}>
-            <Textarea value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} rows={3} />
-          </FormField>
-          <FormField label={t.admin.descAr} optional={t.common.optional}>
-            <Textarea value={formData.descriptionAr} onChange={e => setFormData({ ...formData, descriptionAr: e.target.value })} className="text-right" dir="rtl" rows={3} />
-          </FormField>
-        </div>
+        <BilingualFields
+          enLabel={t.admin.titleEn}
+          arLabel={t.admin.titleAr}
+          enPlaceholder={t.admin.serviceTitlePlaceholder}
+          arPlaceholder={t.admin.serviceTitleArPlaceholder}
+          enValue={formData.title}
+          arValue={formData.titleAr}
+          onEnChange={v => setFormData({ ...formData, title: v })}
+          onArChange={v => setFormData({ ...formData, titleAr: v })}
+          optional={t.common.optional}
+        />
+        <BilingualFields
+          enLabel={t.admin.descEn}
+          arLabel={t.admin.descAr}
+          enType="textarea"
+          arType="textarea"
+          enValue={formData.description}
+          arValue={formData.descriptionAr}
+          onEnChange={v => setFormData({ ...formData, description: v })}
+          onArChange={v => setFormData({ ...formData, descriptionAr: v })}
+          optional={t.common.optional}
+        />
         <FormField label={t.admin.iconLucide}>
           <Input value={formData.icon} onChange={e => setFormData({ ...formData, icon: e.target.value })} />
         </FormField>

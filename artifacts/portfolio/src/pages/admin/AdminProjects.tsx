@@ -8,6 +8,8 @@ import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { TranslateButton } from "@/components/admin/shared";
+import { useTranslate } from "@/hooks/use-translate";
 import { ExternalLink, Github, ImagePlus, Star, Upload } from "lucide-react";
 
 export function AdminProjects() {
@@ -18,6 +20,20 @@ export function AdminProjects() {
   const deleteProject = useDeleteProject();
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const { translate, isTranslating } = useTranslate();
+
+  const trEnToAr = async (enField: string, arField: string) => {
+    const val = (formData as any)[enField];
+    if (!val?.trim()) return;
+    const r = await translate(val, "en", "ar");
+    if (r) setFormData((f: any) => ({ ...f, [arField]: r }));
+  };
+  const trArToEn = async (arField: string, enField: string) => {
+    const val = (formData as any)[arField];
+    if (!val?.trim()) return;
+    const r = await translate(val, "ar", "en");
+    if (r) setFormData((f: any) => ({ ...f, [enField]: r }));
+  };
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -208,20 +224,24 @@ export function AdminProjects() {
               <div className="space-y-2">
                 <label className="text-xs font-mono text-muted-foreground uppercase">{t.admin.titleEn}</label>
                 <Input value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} className="bg-background border-border" />
+                <div className="flex justify-end"><TranslateButton onClick={() => trEnToAr("title", "titleAr")} disabled={isTranslating || !formData.title.trim()} label={isTranslating ? "..." : "→ عربي"} /></div>
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-mono text-muted-foreground uppercase">{t.admin.titleAr} ({t.common.optional})</label>
                 <Input value={formData.titleAr} onChange={e => setFormData({ ...formData, titleAr: e.target.value })} className="bg-background border-border text-right" dir="rtl" />
+                <div className="flex justify-end"><TranslateButton onClick={() => trArToEn("titleAr", "title")} disabled={isTranslating || !formData.titleAr.trim()} label={isTranslating ? "..." : "→ EN"} /></div>
               </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label className="text-xs font-mono text-muted-foreground uppercase">{t.admin.descEn}</label>
                 <Textarea value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} className="bg-background border-border h-24" />
+                <div className="flex justify-end"><TranslateButton onClick={() => trEnToAr("description", "descriptionAr")} disabled={isTranslating || !formData.description.trim()} label={isTranslating ? "..." : "→ عربي"} /></div>
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-mono text-muted-foreground uppercase">{t.admin.descAr} ({t.common.optional})</label>
                 <Textarea value={formData.descriptionAr} onChange={e => setFormData({ ...formData, descriptionAr: e.target.value })} className="bg-background border-border h-24 text-right" dir="rtl" />
+                <div className="flex justify-end"><TranslateButton onClick={() => trArToEn("descriptionAr", "description")} disabled={isTranslating || !formData.descriptionAr.trim()} label={isTranslating ? "..." : "→ EN"} /></div>
               </div>
             </div>
             <div className="space-y-2">
@@ -299,6 +319,7 @@ export function AdminProjects() {
                   <div className="space-y-2">
                     <label className="text-xs font-mono text-muted-foreground uppercase">وصف الصورة (إنكليزي)</label>
                     <Input value={formData.imageAltEn} onChange={e => setFormData({ ...formData, imageAltEn: e.target.value })} className="bg-background border-border" />
+                    <div className="flex justify-end"><TranslateButton onClick={() => trEnToAr("imageAltEn", "imageAltAr")} disabled={isTranslating || !formData.imageAltEn.trim()} label={isTranslating ? "..." : "→ عربي"} /></div>
                   </div>
                   <div className="space-y-2">
                     <label className="text-xs font-mono text-muted-foreground uppercase">وصف الصورة (عربي)</label>
@@ -309,6 +330,7 @@ export function AdminProjects() {
                   <div className="space-y-2">
                     <label className="text-xs font-mono text-muted-foreground uppercase">الفئة المستهدفة (إنكليزي)</label>
                     <Textarea value={formData.audienceEn} onChange={e => setFormData({ ...formData, audienceEn: e.target.value })} className="bg-background border-border h-20" />
+                    <div className="flex justify-end"><TranslateButton onClick={() => trEnToAr("audienceEn", "audienceAr")} disabled={isTranslating || !formData.audienceEn.trim()} label={isTranslating ? "..." : "→ عربي"} /></div>
                   </div>
                   <div className="space-y-2">
                     <label className="text-xs font-mono text-muted-foreground uppercase">الفئة المستهدفة (عربي)</label>
@@ -319,6 +341,7 @@ export function AdminProjects() {
                   <div className="space-y-2">
                     <label className="text-xs font-mono text-muted-foreground uppercase">الدور (إنكليزي)</label>
                     <Textarea value={formData.roleEn} onChange={e => setFormData({ ...formData, roleEn: e.target.value })} className="bg-background border-border h-20" />
+                    <div className="flex justify-end"><TranslateButton onClick={() => trEnToAr("roleEn", "roleAr")} disabled={isTranslating || !formData.roleEn.trim()} label={isTranslating ? "..." : "→ عربي"} /></div>
                   </div>
                   <div className="space-y-2">
                     <label className="text-xs font-mono text-muted-foreground uppercase">الدور (عربي)</label>
@@ -329,6 +352,7 @@ export function AdminProjects() {
                   <div className="space-y-2">
                     <label className="text-xs font-mono text-muted-foreground uppercase">المشكلة (إنكليزي)</label>
                     <Textarea value={formData.problemEn} onChange={e => setFormData({ ...formData, problemEn: e.target.value })} className="bg-background border-border h-20" />
+                    <div className="flex justify-end"><TranslateButton onClick={() => trEnToAr("problemEn", "problemAr")} disabled={isTranslating || !formData.problemEn.trim()} label={isTranslating ? "..." : "→ عربي"} /></div>
                   </div>
                   <div className="space-y-2">
                     <label className="text-xs font-mono text-muted-foreground uppercase">المشكلة (عربي)</label>
@@ -339,6 +363,7 @@ export function AdminProjects() {
                   <div className="space-y-2">
                     <label className="text-xs font-mono text-muted-foreground uppercase">الحل (إنكليزي)</label>
                     <Textarea value={formData.solutionEn} onChange={e => setFormData({ ...formData, solutionEn: e.target.value })} className="bg-background border-border h-20" />
+                    <div className="flex justify-end"><TranslateButton onClick={() => trEnToAr("solutionEn", "solutionAr")} disabled={isTranslating || !formData.solutionEn.trim()} label={isTranslating ? "..." : "→ عربي"} /></div>
                   </div>
                   <div className="space-y-2">
                     <label className="text-xs font-mono text-muted-foreground uppercase">الحل (عربي)</label>
@@ -349,6 +374,7 @@ export function AdminProjects() {
                   <div className="space-y-2">
                     <label className="text-xs font-mono text-muted-foreground uppercase">التقنيات - وصف (إنكليزي)</label>
                     <Textarea value={formData.stackDescEn} onChange={e => setFormData({ ...formData, stackDescEn: e.target.value })} className="bg-background border-border h-16" />
+                    <div className="flex justify-end"><TranslateButton onClick={() => trEnToAr("stackDescEn", "stackDescAr")} disabled={isTranslating || !formData.stackDescEn.trim()} label={isTranslating ? "..." : "→ عربي"} /></div>
                   </div>
                   <div className="space-y-2">
                     <label className="text-xs font-mono text-muted-foreground uppercase">التقنيات - وصف (عربي)</label>
@@ -359,6 +385,7 @@ export function AdminProjects() {
                   <div className="space-y-2">
                     <label className="text-xs font-mono text-muted-foreground uppercase">النتيجة (إنكليزي)</label>
                     <Textarea value={formData.outcomeEn} onChange={e => setFormData({ ...formData, outcomeEn: e.target.value })} className="bg-background border-border h-20" />
+                    <div className="flex justify-end"><TranslateButton onClick={() => trEnToAr("outcomeEn", "outcomeAr")} disabled={isTranslating || !formData.outcomeEn.trim()} label={isTranslating ? "..." : "→ عربي"} /></div>
                   </div>
                   <div className="space-y-2">
                     <label className="text-xs font-mono text-muted-foreground uppercase">النتيجة (عربي)</label>

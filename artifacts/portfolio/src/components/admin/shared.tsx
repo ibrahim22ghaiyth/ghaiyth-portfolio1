@@ -1,8 +1,10 @@
-import { Loader2 } from "lucide-react";
+import { Loader2, Languages } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useTranslate } from "@/hooks/use-translate";
 
 export function PageHeader({
   title,
@@ -113,6 +115,30 @@ export function FormField({
   );
 }
 
+export function TranslateButton({
+  onClick,
+  disabled,
+  label = "Translate",
+}: {
+  onClick: () => void;
+  disabled?: boolean;
+  label?: string;
+}) {
+  return (
+    <Button
+      type="button"
+      variant="ghost"
+      size="sm"
+      onClick={onClick}
+      disabled={disabled}
+      className="h-7 gap-1.5 px-2 text-xs text-primary hover:text-primary"
+    >
+      <Languages size={13} />
+      {label}
+    </Button>
+  );
+}
+
 export function BilingualFields({
   enLabel,
   arLabel,
@@ -125,7 +151,6 @@ export function BilingualFields({
   enType = "input",
   arType = "input",
   optional,
-  required,
 }: {
   enLabel: string;
   arLabel: string;
@@ -138,8 +163,21 @@ export function BilingualFields({
   enType?: "input" | "textarea";
   arType?: "input" | "textarea";
   optional?: string;
-  required?: boolean;
 }) {
+  const { translate, isTranslating } = useTranslate();
+
+  const handleEnToAr = async () => {
+    if (!enValue.trim()) return;
+    const result = await translate(enValue, "en", "ar");
+    if (result) onArChange(result);
+  };
+
+  const handleArToEn = async () => {
+    if (!arValue.trim()) return;
+    const result = await translate(arValue, "ar", "en");
+    if (result) onEnChange(result);
+  };
+
   const renderField = (type: string, value: string, onChange: (v: string) => void, placeholder?: string, dir?: "rtl" | "ltr") => {
     if (type === "textarea") {
       return (
@@ -168,9 +206,23 @@ export function BilingualFields({
     <div className="grid gap-4 sm:grid-cols-2">
       <FormField label={enLabel} optional={optional}>
         {renderField(enType, enValue, onEnChange, enPlaceholder, "ltr")}
+        <div className="flex justify-end">
+          <TranslateButton
+            onClick={handleEnToAr}
+            disabled={isTranslating || !enValue.trim()}
+            label={isTranslating ? "Translating..." : "→ Arabic"}
+          />
+        </div>
       </FormField>
       <FormField label={arLabel} optional={optional}>
         {renderField(arType, arValue, onArChange, arPlaceholder, "rtl")}
+        <div className="flex justify-end">
+          <TranslateButton
+            onClick={handleArToEn}
+            disabled={isTranslating || !arValue.trim()}
+            label={isTranslating ? "Translating..." : "→ English"}
+          />
+        </div>
       </FormField>
     </div>
   );

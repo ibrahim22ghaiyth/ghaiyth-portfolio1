@@ -2,6 +2,7 @@
 import healthRouter from "./health";
 import authRouter from "./auth";
 import analyticsRouter from "./analytics";
+import translateRouter from "./translate";
 import { requireAdmin } from "../middlewares/auth";
 import { getDatabaseUrl } from "@workspace/db/connection-string";
 import { projectArchive } from "../data/projectArchive";
@@ -19,6 +20,7 @@ if (!databaseUrl) {
 router.use(healthRouter);
 router.use(authRouter);
 router.use(analyticsRouter);
+router.use(translateRouter);
 
 router.get("/admin/storage", requireAdmin, (_req, res) => {
   res.json({

@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { PageHeader, LoadingState, EmptyState, StatusPill, FormField, DialogShell } from "@/components/admin/shared";
+import { PageHeader, LoadingState, EmptyState, StatusPill, FormField, DialogShell, BilingualFields } from "@/components/admin/shared";
 
 export function AdminSkills() {
   const { t } = useLanguage();
@@ -112,14 +112,17 @@ export function AdminSkills() {
           </>
         }
       >
-        <div className="grid gap-4 sm:grid-cols-2">
-          <FormField label={t.admin.nameEn}>
-            <Input value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} placeholder={t.admin.skillNamePlaceholder} />
-          </FormField>
-          <FormField label={t.admin.nameAr} optional={t.common.optional}>
-            <Input value={formData.nameAr} onChange={e => setFormData({ ...formData, nameAr: e.target.value })} className="text-right" dir="rtl" placeholder={t.admin.skillNameArPlaceholder} />
-          </FormField>
-        </div>
+        <BilingualFields
+          enLabel={t.admin.nameEn}
+          arLabel={t.admin.nameAr}
+          enPlaceholder={t.admin.skillNamePlaceholder}
+          arPlaceholder={t.admin.skillNameArPlaceholder}
+          enValue={formData.name}
+          arValue={formData.nameAr}
+          onEnChange={v => setFormData({ ...formData, name: v })}
+          onArChange={v => setFormData({ ...formData, nameAr: v })}
+          optional={t.common.optional}
+        />
         <FormField label={t.admin.category}>
           <Select value={formData.category} onValueChange={val => setFormData({ ...formData, category: val })}>
             <SelectTrigger><SelectValue /></SelectTrigger>
