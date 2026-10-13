@@ -1,8 +1,10 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ExternalLink, Github } from "lucide-react";
+import { ChevronDown, ExternalLink, Github, Plus } from "lucide-react";
 import { useState } from "react";
 import { useListProjects } from "@workspace/api-client-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+
+const INITIAL_VISIBLE = 6;
 
 const statusStyles = {
   live: "border-emerald-500/30 bg-emerald-500/10 text-emerald-400",
@@ -14,9 +16,12 @@ export function ProjectsSection() {
   const { t, lang } = useLanguage();
   const { data: projects } = useListProjects();
   const [openId, setOpenId] = useState("");
+  const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
   const isArabic = lang === "ar";
 
   const activeProjects = (projects || []).filter((p) => p.active);
+  const visibleProjects = activeProjects.slice(0, visibleCount);
+  const hiddenCount = activeProjects.length - visibleCount;
 
   const labels = {
     heading: t.projects.title,
@@ -57,7 +62,7 @@ export function ProjectsSection() {
         </motion.div>
 
         <div className="grid gap-8 lg:grid-cols-3 lg:gap-6">
-          {activeProjects.map((project, index) => {
+          {visibleProjects.map((project, index) => {
             const title = isArabic && project.titleAr ? project.titleAr : project.title;
             const summary = isArabic && project.descriptionAr ? project.descriptionAr : project.description;
             const imageAlt = isArabic && project.imageAltAr ? project.imageAltAr : (project.imageAltEn || project.title);
@@ -200,6 +205,25 @@ export function ProjectsSection() {
             );
           })}
         </div>
+
+        {hiddenCount > 0 ? (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4 }}
+            className="mt-10 flex justify-center"
+          >
+            <button
+              type="button"
+              onClick={() => setVisibleCount((c) => c + 6)}
+              className="btn-outline group inline-flex min-h-12 items-center gap-2.5 rounded-xl px-7 py-3 text-sm font-semibold"
+            >
+              <Plus size={16} className="transition-transform duration-300 group-hover:rotate-90" />
+              {isArabic ? `عرض مشاريع إضافية (${hiddenCount})` : `Show more projects (${hiddenCount})`}
+            </button>
+          </motion.div>
+        ) : null}
       </div>
     </section>
   );

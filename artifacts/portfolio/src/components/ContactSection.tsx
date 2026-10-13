@@ -193,7 +193,6 @@ export function ContactSection() {
             >
               {sendMessage.isPending ? t.contact.sendingBtn : t.contact.sendBtn} <Send size={17} />
             </button>
-            <p className="text-xs leading-5 brand-muted">{t.contact.formNote}</p>
           </motion.form>
         </div>
       </div>
