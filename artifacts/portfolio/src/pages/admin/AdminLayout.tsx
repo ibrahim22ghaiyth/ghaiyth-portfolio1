@@ -1,6 +1,7 @@
 import { Link, useLocation } from "wouter";
 import { LayoutDashboard, Briefcase, Code, FolderGit2, Mail, FileText, LogOut, Newspaper, PackageCheck, MessageSquareQuote } from "lucide-react";
 import { useListMessages } from "@workspace/api-client-react";
+import { cn } from "@/lib/utils";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export function AdminLayout({ children }: { children: React.ReactNode }) {
