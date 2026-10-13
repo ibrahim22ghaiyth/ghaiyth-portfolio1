@@ -23,6 +23,7 @@ const BlogPage = lazy(() => import("@/pages/BlogPage").then((module) => ({ defau
 const BlogPostPage = lazy(() => import("@/pages/BlogPostPage").then((module) => ({ default: module.BlogPostPage })));
 const ProductsPage = lazy(() => import("@/pages/ProductsPage").then((module) => ({ default: module.ProductsPage })));
 const ProductDetailPage = lazy(() => import("@/pages/ProductDetailPage").then((module) => ({ default: module.ProductDetailPage })));
+const ProjectsPage = lazy(() => import("@/pages/ProjectsPage").then((module) => ({ default: module.ProjectsPage })));
 
 const AdminLogin = lazy(() => import("@/pages/admin/AdminLogin").then((module) => ({ default: module.AdminLogin })));
 const AdminLayout = lazy(() => import("@/pages/admin/AdminLayout").then((module) => ({ default: module.AdminLayout })));
@@ -157,11 +158,13 @@ function Router() {
         <Route path="/en/blog" component={BlogPage} />
         <Route path="/en/products/:slug" component={ProductDetailPage} />
         <Route path="/en/products" component={ProductsPage} />
+        <Route path="/en/projects" component={ProjectsPage} />
         <Route path="/en" component={Home} />
         <Route path="/blog/:slug" component={BlogPostPage} />
         <Route path="/blog" component={BlogPage} />
         <Route path="/products/:slug" component={ProductDetailPage} />
         <Route path="/products" component={ProductsPage} />
+        <Route path="/projects" component={ProjectsPage} />
         <Route path="/" component={Home} />
         <Route component={NotFound} />
       </Switch>

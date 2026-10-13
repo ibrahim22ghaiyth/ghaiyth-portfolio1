@@ -69,12 +69,6 @@ export function AdminDashboard() {
         </div>
       </div>
 
-      {analytics?.storageMode === "memory" ? (
-        <div className="rounded-2xl border border-amber-400/25 bg-amber-400/10 p-4 text-sm text-amber-100">
-          {t.admin.temporaryAnalytics}
-        </div>
-      ) : null}
-
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
         {stats.map((stat, i) => (
           <div key={i} className="p-6 rounded-2xl bg-card border border-border flex flex-col">

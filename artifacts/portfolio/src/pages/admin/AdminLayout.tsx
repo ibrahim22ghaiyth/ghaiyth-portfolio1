@@ -1,7 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { LayoutDashboard, Briefcase, Code, FolderGit2, Mail, FileText, LogOut, TriangleAlert, Newspaper, PackageCheck, MessageSquareQuote } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
-import { cn } from "@/lib/utils";
+import { LayoutDashboard, Briefcase, Code, FolderGit2, Mail, FileText, LogOut, Newspaper, PackageCheck, MessageSquareQuote } from "lucide-react";
 import { useListMessages } from "@workspace/api-client-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -9,19 +7,6 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
   const [location, setLocation] = useLocation();
   const { t, lang } = useLanguage();
   const { data: messages } = useListMessages();
-  const { data: storage } = useQuery({
-    queryKey: ["admin-storage"],
-    queryFn: async () => {
-      const token = localStorage.getItem("admin_token");
-      const response = await fetch("/api/admin/storage", {
-        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-        cache: "no-store",
-      });
-      if (!response.ok) throw new Error("Unable to load storage status");
-      return response.json() as Promise<{ storageMode: "database" | "memory" }>;
-    },
-    retry: 1,
-  });
   
   const unreadCount = messages?.filter(m => m.status === "unread").length || 0;
 
@@ -125,17 +110,6 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto">
         <div className="p-4 sm:p-6 lg:p-8 max-w-6xl mx-auto">
-          {storage?.storageMode === "memory" ? (
-            <div className="mb-6 flex gap-3 rounded-2xl border border-amber-400/25 bg-amber-400/10 p-4 text-sm text-amber-100">
-              <TriangleAlert className="mt-0.5 shrink-0" size={18} />
-              <div>
-                <div className="font-semibold text-amber-50">{t.admin.storageTitle}</div>
-                <div className="text-amber-100/80">
-                  {t.admin.storageDescription}
-                </div>
-              </div>
-            </div>
-          ) : null}
           {children}
         </div>
       </main>

@@ -1,6 +1,6 @@
-import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ExternalLink, Github, Plus } from "lucide-react";
-import { useState } from "react";
+import { motion } from "framer-motion";
+import { ExternalLink, Github, FolderGit2 } from "lucide-react";
+import { Link } from "wouter";
 import { useListProjects } from "@workspace/api-client-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -15,24 +15,16 @@ const statusStyles = {
 export function ProjectsSection() {
   const { t, lang } = useLanguage();
   const { data: projects } = useListProjects();
-  const [openId, setOpenId] = useState("");
-  const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
   const isArabic = lang === "ar";
 
   const activeProjects = (projects || []).filter((p) => p.active);
-  const visibleProjects = activeProjects.slice(0, visibleCount);
-  const hiddenCount = activeProjects.length - visibleCount;
+  const visibleProjects = activeProjects.slice(0, INITIAL_VISIBLE);
+  const hiddenCount = activeProjects.length - INITIAL_VISIBLE;
 
   const labels = {
     heading: t.projects.title,
     eyebrow: isArabic ? "مختارات من العمل" : "Selected work",
-    problem: isArabic ? "المشكلة" : "The problem",
-    solution: isArabic ? "الحل الذي بنيته" : "The solution I built",
-    stack: isArabic ? "التقنيات" : "The stack",
-    outcome: isArabic ? "الحالة والنتيجة" : "Status and outcome",
-    details: t.projects.openDetails,
-    builtFor: isArabic ? "مصمم لـ" : "Built for",
-    myRole: isArabic ? "دورتي" : "My role",
+    viewAll: isArabic ? "عرض كل المشاريع" : "View all projects",
     statusLabel: {
       live: t.projects.statusLive,
       prototype: t.projects.statusPrototype,
@@ -67,14 +59,6 @@ export function ProjectsSection() {
             const summary = isArabic && project.descriptionAr ? project.descriptionAr : project.description;
             const imageAlt = isArabic && project.imageAltAr ? project.imageAltAr : (project.imageAltEn || project.title);
             const status = (project.status || "live") as keyof typeof statusStyles;
-            const isOpen = openId === String(project.id);
-
-            const audience = isArabic ? project.audienceAr : project.audienceEn;
-            const role = isArabic ? project.roleAr : project.roleEn;
-            const problem = isArabic ? project.problemAr : project.problemEn;
-            const solution = isArabic ? project.solutionAr : project.solutionEn;
-            const stackDesc = isArabic ? project.stackDescAr : project.stackDescEn;
-            const outcome = isArabic ? project.outcomeAr : project.outcomeEn;
 
             return (
               <motion.article
@@ -82,8 +66,9 @@ export function ProjectsSection() {
                 initial={{ opacity: 0, y: 28 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
-                transition={{ delay: index * 0.12, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ delay: Math.min(index * 0.1, 0.4), duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
                 className="gradient-border card-sweep group flex flex-col overflow-hidden rounded-xl"
+                dir={isArabic ? "rtl" : "ltr"}
               >
                 <div className="relative aspect-[16/10] overflow-hidden">
                   {project.imageUrl ? (
@@ -120,10 +105,10 @@ export function ProjectsSection() {
                     {title}
                   </h3>
 
-                  <p className="brand-copy mb-5 text-sm leading-7">{summary}</p>
+                  <p className="brand-copy mb-5 text-sm leading-7 line-clamp-3">{summary}</p>
 
                   <div className="mb-6 flex flex-wrap gap-1.5">
-                    {(project.techStack || []).map((tech) => (
+                    {(project.techStack || []).slice(0, 5).map((tech) => (
                       <span
                         key={tech}
                         className="rounded-md border border-[var(--brand-line)] bg-[var(--brand-panel-2)] px-2.5 py-1 font-mono text-[11px] text-[var(--brand-text-2)] transition-colors duration-300 group-hover:border-[var(--brand-blue)]/20"
@@ -133,73 +118,29 @@ export function ProjectsSection() {
                     ))}
                   </div>
 
-                  <div className="mt-auto space-y-2.5">
-                    {project.liveUrl || project.githubUrl ? (
-                      <div className="flex gap-2.5">
-                        {project.liveUrl ? (
-                          <a
-                            href={project.liveUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="brand-button btn-glow inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg px-4 text-sm font-semibold"
-                          >
-                            {t.projects.liveDemo} <ExternalLink size={15} />
-                          </a>
-                        ) : null}
-                        {project.githubUrl ? (
-                          <a
-                            href={project.githubUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                            aria-label={`${title} GitHub`}
-                            className="btn-outline icon-magnetic inline-flex min-h-11 w-12 items-center justify-center rounded-lg"
-                          >
-                            <Github size={17} />
-                          </a>
-                        ) : null}
-                      </div>
-                    ) : null}
-
-                    {audience || role || problem || solution || stackDesc || outcome ? (
-                      <button
-                        type="button"
-                        onClick={() => setOpenId(isOpen ? "" : String(project.id))}
-                        aria-expanded={isOpen}
-                        className="btn-outline inline-flex min-h-11 w-full items-center justify-between rounded-lg px-4 py-2 text-sm font-semibold"
+                  <div className="mt-auto flex gap-2.5">
+                    {project.liveUrl ? (
+                      <a
+                        href={project.liveUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="brand-button btn-glow inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg px-4 text-sm font-semibold"
                       >
-                        {labels.details}
-                        <ChevronDown size={16} className={isOpen ? "rotate-180 transition-transform duration-300" : "transition-transform duration-300"} />
-                      </button>
+                        {t.projects.liveDemo} <ExternalLink size={15} />
+                      </a>
+                    ) : null}
+                    {project.githubUrl ? (
+                      <a
+                        href={project.githubUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label={`${title} GitHub`}
+                        className="btn-outline icon-magnetic inline-flex min-h-11 w-12 items-center justify-center rounded-lg"
+                      >
+                        <Github size={17} />
+                      </a>
                     ) : null}
                   </div>
-
-                  <AnimatePresence>
-                    {isOpen ? (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                        className="overflow-hidden"
-                      >
-                        <div className="mt-4 grid gap-4 rounded-lg border border-[var(--brand-line-soft)] bg-[var(--brand-panel-2)] p-5 text-sm leading-7 text-[var(--brand-text-2)]">
-                          {[
-                            audience ? [labels.builtFor, audience] : null,
-                            role ? [labels.myRole, role] : null,
-                            problem ? [labels.problem, problem] : null,
-                            solution ? [labels.solution, solution] : null,
-                            stackDesc ? [labels.stack, stackDesc] : null,
-                            outcome ? [labels.outcome, outcome] : null,
-                          ].filter(Boolean).map(([label, body]) => (
-                            <section key={label as string}>
-                              <h4 className="brand-eyebrow mb-1.5">{label}</h4>
-                              <p className="brand-copy">{body}</p>
-                            </section>
-                          ))}
-                        </div>
-                      </motion.div>
-                    ) : null}
-                  </AnimatePresence>
                 </div>
               </motion.article>
             );
@@ -214,14 +155,13 @@ export function ProjectsSection() {
             transition={{ duration: 0.4 }}
             className="mt-10 flex justify-center"
           >
-            <button
-              type="button"
-              onClick={() => setVisibleCount((c) => c + 6)}
+            <Link
+              href={isArabic ? "/projects" : "/en/projects"}
               className="btn-outline group inline-flex min-h-12 items-center gap-2.5 rounded-xl px-7 py-3 text-sm font-semibold"
             >
-              <Plus size={16} className="transition-transform duration-300 group-hover:rotate-90" />
-              {isArabic ? `عرض مشاريع إضافية (${hiddenCount})` : `Show more projects (${hiddenCount})`}
-            </button>
+              <FolderGit2 size={16} className="transition-transform duration-300 group-hover:scale-110" />
+              {labels.viewAll} ({activeProjects.length})
+            </Link>
           </motion.div>
         ) : null}
       </div>
