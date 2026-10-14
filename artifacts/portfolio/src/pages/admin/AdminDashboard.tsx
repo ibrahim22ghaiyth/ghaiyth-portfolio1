@@ -4,6 +4,7 @@ import { Briefcase, Code, FolderGit2, Mail, Globe2, MapPin, RefreshCw } from "lu
 import { Button } from "@/components/ui/button";
 import { PageHeader, LoadingState } from "@/components/admin/shared";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { apiUrl } from "@/lib/api-base";
 
 type AnalyticsSummary = {
   totalVisits: number;
@@ -27,7 +28,7 @@ export function AdminDashboard() {
     queryKey: ["admin-analytics"],
     queryFn: async () => {
       const token = localStorage.getItem("admin_token");
-      const response = await fetch("/api/admin/analytics", {
+      const response = await fetch(apiUrl("/api/admin/analytics"), {
         headers: token ? { Authorization: `Bearer ${token}` } : undefined,
         cache: "no-store",
       });

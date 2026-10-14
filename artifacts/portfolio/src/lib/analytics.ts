@@ -1,3 +1,5 @@
+import { apiUrl } from "./api-base";
+
 const VISITOR_ID_KEY = "ig_visitor_id";
 const LAST_VISIT_KEY = "ig_last_visit_at";
 
@@ -28,7 +30,7 @@ export function trackVisit() {
 
   localStorage.setItem(LAST_VISIT_KEY, String(now));
 
-  fetch("/api/analytics/visit", {
+  fetch(apiUrl("/api/analytics/visit"), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({

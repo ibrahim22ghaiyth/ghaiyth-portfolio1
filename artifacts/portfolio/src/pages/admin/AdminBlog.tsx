@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { TranslateButton } from "@/components/admin/shared";
 import { useTranslate } from "@/hooks/use-translate";
+import { apiUrl } from "@/lib/api-base";
 
 type BlogPost = {
   id: number;
@@ -91,7 +92,7 @@ export function AdminBlog() {
   const { data: posts = [], isLoading } = useQuery({
     queryKey: ["admin-blog-posts"],
     queryFn: async () => {
-      const response = await fetch("/api/admin/blog-posts", { headers: authHeaders(), cache: "no-store" });
+      const response = await fetch(apiUrl("/api/admin/blog-posts"), { headers: authHeaders(), cache: "no-store" });
       if (!response.ok) throw new Error("Unable to load blog posts");
       return response.json() as Promise<BlogPost[]>;
     },
@@ -111,7 +112,7 @@ export function AdminBlog() {
         coverImageUrl: formData.coverImageUrl || null,
         tags: formData.tags.split(",").map((tag) => tag.trim()).filter(Boolean),
       };
-      const response = await fetch(editingId ? `/api/admin/blog-posts/${editingId}` : "/api/admin/blog-posts", {
+      const response = await fetch(apiUrl(editingId ? `/api/admin/blog-posts/${editingId}` : "/api/admin/blog-posts"), {
         method: editingId ? "PUT" : "POST",
         headers: authHeaders(),
         body: JSON.stringify(payload),
@@ -140,7 +141,7 @@ export function AdminBlog() {
 
   const deletePost = useMutation({
     mutationFn: async (id: number) => {
-      const response = await fetch(`/api/admin/blog-posts/${id}`, {
+      const response = await fetch(apiUrl(`/api/admin/blog-posts/${id}`), {
         method: "DELETE",
         headers: authHeaders(),
       });
@@ -155,7 +156,7 @@ export function AdminBlog() {
 
   const translateMissing = useMutation({
     mutationFn: async () => {
-      const response = await fetch("/api/admin/blog-posts/translate-missing", {
+      const response = await fetch(apiUrl("/api/admin/blog-posts/translate-missing"), {
         method: "POST",
         headers: authHeaders(),
         body: JSON.stringify({ batchSize: 4 }),

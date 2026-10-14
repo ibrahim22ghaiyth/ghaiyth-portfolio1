@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { apiUrl } from "@/lib/api-base";
 
 type TranslateResult = {
   translatedText: string;
@@ -16,7 +17,7 @@ export function useTranslate() {
 
     try {
       const token = localStorage.getItem("admin_token");
-      const response = await fetch("/api/admin/translate", {
+      const response = await fetch(apiUrl("/api/admin/translate"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

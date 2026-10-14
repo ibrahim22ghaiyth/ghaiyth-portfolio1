@@ -4,6 +4,7 @@ import { Link, useParams } from "wouter";
 import { Footer } from "@/components/Footer";
 import { Navigation } from "@/components/Navigation";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { apiUrl } from "@/lib/api-base";
 
 type ProductDetails = {
   id: number;
@@ -24,7 +25,7 @@ type ProductDetails = {
 
 async function fetchProduct(slug?: string) {
   if (!slug) throw new Error("Missing product");
-  const response = await fetch(`/api/products/${encodeURIComponent(slug)}`, { cache: "no-store" });
+  const response = await fetch(apiUrl(`/api/products/${encodeURIComponent(slug)}`), { cache: "no-store" });
   if (!response.ok) throw new Error("Unable to load product");
   return response.json() as Promise<ProductDetails>;
 }

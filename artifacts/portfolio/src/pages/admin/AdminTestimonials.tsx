@@ -8,6 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
+import { apiUrl } from "@/lib/api-base";
 
 type Testimonial = {
   id: number;
@@ -96,7 +97,7 @@ export function AdminTestimonials() {
   const { data: testimonials, isLoading } = useQuery({
     queryKey: ["admin-testimonials"],
     queryFn: async () => {
-      const response = await fetch("/api/admin/testimonials", {
+      const response = await fetch(apiUrl("/api/admin/testimonials"), {
         headers: authHeaders(),
         cache: "no-store",
       });
@@ -143,7 +144,7 @@ export function AdminTestimonials() {
   };
 
   const saveTestimonial = async () => {
-    const response = await fetch(editingId ? `/api/admin/testimonials/${editingId}` : "/api/admin/testimonials", {
+    const response = await fetch(apiUrl(editingId ? `/api/admin/testimonials/${editingId}` : "/api/admin/testimonials"), {
       method: editingId ? "PUT" : "POST",
       headers: authHeaders(),
       body: JSON.stringify(payload),
@@ -157,7 +158,7 @@ export function AdminTestimonials() {
 
   const deleteTestimonial = async (id: number) => {
     if (!confirm(labels.deleteConfirm)) return;
-    const response = await fetch(`/api/admin/testimonials/${id}`, {
+    const response = await fetch(apiUrl(`/api/admin/testimonials/${id}`), {
       method: "DELETE",
       headers: authHeaders(),
     });

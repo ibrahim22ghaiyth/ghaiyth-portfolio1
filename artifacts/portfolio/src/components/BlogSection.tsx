@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { ArrowUpRight, Clock, Filter, Newspaper } from "lucide-react";
 import { Link } from "wouter";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { apiUrl } from "@/lib/api-base";
 
 type BlogPost = {
   id: number;
@@ -22,7 +23,7 @@ type BlogPost = {
 };
 
 async function fetchBlogPosts() {
-  const response = await fetch("/api/blog-posts", { cache: "no-store" });
+  const response = await fetch(apiUrl("/api/blog-posts"), { cache: "no-store" });
   if (!response.ok) throw new Error("Unable to load blog posts");
   return response.json() as Promise<BlogPost[]>;
 }

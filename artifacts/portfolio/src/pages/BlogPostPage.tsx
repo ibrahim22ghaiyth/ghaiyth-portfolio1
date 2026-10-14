@@ -20,6 +20,7 @@ import { Footer } from "@/components/Footer";
 import { Navigation } from "@/components/Navigation";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
+import { apiUrl } from "@/lib/api-base";
 
 type BlogPost = {
   id: number;
@@ -40,13 +41,13 @@ type BlogPost = {
 
 async function fetchBlogPost(slug?: string) {
   if (!slug) throw new Error("Missing slug");
-  const response = await fetch(`/api/blog-posts/${encodeURIComponent(slug)}`, { cache: "no-store" });
+  const response = await fetch(apiUrl(`/api/blog-posts/${encodeURIComponent(slug)}`), { cache: "no-store" });
   if (!response.ok) throw new Error("Unable to load blog post");
   return response.json() as Promise<BlogPost>;
 }
 
 async function fetchRelatedPosts(slug?: string) {
-  const response = await fetch("/api/blog-posts", { cache: "no-store" });
+  const response = await fetch(apiUrl("/api/blog-posts"), { cache: "no-store" });
   if (!response.ok) return [] as BlogPost[];
   const posts = (await response.json()) as BlogPost[];
   return posts.filter((post) => post.slug !== slug).slice(0, 3);

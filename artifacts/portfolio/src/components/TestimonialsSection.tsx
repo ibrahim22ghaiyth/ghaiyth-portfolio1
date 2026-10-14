@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Quote, ShieldCheck, FolderOpen, Code2, Github } from "lucide-react";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { apiUrl } from "@/lib/api-base";
 
 type Testimonial = {
   id: number;
@@ -24,7 +25,7 @@ export function TestimonialsSection() {
   const { data } = useQuery({
     queryKey: ["testimonials"],
     queryFn: async () => {
-      const response = await fetch("/api/testimonials", { cache: "no-store" });
+      const response = await fetch(apiUrl("/api/testimonials"), { cache: "no-store" });
       if (!response.ok) throw new Error("Unable to load testimonials");
       return response.json() as Promise<Testimonial[]>;
     },
