@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
 import {
+  Award,
   Briefcase,
+  ExternalLink,
   GraduationCap,
   Languages,
   Layers3,
@@ -201,6 +203,44 @@ export function AboutSection() {
             </div>
           </motion.div>
         </div>
+
+        {/* Certifications */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="mb-16"
+        >
+          <h3 className="brand-heading mb-2 flex items-center gap-3 text-xl font-bold">
+            <Award size={20} className="text-primary" strokeWidth={1.8} />
+            {t.about.certificationsTitle}
+          </h3>
+          <p className="brand-muted mb-6 text-sm">{t.about.certificationsSubtitle}</p>
+
+          <a
+            href="https://www.freecodecamp.org/certification/ibrahim_ghaiyth/responsive-web-design"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="gradient-border card-sweep group block max-w-2xl rounded-xl p-6 sm:p-7"
+          >
+            <div className="mb-4 flex items-start justify-between gap-4">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-primary/15 bg-[var(--brand-tag-bg)] text-primary transition-all duration-300 group-hover:shadow-[0_0_12px_rgba(59,130,246,0.1)]">
+                <Award size={20} strokeWidth={1.8} />
+              </div>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-[11px] font-bold text-emerald-500">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                {t.about.certFccIssuer}
+              </span>
+            </div>
+            <h4 className="brand-heading mb-1 text-base font-bold">{t.about.certFccName}</h4>
+            <p className="brand-copy mt-2 text-sm leading-6">{t.about.certFccDesc}</p>
+            <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary">
+              {t.about.certFccVerify}
+              <ExternalLink size={14} strokeWidth={2} className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" />
+            </span>
+          </a>
+        </motion.div>
 
         {/* Languages + Soft Skills */}
         <div className="mb-16 grid gap-8 lg:grid-cols-2">
